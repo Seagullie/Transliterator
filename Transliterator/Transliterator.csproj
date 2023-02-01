@@ -7,4 +7,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Transliterator.Core\Transliterator.Core.csproj" />
+  </ItemGroup>
+
 </Project>

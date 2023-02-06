@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Native;
 
@@ -9,7 +10,7 @@ internal static partial class NativeMethods
     public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     [DllImport(User32, CharSet = CharSet.Auto, SetLastError = true)]
-    public static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+    public static extern IntPtr SetWindowsHookEx(HookTypes hookType, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
 
     [DllImport(User32, CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

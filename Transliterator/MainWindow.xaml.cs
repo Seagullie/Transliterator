@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Transliterator.Core;
+using Transliterator.Core.Keyboard;
 
 namespace Transliterator
 {

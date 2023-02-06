@@ -1,48 +1,70 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Transliterator.Core.Enums;
+using Transliterator.Core.Native;
+using Transliterator.Core.Structs;
 
-namespace Transliterator.Core;
-
-/// <summary>
-///     A global keyboard hook, using System.Reactive
-/// </summary>
-public sealed class KeyboardHook
+namespace Transliterator.Core
 {
-    public KeyboardHook()
+    public static class KeyboardHook
     {
-        
+        private const int WH_KEYBOARD_LL = 13;
+
+        private const int WmKeyDown = 256;
+        private const int WmSysKeyUp = 261;
+        private const int WmSysKeyDown = 260;
+
+        /// <summary>
+		/// Defines the callback type for the hook
+		/// </summary>
+        private static NativeMethods.LowLevelKeyboardProc LowLevelProc = HookCallback;
+
+        /// <summary>
+		/// Handle to the hook, need this to unhook and call the next hook
+		/// </summary>
+        private static IntPtr HookID = IntPtr.Zero;
+
+        public static bool IsHookSetup { get; private set; }
+
+        private static List<VirtualKeyCode> keys { get; set; } = new();
+
+        public static void SetupSystemHook()
+        {
+            HookID = SetHook(LowLevelProc);
+            IsHookSetup = true;
+        }
+
+        public static void ShutdownSystemHook()
+        {
+            NativeMethods.UnhookWindowsHookEx(HookID);
+            IsHookSetup = false;
+        }
+
+        private static IntPtr SetHook(NativeMethods.LowLevelKeyboardProc proc)
+        {
+            using (Process curProcess = Process.GetCurrentProcess())
+            {
+                using (ProcessModule curModule = curProcess.MainModule)
+                {
+                    return NativeMethods.SetWindowsHookEx(WH_KEYBOARD_LL, proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+                }
+            }
+        }
+
+        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0)
+            {
+                var isKeyDown = wParam == WmKeyDown || wParam == WmSysKeyDown;
+
+                var keyboardLowLevelHookStruct = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));
+                //bool isModifier = keyboardLowLevelHookStruct.VirtualKeyCode.IsModifier();
+
+                if (isKeyDown)
+                    Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed");
+            }
+
+            return NativeMethods.CallNextHookEx(HookID, nCode, wParam, lParam);
+        }
     }
-
-    /// <summary>
-    ///     Defines the callback type for the hook
-    /// </summary>
-    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-    /// <summary>
-    ///     Sets the windows hook, do the desired event, one of hInstance or threadId must be non-null
-    /// </summary>
-    /// <param name="hookType">The type of the event you want to hook</param>
-    /// <param name="lowLevelKeyboardProc">The callback.</param>
-    /// <param name="hInstance">The handle you want to attach the event to, can be null</param>
-    /// <param name="threadId">The thread you want to attach the event to, can be null</param>
-    /// <returns>ID to be able to unhook it again</returns>
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr SetWindowsHookEx(HookTypes hookType, LowLevelKeyboardProc lowLevelKeyboardProc, IntPtr hInstance, uint threadId);
-
-    /// <summary>
-    ///     Used to remove a hook which was set with SetWindowsHookEx
-    /// </summary>
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-    /// <summary>
-    ///     Used to call the next hook in the list, if there was any
-    /// </summary>
-    /// <param name="hhk">The hook id</param>
-    /// <param name="nCode">The hook code</param>
-    /// <param name="wParam">The wParam.</param>
-    /// <param name="lParam">The lParam.</param>
-    [DllImport("user32.dll", SetLastError = true)]
-    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 }

@@ -3,6 +3,8 @@
 
 namespace Transliterator.Core.Enums;
 
+// Only for KeyboardLowLevelHookStruct
+
 /// <summary>
 ///     A list of possible scan codes
 /// </summary>

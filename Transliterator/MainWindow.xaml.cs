@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
+using Transliterator.Core.Enums;
 using Transliterator.Core.Keyboard;
 
 namespace Transliterator
@@ -12,6 +14,8 @@ namespace Transliterator
         {
             InitializeComponent();
             KeyboardHook.SetupSystemHook();
+            Thread.Sleep(1000);
+            KeyboardInputGenerator.KeyPresses(VirtualKeyCode.KeyA, VirtualKeyCode.KeyB, VirtualKeyCode.KeyC);
         }
     }
 }

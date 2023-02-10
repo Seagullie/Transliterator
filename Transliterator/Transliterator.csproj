@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="Views\" />
+    <ProjectReference Include="..\Transliterator.Core\Transliterator.Core.csproj" />
   </ItemGroup>
 
 </Project>

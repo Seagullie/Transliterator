@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Transliterator.ViewModels;
-using Wpf.Ui.Mvvm.Interfaces;
+using Transliterator.Core.Enums;
+using Transliterator.Core.Keyboard;
 
 namespace Transliterator
 {
@@ -29,6 +17,10 @@ namespace Transliterator
             InitializeComponent();
             ViewModel = new();
             DataContext = ViewModel;
+
+            KeyboardHook.SetupSystemHook();
+            Thread.Sleep(1000);
+            KeyboardInputGenerator.KeyPresses(VirtualKeyCode.KeyA, VirtualKeyCode.KeyB, VirtualKeyCode.KeyC);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

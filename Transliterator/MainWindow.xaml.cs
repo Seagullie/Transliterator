@@ -1,7 +1,8 @@
 ﻿using System.Threading;
-using System.Windows;
+using System.Windows.Input;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Keyboard;
+using Transliterator.ViewModels;
 
 namespace Transliterator
 {
@@ -18,9 +19,9 @@ namespace Transliterator
             ViewModel = new();
             DataContext = ViewModel;
 
-            KeyboardHook.SetupSystemHook();
-            Thread.Sleep(1000);
-            KeyboardInputGenerator.KeyPresses(VirtualKeyCode.KeyA, VirtualKeyCode.KeyB, VirtualKeyCode.KeyC);
+            //KeyboardHook.SetupSystemHook();
+            //Thread.Sleep(1000);
+            //KeyboardInputGenerator.KeyPresses(VirtualKeyCode.KeyA, VirtualKeyCode.KeyB, VirtualKeyCode.KeyC);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

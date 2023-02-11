@@ -17,7 +17,7 @@ namespace Transliterator.Core.Keyboard
         /// <summary>
 		/// Handle to the hook, need this to unhook and call the next hook
 		/// </summary>
-        private static IntPtr HookID = IntPtr.Zero;
+        private static IntPtr hookId = IntPtr.Zero;
 
         public static bool IsHookSetup { get; private set; }
 
@@ -27,7 +27,7 @@ namespace Transliterator.Core.Keyboard
             {
                 using (ProcessModule curModule = curProcess.MainModule)
                 {
-                    HookID = NativeMethods.SetWindowsHookEx(HookTypes.WH_KEYBOARD_LL, HookCallback, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
+                    hookId = NativeMethods.SetWindowsHookEx(HookTypes.WH_KEYBOARD_LL, HookCallback, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
                 }
             }
 
@@ -36,7 +36,7 @@ namespace Transliterator.Core.Keyboard
 
         public static void ShutdownSystemHook()
         {
-            NativeMethods.UnhookWindowsHookEx(HookID);
+            NativeMethods.UnhookWindowsHookEx(hookId);
             IsHookSetup = false;
         } 
 
@@ -62,7 +62,7 @@ namespace Transliterator.Core.Keyboard
                 }           
             }
 
-            return NativeMethods.CallNextHookEx(HookID, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
         }
     }
 }

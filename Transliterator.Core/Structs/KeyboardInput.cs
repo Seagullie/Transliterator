@@ -15,7 +15,7 @@ namespace Transliterator.Core.Structs;
 public struct KeyboardInput
 {
     private VirtualKeyCode _wVk;
-    private ScanCodes _wScan;
+    private ushort _wScan;
     private KeyEventFlags _dwFlags;
     private uint _time;
     private UIntPtr _dwExtraInfo;
@@ -34,7 +34,7 @@ public struct KeyboardInput
     ///     A hardware scan code for the key. If KeyEventFlags specifies Unicode, ScanCode specifies a Unicode character which
     ///     is to be sent to the foreground application.
     /// </summary>
-    public ScanCodes ScanCode
+    public ushort ScanCode
     {
         get { return _wScan; }
         set { _wScan = value; }
@@ -114,5 +114,31 @@ public struct KeyboardInput
             KeyEventFlags = KeyEventFlags.KeyUp,
             Timestamp = messageTime
         };
+    }
+
+    public static KeyboardInput[] ForCharacter(char character, uint? timestamp = null)
+    {
+        ushort scanCode = character;
+        var messageTime = timestamp ?? (uint)Environment.TickCount;
+
+        var down = new KeyboardInput
+        {
+            VirtualKeyCode = 0,
+            ScanCode = scanCode,
+            KeyEventFlags = KeyEventFlags.Unicode,
+            Timestamp = messageTime,
+            ExtraInfo = 0
+        };
+
+        var up = new KeyboardInput
+        {
+            VirtualKeyCode = 0,
+            ScanCode = scanCode,
+            KeyEventFlags = KeyEventFlags.KeyUp | KeyEventFlags.Unicode,
+            Timestamp = messageTime,
+            ExtraInfo = 0
+        };
+
+        return new KeyboardInput[] { down, up };
     }
 }

@@ -82,4 +82,34 @@ public static class KeyboardInputGenerator
         }
         return NativeMethods.SendInput(Input.CreateKeyboardInputs(keyboardInputs));
     }
+
+    /// <summary>
+    /// Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted text entry via the keyboard.
+    /// </summary>
+    /// <param name="text">The text to be simulated.</param>
+    public static uint TextEntry(string text)
+    {
+        if (text.Length > uint.MaxValue / 2) 
+            throw new ArgumentException(string.Format("The text parameter is too long. It must be less than {0} characters.", uint.MaxValue / 2), nameof(text));
+
+        var keyboardInputs = new List<KeyboardInput>();
+
+        foreach (char character in text)
+        {
+            keyboardInputs.AddRange(KeyboardInput.ForCharacter(character));
+        }
+
+        return NativeMethods.SendInput(Input.CreateKeyboardInputs(keyboardInputs.ToArray()));
+    }
+
+    /// <summary>
+    /// Simulates a single character text entry via the keyboard.
+    /// </summary>
+    /// <param name="character">The unicode character to be simulated.</param>
+    public static uint TextEntry(char character)
+    {
+        var keyboardInputs = KeyboardInput.ForCharacter(character);
+
+        return NativeMethods.SendInput(Input.CreateKeyboardInputs(keyboardInputs));
+    }
 }

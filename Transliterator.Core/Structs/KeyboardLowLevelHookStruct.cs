@@ -31,10 +31,10 @@ public struct KeyboardLowLevelHookStruct
     /// <summary>
     ///     A hardware scan code for the key.
     /// </summary>
-    public ScanCodes ScanCode
+    public ushort ScanCode
     {
-        get { return (ScanCodes)_scanCode; }
-        set { _scanCode = (uint)value; }
+        get { return (ushort)_scanCode; }
+        set { _scanCode = value; }
     }
 
     /// <summary>

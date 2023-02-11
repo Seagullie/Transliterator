@@ -106,10 +106,11 @@
                 <!--  TODO: Fix hotkey style  -->
                 <controls:HotKeyTextBox
                     Grid.Column="1"
-                    Width="120"
+                    MinWidth="120"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     HotKey="{Binding ToggleHotKey}"
+                    Style="{DynamicResource DefaultTextBoxStyle}"
                     TextAlignment="Center" />
             </DockPanel>
 
@@ -139,7 +140,7 @@
                 </StackPanel>
                 <!--  TODO: Freeze textbox width  -->
                 <ui:TextBox
-                    Width="160"
+                    MinWidth="150"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     BorderThickness="1"

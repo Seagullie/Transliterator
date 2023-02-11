@@ -16,6 +16,7 @@
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
     MouseDown="Window_MouseDown"
+    ResizeMode="NoResize"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
@@ -28,6 +29,10 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="181*" />
+            <ColumnDefinition Width="219*" />
+        </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -35,7 +40,12 @@
         </Grid.RowDefinitions>
 
         <!--  TODO: Set icon image for tray icon (gonna reference the demo app)  -->
-        <ui:TitleBar Title="Transliterator" Grid.Row="0">
+        <ui:TitleBar
+            Title="Transliterator"
+            Grid.ColumnSpan="2"
+            VerticalAlignment="Center"
+            ShowMaximize="False"
+            ShowMinimize="False">
             <ui:TitleBar.Tray>
                 <ui:NotifyIcon
                     FocusOnLeftClick="True"
@@ -50,8 +60,8 @@
 
         <Grid
             Grid.Row="1"
-            Margin="15,0,15,15"
-            VerticalAlignment="Stretch">
+            Grid.ColumnSpan="2"
+            Margin="15,0,15,15">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="222*" />

@@ -7,6 +7,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Forms;
+using Transliterator.Views;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 
@@ -52,6 +53,14 @@ namespace Transliterator.ViewModels
                     Tag = "tray_home"
                 }
             };
+        }
+
+        [RelayCommand]
+        private static void OpenSettingsWindow()
+        {
+            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
+            SettingsWindow settings = new();
+            settings.Show();
         }
     }
 }

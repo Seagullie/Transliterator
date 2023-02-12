@@ -22,21 +22,19 @@
     MouseDown="Window_MouseDown"
     ResizeMode="NoResize"
     SizeToContent="Height"
+    Template="{StaticResource baseWindow}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+
+    <!--  TODO: Fix Windows 11 styling not applied to UI  -->
 
     <Window.Resources>
         <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
     </Window.Resources>
 
     <!--  TODO: Refactor sectioning via margins into sectioning via grid rows  -->
+    <!--  TODO: Add separators between sections (maybe)  -->
     <StackPanel x:Name="MainPanel" HorizontalAlignment="Stretch">
-
-        <ui:TitleBar
-            Title="Settings"
-            VerticalAlignment="Center"
-            ShowMaximize="False"
-            ShowMinimize="False" />
 
         <!--  Here margin is 25, while in main window it's 15. 25 looks better here, though. Idk  -->
         <StackPanel
@@ -44,6 +42,8 @@
             Margin="25,5,25,25"
             HorizontalAlignment="Stretch"
             Orientation="Vertical">
+
+            <!--  Refactor Tooltips  -->
 
             <StackPanel x:Name="GeneralSettingsPanel">
                 <Label
@@ -103,12 +103,13 @@
                 Content="Shortcuts:" />
             <DockPanel>
                 <Label VerticalAlignment="Center" Content="Toggle Transliterator:" />
-                <!--  TODO: Fix hotkey style  -->
                 <controls:HotKeyTextBox
                     Grid.Column="1"
                     MinWidth="120"
+                    MaxWidth="120"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
                     HotKey="{Binding ToggleHotKey}"
                     Style="{DynamicResource DefaultTextBoxStyle}"
                     TextAlignment="Center" />
@@ -129,26 +130,31 @@
                         VerticalAlignment="Top"
                         AutomationProperties.AutomationId="displayRadioBtn"
                         Content="Display"
-                        IsChecked="{Binding IsBufferInputEnabled}" />
+                        IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
+
                     <RadioButton
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         AutomationProperties.AutomationId="waitForComboRadioBtn"
                         Content="Buffer"
-                        IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}"
+                        IsChecked="{Binding IsBufferInputEnabled}"
                         ToolTip="Select this mode if you experience buggy or incorrect transliteration." />
                 </StackPanel>
-                <!--  TODO: Freeze textbox width  -->
                 <ui:TextBox
-                    MinWidth="150"
+                    MinWidth="120"
+                    MaxWidth="120"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
                     BorderThickness="1"
                     IsReadOnly="True"
                     PlaceholderText="Demo Text Area"
                     Text="{Binding ShowcaseText}" />
             </DockPanel>
 
+            <!--  TODO: Add Cancel/Discard button besides Apply button  -->
+            <!--  TODO: Replace or augment Button captions with icons  -->
+            <!--  TODO: Color Apply Button differently from Cancel/Discard  -->
             <DockPanel Margin="0,20,0,20">
                 <Button
                     HorizontalAlignment="Left"

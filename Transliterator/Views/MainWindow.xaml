@@ -4,14 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="clr-namespace:Transliterator.Helpers"
-    xmlns:local="clr-namespace:Transliterator"
+    xmlns:local="clr-namespace:Transliterator.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:Transliterator.ViewModels"
     Title="Transliterator"
     Width="800"
     Height="450"
-    d:DataContext="{d:DesignInstance local:MainWindow,
+    d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel,
                                      IsDesignTimeCreatable=True}"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
@@ -24,9 +24,8 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <!--
-        TODO: Fix Windows 11 styling not applied to UI     "
-    -->
+    <!--  TODO: Fix Windows 11 styling not applied to UI"  -->
+    <!--  TODO: Move boilerplate window stlyles to separate resource  -->
 
     <Window.Resources>
 
@@ -95,11 +94,13 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             helpers:MarginSetter.Margin="10">
-            <Button
+            <!--  TODO: Remove command and rely only on AppState binding  -->
+            <ToggleButton
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Command="{Binding ToggleAppStateCommand}"
-                Content="Toggle" />
+                Content="Toggle"
+                IsChecked="{Binding AppState, Converter={StaticResource StringToBoolConverter}}" />
 
             <ui:TextBox
                 MinWidth="120"

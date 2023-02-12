@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Threading;
 using System.Threading.Tasks;
 using Transliterator.Models;
+using Transliterator.Services;
 using Transliterator.Views;
 
 namespace Transliterator.ViewModels
@@ -11,7 +12,7 @@ namespace Transliterator.ViewModels
     {
         // TODO: Uncomment after migrating more things from old project
         //private readonly Main liveTransliterator;
-        //private readonly SettingsService settingsService;
+        private readonly SettingsService settingsService;
 
         [ObservableProperty]
         private bool isToggleSoundOn;
@@ -48,7 +49,7 @@ namespace Transliterator.ViewModels
             // TODO: Dependency injection
             // TODO: Uncomment after migrating more things from old project
             //liveTransliterator = Main.GetInstance();
-            //settingsService = SettingsService.GetInstance();
+            settingsService = SettingsService.GetInstance();
 
             InitializePropertiesFromSettings();
         }
@@ -56,15 +57,15 @@ namespace Transliterator.ViewModels
         public void InitializePropertiesFromSettings()
         {
             // TODO: Uncomment after migrating more things from old project
-            //settingsService.Load();
-            //IsToggleSoundOn = settingsService.IsToggleSoundOn;
-            //IsMinimizedStartEnabled = settingsService.IsMinimizedStartEnabled;
-            //IsAutoStartEnabled = settingsService.IsAutoStartEnabled;
-            //IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
-            //IsTranslitEnabledAtStartup = settingsService.IsTranslitEnabledAtStartup;
-            //IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
-            //IsBufferInputEnabled = settingsService.IsBufferInputEnabled;
-            //ToggleHotKey = settingsService.ToggleHotKey;
+            settingsService.Load();
+            IsToggleSoundOn = settingsService.IsToggleSoundOn;
+            IsMinimizedStartEnabled = settingsService.IsMinimizedStartEnabled;
+            IsAutoStartEnabled = settingsService.IsAutoStartEnabled;
+            IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
+            IsTranslitEnabledAtStartup = settingsService.IsTranslitEnabledAtStartup;
+            IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
+            IsBufferInputEnabled = settingsService.IsBufferInputEnabled;
+            ToggleHotKey = settingsService.ToggleHotKey;
         }
 
         // TODO: not trigger on window init
@@ -142,29 +143,28 @@ namespace Transliterator.ViewModels
             //translitTables.Show();
         }
 
+        // TODO: Show success message via snackbar
         [RelayCommand]
         private void ApplyChanges()
         {
             // TODO: Uncomment after migrating more things from old project
 
-            //settingsService.IsToggleSoundOn = IsToggleSoundOn;
-            //settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
-            //settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
-            //settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
-            //settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
-            //settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
-            //settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
-            //settingsService.ToggleHotKey = ToggleHotKey;
-            //settingsService.Save();
+            settingsService.IsToggleSoundOn = IsToggleSoundOn;
+            settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
+            settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
+            settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
+            settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
+            settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
+            settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
+            settingsService.ToggleHotKey = ToggleHotKey;
+            settingsService.Save();
         }
 
         [RelayCommand]
         private static void OpenEditToggleSoundsWindow()
         {
-            // TODO: Uncomment after migrating more things from old project
-
-            //EditToggleSoundsWindow editToggleSoundsWindow = new();
-            //editToggleSoundsWindow.ShowDialog();
+            EditToggleSoundsWindow editToggleSoundsWindow = new();
+            editToggleSoundsWindow.ShowDialog();
         }
     }
 }

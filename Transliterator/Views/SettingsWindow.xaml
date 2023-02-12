@@ -34,137 +34,135 @@
 
     <!--  TODO: Refactor sectioning via margins into sectioning via grid rows  -->
     <!--  TODO: Add separators between sections (maybe)  -->
-    <StackPanel x:Name="MainPanel" HorizontalAlignment="Stretch">
 
-        <!--  Here margin is 25, while in main window it's 15. 25 looks better here, though. Idk  -->
-        <StackPanel
-            x:Name="ContentPanel"
-            Margin="25,5,25,25"
-            HorizontalAlignment="Stretch"
-            Orientation="Vertical">
+    <!--  [Outdated] Here margin is 25, while in main window it's 15. 25 looks better here, though. Idk  -->
+    <StackPanel
+        x:Name="ContentPanel"
+        Margin="40,5,40,5"
+        HorizontalAlignment="Stretch"
+        Orientation="Vertical">
 
-            <!--  Refactor Tooltips  -->
+        <!--  Refactor Tooltips  -->
 
-            <StackPanel x:Name="GeneralSettingsPanel">
-                <Label
-                    Margin="0,5,0,15"
-                    HorizontalAlignment="Center"
-                    Content="General:" />
-
-                <DockPanel>
-                    <CheckBox
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Content="Play sound on toggle"
-                        IsChecked="{Binding IsToggleSoundOn}" />
-
-                    <Button
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Command="{Binding OpenEditToggleSoundsWindowCommand}"
-                        FontSize="8">
-                        <ui:SymbolIcon Symbol="Settings24" />
-                    </Button>
-                </DockPanel>
-
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Start minimized"
-                    IsChecked="{Binding IsMinimizedStartEnabled}"
-                    ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Turn on translit at startup"
-                    IsChecked="{Binding IsTranslitEnabledAtStartup}" />
-                <CheckBox
-                    Content="Enable State Overlay"
-                    IsChecked="{Binding IsStateOverlayEnabled}"
-                    ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Run at system startup"
-                    IsChecked="{Binding IsAutoStartEnabled}"
-                    ToolTipService.ShowOnDisabled="True" />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Disable Alt + Shift Global Shortcut"
-                    IsChecked="{Binding IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
-                    ToolTip="This setting stops working once the program is closed."
-                    ToolTipService.ShowOnDisabled="True" />
-            </StackPanel>
-
-            <!--  ***  -->
-
+        <StackPanel x:Name="GeneralSettingsPanel">
             <Label
-                Width="62"
-                Height="27"
-                Margin="0,35,0,15"
+                Margin="0,5,0,15"
                 HorizontalAlignment="Center"
-                Content="Shortcuts:" />
-            <DockPanel>
-                <Label VerticalAlignment="Center" Content="Toggle Transliterator:" />
-                <controls:HotKeyTextBox
-                    Grid.Column="1"
-                    MinWidth="120"
-                    MaxWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    HotKey="{Binding ToggleHotKey}"
-                    Style="{DynamicResource DefaultTextBoxStyle}"
-                    TextAlignment="Center" />
-            </DockPanel>
-
-            <!--  ***  -->
-
-            <Label
-                Margin="0,35,0,15"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Content="Buffer characters while typing:" />
+                Content="General:" />
 
             <DockPanel>
-                <StackPanel HorizontalAlignment="Left">
-                    <RadioButton
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        AutomationProperties.AutomationId="displayRadioBtn"
-                        Content="Display"
-                        IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
+                <CheckBox
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Play sound on toggle"
+                    IsChecked="{Binding IsToggleSoundOn}" />
 
-                    <RadioButton
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Top"
-                        AutomationProperties.AutomationId="waitForComboRadioBtn"
-                        Content="Buffer"
-                        IsChecked="{Binding IsBufferInputEnabled}"
-                        ToolTip="Select this mode if you experience buggy or incorrect transliteration." />
-                </StackPanel>
-                <ui:TextBox
-                    MinWidth="120"
-                    MaxWidth="120"
+                <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    BorderThickness="1"
-                    IsReadOnly="True"
-                    PlaceholderText="Demo Text Area"
-                    Text="{Binding ShowcaseText}" />
+                    Command="{Binding OpenEditToggleSoundsWindowCommand}"
+                    FontSize="8">
+                    <ui:SymbolIcon FontSize="12" Symbol="Settings24" />
+                </Button>
             </DockPanel>
 
-            <!--  TODO: Add Cancel/Discard button besides Apply button  -->
-            <!--  TODO: Replace or augment Button captions with icons  -->
-            <!--  TODO: Color Apply Button differently from Cancel/Discard  -->
-            <DockPanel Margin="0,20,0,20">
-                <Button
-                    HorizontalAlignment="Left"
-                    Command="{Binding OpenTranslitTablesWindowCommand}"
-                    Content="Edit Tables" />
-                <Button
-                    HorizontalAlignment="Right"
-                    Command="{Binding ApplyChangesCommand}"
-                    Content="Apply" />
-            </DockPanel>
+            <CheckBox
+                HorizontalAlignment="Left"
+                Content="Start minimized"
+                IsChecked="{Binding IsMinimizedStartEnabled}"
+                ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
+            <CheckBox
+                HorizontalAlignment="Left"
+                Content="Turn on translit at startup"
+                IsChecked="{Binding IsTranslitEnabledAtStartup}" />
+            <CheckBox
+                Content="Enable State Overlay"
+                IsChecked="{Binding IsStateOverlayEnabled}"
+                ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
+            <CheckBox
+                HorizontalAlignment="Left"
+                Content="Run at system startup"
+                IsChecked="{Binding IsAutoStartEnabled}"
+                ToolTipService.ShowOnDisabled="True" />
+            <CheckBox
+                HorizontalAlignment="Left"
+                Content="Disable Alt + Shift Global Shortcut"
+                IsChecked="{Binding IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
+                ToolTip="This setting stops working once the program is closed."
+                ToolTipService.ShowOnDisabled="True" />
         </StackPanel>
+
+        <!--  ***  -->
+
+        <Label
+            Width="62"
+            Height="27"
+            Margin="0,35,0,15"
+            HorizontalAlignment="Center"
+            Content="Shortcuts:" />
+        <DockPanel>
+            <Label VerticalAlignment="Center" Content="Toggle Transliterator:" />
+            <controls:HotKeyTextBox
+                Grid.Column="1"
+                MinWidth="120"
+                MaxWidth="120"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                HotKey="{Binding ToggleHotKey}"
+                Style="{DynamicResource DefaultTextBoxStyle}"
+                TextAlignment="Center" />
+        </DockPanel>
+
+        <!--  ***  -->
+
+        <Label
+            Margin="0,35,0,15"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Content="Buffer characters while typing:" />
+
+        <DockPanel>
+            <StackPanel HorizontalAlignment="Left">
+                <RadioButton
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    AutomationProperties.AutomationId="displayRadioBtn"
+                    Content="Display"
+                    IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
+
+                <RadioButton
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    AutomationProperties.AutomationId="waitForComboRadioBtn"
+                    Content="Buffer"
+                    IsChecked="{Binding IsBufferInputEnabled}"
+                    ToolTip="Select this mode if you experience buggy or incorrect transliteration." />
+            </StackPanel>
+            <ui:TextBox
+                MinWidth="120"
+                MaxWidth="120"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                BorderThickness="1"
+                IsReadOnly="True"
+                PlaceholderText="Demo Text Area"
+                Text="{Binding ShowcaseText}" />
+        </DockPanel>
+
+        <!--  TODO: Add Cancel/Discard button besides Apply button  -->
+        <!--  TODO: Replace or augment Button captions with icons  -->
+        <!--  TODO: Color Apply Button differently from Cancel/Discard  -->
+        <DockPanel Margin="0,20,0,20">
+            <Button
+                HorizontalAlignment="Left"
+                Command="{Binding OpenTranslitTablesWindowCommand}"
+                Content="Edit Tables" />
+            <Button
+                HorizontalAlignment="Right"
+                Command="{Binding ApplyChangesCommand}"
+                Content="Apply" />
+        </DockPanel>
     </StackPanel>
 </ui:UiWindow>

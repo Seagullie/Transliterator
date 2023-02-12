@@ -62,5 +62,13 @@ namespace Transliterator.ViewModels
             SettingsWindow settings = new();
             settings.Show();
         }
+
+        [RelayCommand]
+        private static void OpenSnippetTranslitWindow()
+        {
+            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
+            SnippetTranslitWindow snippetTranslitWindow = new();
+            snippetTranslitWindow.Show();
+        }
     }
 }

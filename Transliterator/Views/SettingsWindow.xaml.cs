@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using TransliteratorWPF_Version.ViewModels;
+using Transliterator.ViewModels;
 
 namespace Transliterator.Views
 {

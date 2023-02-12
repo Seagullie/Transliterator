@@ -1,0 +1,48 @@
+﻿<ui:UiWindow
+    x:Class="Transliterator.Views.SnippetTranslitWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Transliterator.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Snippet Transliterator Panel"
+    MaxWidth="400"
+    MaxHeight="500"
+    Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+    ExtendsContentIntoTitleBar="True"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    MouseDown="Window_MouseDown"
+    ResizeMode="NoResize"
+    Template="{StaticResource baseWindow}"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid Margin="50,25,50,50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="3*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <ui:TextBox VerticalAlignment="Stretch" Text="{Binding UserInput}" />
+        </DockPanel>
+        <DockPanel Grid.Row="1" HorizontalAlignment="Center">
+            <Button
+                VerticalAlignment="Center"
+                Command="{Binding TransliterateSnippetCommand}"
+                Content="Transliterate" />
+        </DockPanel>
+        <DockPanel Grid.Row="2">
+            <ui:TextBox
+                VerticalAlignment="Stretch"
+                IsReadOnly="True"
+                Text="{Binding TransliterationResults}" />
+        </DockPanel>
+    </Grid>
+</ui:UiWindow>

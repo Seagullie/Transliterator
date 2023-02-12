@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Transliterator.Models;
 using Transliterator.Views;
 
-namespace TransliteratorWPF_Version.ViewModels
+namespace Transliterator.ViewModels
 {
     public partial class SettingsViewModel : ObservableObject
     {

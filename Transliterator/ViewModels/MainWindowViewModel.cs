@@ -70,5 +70,13 @@ namespace Transliterator.ViewModels
             SnippetTranslitWindow snippetTranslitWindow = new();
             snippetTranslitWindow.Show();
         }
+
+        [RelayCommand]
+        private static void OpenDebugWindow()
+        {
+            // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
+            DebugWindow debugWindow = new();
+            debugWindow.Show();
+        }
     }
 }

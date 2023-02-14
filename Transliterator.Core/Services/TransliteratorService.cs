@@ -14,7 +14,7 @@ namespace Transliterator.Core
             KeyboardHook.SetupSystemHook();
             KeyboardHook.KeyPressed += KeyPressedHandler;
         }
-        
+
         private void KeyPressedHandler(object? sender, KeyEventArgs e)
         {
             if (TransliterationTable == null)
@@ -22,7 +22,7 @@ namespace Transliterator.Core
 
             if (TransliterationTable.Alphabet.Contains(e.Character))
             {
-                var transliterationCharacter = TransliterationTable.ReplacementMap[e.Character];
+                var transliteratedCharacter = TransliterationTable.ReplacementMap[e.Character];
 
                 e.Handled = true;
 
@@ -35,7 +35,6 @@ namespace Transliterator.Core
                     KeyboardInputGenerator.TextEntry(e.Character);
                 }
             }
-
         }
     }
 }

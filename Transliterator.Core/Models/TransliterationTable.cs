@@ -16,10 +16,11 @@ public class TransliterationTable
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
     public HashSet<string> Alphabet { get; private set; } = new();
 
+    // TODO: Store table name as field in JSON file
     public TransliterationTable(Dictionary<string, string> replacementMap, string name = "")
     {
         Name = name;
-        ReplacementMap = replacementMap;  
+        ReplacementMap = replacementMap;
         UpdateKeys();
     }
 

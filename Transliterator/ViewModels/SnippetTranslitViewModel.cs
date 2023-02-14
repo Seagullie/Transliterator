@@ -3,16 +3,14 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.IO;
 using System.Windows;
+using Transliterator.Services;
 using Transliterator.Views;
 
 namespace Transliterator.ViewModels
 {
     public partial class SnippetTranslitViewModel : ObservableObject
     {
-        // TODO: Uncomment after migrating more things from old project
-        //private readonly SettingsService settingsService;
-        //private readonly KeyLoggerService keyLogger;
-        //private TransliteratorService transliterator;
+        private BaseTransliterator baseTransliterator;
 
         [ObservableProperty]
         private string _userInput;
@@ -22,20 +20,17 @@ namespace Transliterator.ViewModels
 
         public SnippetTranslitViewModel()
         {
-            // TODO: Uncomment after migrating more things from old project
-
-            //settingsService = SettingsService.GetInstance();
-            //keyLogger = KeyLoggerService.GetInstance();
-            //transliterator = keyLogger.transliterator;
+            baseTransliterator = new();
+            // TODO: remove hardcoding
+            baseTransliterator.SetTableModel("Resources/TranslitTables/tableLAT-UKR.json");
         }
 
         [RelayCommand]
         private void TransliterateSnippet()
         {
             string textToTransliterate = UserInput;
-            // TODO: Uncomment after migrating more things from old project
-            //string transliterationResults = transliterator.Transliterate(textToTransliterate);
-            //TransliterationResults = transliterationResults;
+            string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
+            TransliterationResults = transliterationResults;
         }
     }
 }

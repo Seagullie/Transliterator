@@ -31,6 +31,7 @@ namespace Transliterator.ViewModels
         private ObservableCollection<MenuItem> _trayMenuItems = new();
 
         private TransliteratorService transliteratorService;
+
         public MainWindowViewModel()
         {
             // TODO: Connect to backend

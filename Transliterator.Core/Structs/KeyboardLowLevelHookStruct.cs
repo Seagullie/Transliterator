@@ -31,9 +31,9 @@ public struct KeyboardLowLevelHookStruct
     /// <summary>
     ///     A hardware scan code for the key.
     /// </summary>
-    public ushort ScanCode
+    public uint ScanCode
     {
-        get { return (ushort)_scanCode; }
+        get { return _scanCode; }
         set { _scanCode = value; }
     }
 

@@ -4,23 +4,25 @@ namespace Transliterator.Core.Keyboard
 {
     public class KeyEventArgs
     {
-        public static KeyEventArgs KeyDown(VirtualKeyCode virtualKeyCode)
+        public static KeyEventArgs KeyDown(VirtualKeyCode virtualKeyCode, string character = "")
         {
             return new KeyEventArgs
             {
                 Key = virtualKeyCode,
                 IsKeyDown = true,
-                IsModifier = virtualKeyCode.IsModifier()
+                IsModifier = virtualKeyCode.IsModifier(),
+                Character = character
             };
         }
 
-        public static KeyEventArgs KeyUp(VirtualKeyCode virtualKeyCode)
+        public static KeyEventArgs KeyUp(VirtualKeyCode virtualKeyCode, string character = "")
         {
             return new KeyEventArgs
             {
                 Key = virtualKeyCode,
                 IsKeyDown = false,
-                IsModifier = virtualKeyCode.IsModifier()
+                IsModifier = virtualKeyCode.IsModifier(),
+                Character = character
             };
         }
 
@@ -43,6 +45,8 @@ namespace Transliterator.Core.Keyboard
         public bool IsShift { get; set; }
 
         public bool IsModifier { get; set; }
+
+        public string Character { get; set;}
 
     }
 }

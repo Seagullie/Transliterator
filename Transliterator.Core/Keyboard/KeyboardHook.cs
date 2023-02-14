@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Native;
 using Transliterator.Core.Structs;
@@ -48,11 +49,12 @@ namespace Transliterator.Core.Keyboard
 
                 var keyboardLowLevelHookStruct = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));
 
-                var kea = KeyEventArgs.KeyDown(keyboardLowLevelHookStruct.VirtualKeyCode);
+                string character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
+                var kea = KeyEventArgs.KeyDown(keyboardLowLevelHookStruct.VirtualKeyCode, character);
 
                 if (isKeyDown)
                 {
-                    Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed");
+                    Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed" + " (" + character + ")");
                     KeyPressed?.Invoke(null, kea);
                 }
 
@@ -63,6 +65,25 @@ namespace Transliterator.Core.Keyboard
             }
 
             return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
+        }
+
+        private static string KeyCodeToUnicode(VirtualKeyCode virtualKeyCode)
+        {
+            byte[] keyboardState = new byte[255];
+            bool keyboardStateStatus = NativeMethods.GetKeyboardState(keyboardState);
+
+            if (!keyboardStateStatus)
+            {
+                return "";
+            }
+
+            uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
+            IntPtr inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(0);
+
+            StringBuilder result = new StringBuilder();
+            _ = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
+
+            return result.ToString();
         }
     }
 }

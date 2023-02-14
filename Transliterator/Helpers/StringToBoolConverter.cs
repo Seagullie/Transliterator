@@ -19,7 +19,13 @@ namespace Transliterator.Helpers
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            bool boolValue = (bool)value;
+
+            if (boolValue)
+            {
+                return "On";
+            }
+            return "Off";
         }
     }
 }

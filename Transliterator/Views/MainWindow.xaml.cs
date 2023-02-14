@@ -4,7 +4,8 @@ using Transliterator.Core.Enums;
 using Transliterator.Core.Keyboard;
 using Transliterator.ViewModels;
 
-namespace Transliterator
+// TODO: Rename namespace to Transliterator.Views
+namespace Transliterator.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -138,7 +138,7 @@ namespace Transliterator.Core.Keyboard
                 };
 
 
-                if (isKeyDown)
+                if (isKeyDown && keyboardLowLevelHookStruct.VirtualKeyCode != VirtualKeyCode.Packet)
                 {
                     Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed" + " (" + character + ")");
                     KeyPressed?.Invoke(null, keyEventArgs);

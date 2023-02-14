@@ -13,6 +13,21 @@ namespace Transliterator.Core.Keyboard
         private const int WmSysKeyUp = 261;
         private const int WmSysKeyDown = 260;
 
+        // Flags for the current state
+        private static bool _leftShift;
+        private static bool _rightShift;
+        private static bool _leftAlt;
+        private static bool _rightAlt;
+        private static bool _leftCtrl;
+        private static bool _rightCtrl;
+        private static bool _leftWin;
+        private static bool _rightWin;
+
+        // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
+        private static bool _capsLock;
+        private static bool _numLock;
+        private static bool _scrollLock;
+
         public static event EventHandler<KeyEventArgs>? KeyPressed;
 
         /// <summary>
@@ -24,6 +39,8 @@ namespace Transliterator.Core.Keyboard
 
         public static void SetupSystemHook()
         {
+            SyncLockState();
+
             using (Process curProcess = Process.GetCurrentProcess())
             {
                 using (ProcessModule curModule = curProcess.MainModule)
@@ -48,23 +65,99 @@ namespace Transliterator.Core.Keyboard
                 var isKeyDown = wParam == WmKeyDown || wParam == WmSysKeyDown;
 
                 var keyboardLowLevelHookStruct = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));
-
+                bool isModifier = keyboardLowLevelHookStruct.VirtualKeyCode.IsModifier();
                 string character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
-                var kea = KeyEventArgs.KeyDown(keyboardLowLevelHookStruct.VirtualKeyCode, character);
+
+
+                // Check the key to find if there any modifiers, store these in the global values.
+                switch (keyboardLowLevelHookStruct.VirtualKeyCode)
+                {
+                    case VirtualKeyCode.Capital:
+                        if (isKeyDown)
+                        {
+                            _capsLock = !_capsLock;
+                        }
+                        break;
+                    case VirtualKeyCode.NumLock:
+                        if (isKeyDown)
+                        {
+                            _numLock = !_numLock;
+                        }
+                        break;
+                    case VirtualKeyCode.Scroll:
+                        if (isKeyDown)
+                        {
+                            _scrollLock = !_scrollLock;
+                        }
+                        break;
+                    case VirtualKeyCode.LeftShift:
+                        _leftShift = isKeyDown;
+                        break;
+                    case VirtualKeyCode.RightShift:
+                        _rightShift = isKeyDown;
+                        break;
+                    case VirtualKeyCode.LeftControl:
+                        _leftCtrl = isKeyDown;
+                        break;
+                    case VirtualKeyCode.RightControl:
+                        _rightCtrl = isKeyDown;
+                        break;
+                    case VirtualKeyCode.LeftMenu:
+                        _leftAlt = isKeyDown;
+                        break;
+                    case VirtualKeyCode.RightMenu:
+                        _rightAlt = isKeyDown;
+                        break;
+                    case VirtualKeyCode.LeftWin:
+                        _leftWin = isKeyDown;
+                        break;
+                    case VirtualKeyCode.RightWin:
+                        _rightWin = isKeyDown;
+                        break;
+                }
+
+                var keyEventArgs = new KeyEventArgs
+                {
+                    TimeStamp = keyboardLowLevelHookStruct.TimeStamp,
+                    Key = keyboardLowLevelHookStruct.VirtualKeyCode,
+                    Flags = keyboardLowLevelHookStruct.Flags,
+                    IsModifier = isModifier,
+                    IsKeyDown = isKeyDown,
+                    IsLeftShift = _leftShift,
+                    IsRightShift = _rightShift,
+                    IsLeftAlt = _leftAlt,
+                    IsRightAlt = _rightAlt,
+                    IsLeftControl = _leftCtrl,
+                    IsRightControl = _rightCtrl,
+                    IsLeftWindows = _leftWin,
+                    IsRightWindows = _rightWin,
+                    IsScrollLockActive = _scrollLock,
+                    IsNumLockActive = _numLock,
+                    IsCapsLockActive = _capsLock,
+                    Character = character
+                };
+
 
                 if (isKeyDown)
                 {
                     Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed" + " (" + character + ")");
-                    KeyPressed?.Invoke(null, kea);
+                    KeyPressed?.Invoke(null, keyEventArgs);
                 }
 
-                if (kea.Handled)
+                if (keyEventArgs.Handled)
                 {
                     return 1;
                 }           
             }
 
             return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
+        }
+
+        private static void SyncLockState()
+        {
+            _capsLock = NativeMethods.GetKeyState(VirtualKeyCode.Capital) > 0;
+            _numLock = NativeMethods.GetKeyState(VirtualKeyCode.NumLock) > 0;
+            _scrollLock = NativeMethods.GetKeyState(VirtualKeyCode.Scroll) > 0;
         }
 
         private static string KeyCodeToUnicode(VirtualKeyCode virtualKeyCode)

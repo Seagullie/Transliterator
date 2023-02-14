@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Native;
@@ -44,9 +45,18 @@ internal static partial class NativeMethods
     [DllImport(User32, CharSet = CharSet.Auto, ExactSpelling = true)]
     public static extern IntPtr GetKeyboardLayout(uint dwLayout);
 
-    [DllImport("user32.dll")]
+    [DllImport(User32)]
     public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
-    [DllImport("user32.dll")]
+    [DllImport(User32)]
     public static extern bool GetKeyboardState(byte[] lpKeyState);
+
+    /// <summary>
+    ///     Retrieve the state of a key
+    /// </summary>
+    /// <param name="keyCode"></param>
+    /// <returns></returns>
+    [DllImport(User32, ExactSpelling = true)]
+    [ResourceExposure(ResourceScope.None)]
+    public static extern ushort GetKeyState(VirtualKeyCode keyCode);
 }

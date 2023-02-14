@@ -1,12 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Net.NetworkInformation;
-using System.Windows;
-using System.Windows.Forms;
+using Transliterator.Core;
 using Transliterator.Views;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
@@ -34,11 +30,13 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private ObservableCollection<MenuItem> _trayMenuItems = new();
 
+        private TransliteratorService transliteratorService;
         public MainWindowViewModel()
         {
             // TODO: Connect to backend
             AppState = "On";
             ToggleAppStateShortcut = "Alt + T";
+            transliteratorService = new TransliteratorService();
         }
 
         private void InitializeViewModel()

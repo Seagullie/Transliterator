@@ -18,6 +18,9 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private string _transliterationResults;
 
+        [ObservableProperty]
+        private bool _shouldTransliterateOnTheFly;
+
         public SnippetTranslitViewModel()
         {
             baseTransliterator = new();
@@ -31,6 +34,18 @@ namespace Transliterator.ViewModels
             string textToTransliterate = UserInput;
             string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
             TransliterationResults = transliterationResults;
+        }
+
+        // for some reason, this handler is called only when "Transliterate" button is clicked
+        // TODO: Fix bug
+        partial void OnUserInputChanged(string value)
+        {
+            if (ShouldTransliterateOnTheFly)
+            {
+                string textToTransliterate = value;
+                string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
+                TransliterationResults = transliterationResults;
+            }
         }
     }
 }

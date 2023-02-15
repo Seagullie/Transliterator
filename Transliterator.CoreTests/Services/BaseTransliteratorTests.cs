@@ -126,5 +126,33 @@ namespace Transliterator.Services.Tests
             string expected = "щ";
             Assert.AreEqual(expected, transliterationResult);
         }
+
+        [TestMethod()]
+        public void TransliterateWordsWithApostrophe()
+        {
+            // arrange
+            string testString = "pir''ja, suzir''ja, matir''ju, bur''jan";
+
+            // act
+            string transliterationResult = baseTransliterator.Transliterate(testString);
+
+            // assert
+            string expected = "пір'я, сузір'я, матір'ю, бур'ян";
+            Assert.AreEqual(expected, transliterationResult);
+        }
+
+        [TestMethod()]
+        public void TransliterateWordsWithApostropheAndSoftSign()
+        {
+            // arrange
+            string testString = "pir''ja, kysil'";
+
+            // act
+            string transliterationResult = baseTransliterator.Transliterate(testString);
+
+            // assert
+            string expected = "пір'я, кисіль";
+            Assert.AreEqual(expected, transliterationResult);
+        }
     }
 }

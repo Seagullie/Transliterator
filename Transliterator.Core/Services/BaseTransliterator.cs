@@ -20,6 +20,8 @@ namespace Transliterator.Services
             transliterationTableModel = new TransliterationTable(replacementMap);
         }
 
+        // TODO: Fix it not correctly transliterating strings with both "''" (apostrophe) and "'" (soft sign) in it
+        // Test: TransliterateWordsWithApostropheAndSoftSign
         public string Transliterate(string text = "")
         {
             if (transliterationTableModel == null)
@@ -45,7 +47,7 @@ namespace Transliterator.Services
                 }
 
                 transliteratedText = ReplaceKeepCase(key, transliterationTableModel.ReplacementMap[key], transliteratedText);
-                // remove already transliterated keys from inputlText. This is needed to prevent some bugs
+                // remove already transliterated keys from inputText. This is needed to prevent some bugs
                 inputText = inputText.Replace(key, "");
             }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using Transliterator.Services.Events;
+using Transliterator.Core.Helpers.Events;
 
 namespace Transliterator.Services
 {

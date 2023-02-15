@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Transliterator.Helpers
 {
-    internal class Utilities
+    public class Utilities
     {
         [DllImport("user32.dll")]
         private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);

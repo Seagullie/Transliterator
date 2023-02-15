@@ -33,6 +33,11 @@ namespace Transliterator.Core.Keyboard
         public bool Handled { get; set; }
 
         /// <summary>
+        ///     Set this to true if the event shouldn't be hanlded by any other event-handlers in the chain
+        /// </summary>
+        public bool ShouldPassHint { get; set; }
+
+        /// <summary>
         /// Specifies if this event is for a modifier key (shift, control, alt etc)
         /// </summary>
         public bool IsModifier { get; internal set; }
@@ -226,6 +231,5 @@ namespace Transliterator.Core.Keyboard
         }
 
         public string Character { get; set; } = "";
-
     }
 }

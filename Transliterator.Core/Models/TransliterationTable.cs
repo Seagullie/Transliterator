@@ -1,4 +1,6 @@
-﻿namespace Transliterator.Core.Models;
+﻿using System.Collections.Generic;
+
+namespace Transliterator.Core.Models;
 
 public class TransliterationTable
 {
@@ -6,15 +8,15 @@ public class TransliterationTable
 
     public Dictionary<string, string> ReplacementMap { get; private set; } = new();
 
-    public HashSet<string> Keys { get; private set; } = new();
+    public List<string> Keys { get; private set; }
 
     // Combo = more than one letter. Examples of combos: ch, sh, zh,
     // while s, d, f are not combos
-    public HashSet<string> Combos { get; private set; } = new();
+    public List<string> Combos { get; private set; } = new();
 
     // Alphabet is a set of all letters that can be transliterated.
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
-    public HashSet<string> Alphabet { get; private set; } = new();
+    public List<string> Alphabet { get; private set; } = new();
 
     // TODO: Store table name as field in JSON file
     public TransliterationTable(Dictionary<string, string> replacementMap, string name = "")
@@ -26,8 +28,8 @@ public class TransliterationTable
 
     private void UpdateKeys()
     {
-        Keys = ReplacementMap.Keys.OrderByDescending(key => key.Length).ToHashSet();
-        Combos = Keys.Where(key => key.Length > 1).ToHashSet();
+        Keys = ReplacementMap.Keys.OrderByDescending(key => key.Length).ToList();
+        Combos = Keys.Where(key => key.Length > 1).ToList();
         UpdateAlphabet();
     }
 

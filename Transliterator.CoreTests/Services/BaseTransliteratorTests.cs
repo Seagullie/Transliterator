@@ -105,12 +105,12 @@ namespace Transliterator.Services.Tests
         [TestMethod()]
         public void ThrowIfTableNotSet()
         {
-            TransliterationTable table = baseTransliterator.transliterationTableModel;
-            baseTransliterator.transliterationTableModel = null;
+            TransliterationTable table = baseTransliterator.transliterationTable;
+            baseTransliterator.transliterationTable = null;
 
             Assert.ThrowsException<TableNotSetException>(() => baseTransliterator.Transliterate("random"));
 
-            baseTransliterator.transliterationTableModel = table;
+            baseTransliterator.transliterationTable = table;
         }
 
         [TestMethod()]

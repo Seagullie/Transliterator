@@ -1,4 +1,4 @@
-﻿namespace Transliterator.Services.Events
+﻿namespace Transliterator.Core.Helpers.Events
 {
     public class NewLogMessageEventArg
     {

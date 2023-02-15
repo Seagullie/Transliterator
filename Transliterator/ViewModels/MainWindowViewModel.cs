@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using Transliterator.Core;
+using Transliterator.Core.Services;
+using Transliterator.Services;
 using Transliterator.Views;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
@@ -30,14 +32,16 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private ObservableCollection<MenuItem> _trayMenuItems = new();
 
-        private TransliteratorService transliteratorService;
+        // TODO: Refactor into TransliteratorTypeController or something like this
+        private BufferedTransliteratorService bufferedTransliterator;
 
         public MainWindowViewModel()
         {
             // TODO: Connect to backend
             AppState = "On";
             ToggleAppStateShortcut = "Alt + T";
-            transliteratorService = new TransliteratorService();
+            bufferedTransliterator = new BufferedTransliteratorService();
+            bufferedTransliterator.SetTableModel("Resources/TranslitTables/tableLAT-UKR.json");
         }
 
         private void InitializeViewModel()

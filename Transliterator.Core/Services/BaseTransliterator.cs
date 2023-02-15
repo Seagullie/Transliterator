@@ -8,7 +8,7 @@ namespace Transliterator.Services
 {
     public class BaseTransliterator
     {
-        public TransliterationTable transliterationTableModel;
+        public TransliterationTable transliterationTable;
 
         public BaseTransliterator()
         {
@@ -17,14 +17,14 @@ namespace Transliterator.Services
         public void SetTableModel(string relativePathToJsonFile)
         {
             Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, relativePathToJsonFile);
-            transliterationTableModel = new TransliterationTable(replacementMap);
+            transliterationTable = new TransliterationTable(replacementMap);
         }
 
         // TODO: Fix it not correctly transliterating strings with both "''" (apostrophe) and "'" (soft sign) in it
         // Test: TransliterateWordsWithApostropheAndSoftSign
-        public string Transliterate(string text = "")
+        public string Transliterate(string text)
         {
-            if (transliterationTableModel == null)
+            if (transliterationTable == null)
             {
                 throw new TableNotSetException(".transliterationTableModel is not initialized");
             }
@@ -38,7 +38,7 @@ namespace Transliterator.Services
             // This is because individual characters that make up a combination may also be present as separate replacements in the transliterationTableModel.replacementTable. By transliterating combinations first, the separate characters that make up the combination will not be replaced individually and will instead be treated as a single unit.
             // © ChatGPT
 
-            foreach (string key in transliterationTableModel.Keys)
+            foreach (string key in transliterationTable.Keys)
             {
                 // skip keys not present in the text
                 if (!inputText.Contains(key))
@@ -46,7 +46,7 @@ namespace Transliterator.Services
                     continue;
                 }
 
-                transliteratedText = ReplaceKeepCase(key, transliterationTableModel.ReplacementMap[key], transliteratedText);
+                transliteratedText = ReplaceKeepCase(key, transliterationTable.ReplacementMap[key], transliteratedText);
                 // remove already transliterated keys from inputText. This is needed to prevent some bugs
                 inputText = inputText.Replace(key, "");
             }

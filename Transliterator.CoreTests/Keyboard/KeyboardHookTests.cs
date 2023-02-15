@@ -27,18 +27,6 @@ namespace Transliterator.Core.Keyboard.Tests
 
         public KeyboardHookTests()
         {
-            Debug.WriteLine("Initializing Keyboard Hook tests");
-
-            Form someForm = new Form();
-            KeyboardHook.KeyPressed += KeyPressedHandler;
-
-            new Thread(() =>
-            {
-                KeyboardHook.SetupSystemHook();
-                KeyboardHook.KeyPressed += KeyPressedHandler;
-
-                Application.Run(someForm);
-            }).Start();
         }
 
         [TestMethod()]

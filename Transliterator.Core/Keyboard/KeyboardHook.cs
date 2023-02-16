@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Transliterator.Core.Enums;
@@ -68,6 +69,7 @@ namespace Transliterator.Core.Keyboard
                 var isKeyDown = wParam == WmKeyDown || wParam == WmSysKeyDown;
 
                 var keyboardLowLevelHookStruct = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));
+
                 bool isModifier = keyboardLowLevelHookStruct.VirtualKeyCode.IsModifier();
                 string character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
 
@@ -148,6 +150,12 @@ namespace Transliterator.Core.Keyboard
                     IsCapsLockActive = _capsLock,
                     Character = character
                 };
+
+                if (keyboardLowLevelHookStruct.VirtualKeyCode == VirtualKeyCode.Packet)
+                {
+                    uint scanCode = keyboardLowLevelHookStruct.ScanCode;
+                    uint lowWord =
+                }
 
                 ExtendedKeyFlags flags = keyEventArgs.Flags;
                 bool isInjected = flags == ExtendedKeyFlags.Injected;

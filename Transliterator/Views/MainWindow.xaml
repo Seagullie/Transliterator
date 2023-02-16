@@ -49,6 +49,7 @@
         <StackPanel
             Grid.Row="2"
             Grid.Column="2"
+            Width="130"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             helpers:MarginSetter.LastItemMargin="5"
@@ -66,7 +67,7 @@
 
         <StackPanel
             Grid.Column="2"
-            Width="200"
+            Width="130"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             helpers:MarginSetter.LastItemMargin="5"
@@ -76,8 +77,8 @@
                 ItemsSource="{Binding TransliterationTables}"
                 SelectedItem="{Binding SelectedTransliterationTable}" />
             <Button
-                HorizontalAlignment="Right"
-                HorizontalContentAlignment="Right"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
                 Command="{Binding OpenTableViewWindowCommand}"
                 Content="Show Table" />
         </StackPanel>

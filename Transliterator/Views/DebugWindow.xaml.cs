@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Transliterator.Core.Helpers.Events;
+using Transliterator.Core.Keyboard;
 using Transliterator.Services;
 using Transliterator.ViewModels;
 using MouseButton = System.Windows.Input.MouseButton;
@@ -98,8 +99,7 @@ namespace Transliterator.Views
         private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
         {
             textBox1.Focus();
-            // TODO: Uncomment after migrating more things from old project
-            //await liveTransliterator.keyInjectorService.WriteInjected("simulated");
+            KeyboardInputGenerator.TextEntry("simulated");
         }
 
         // Make window draggable

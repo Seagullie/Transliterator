@@ -15,6 +15,7 @@ namespace Transliterator.Core.Keyboard
 
         // Flags for the current state
         private static bool _leftShift;
+
         private static bool _rightShift;
         private static bool _leftAlt;
         private static bool _rightAlt;
@@ -25,6 +26,7 @@ namespace Transliterator.Core.Keyboard
 
         // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
         private static bool _capsLock;
+
         private static bool _numLock;
         private static bool _scrollLock;
 
@@ -36,6 +38,7 @@ namespace Transliterator.Core.Keyboard
         private static IntPtr hookId = IntPtr.Zero;
 
         public static bool IsHookSetup { get; private set; }
+        public static bool SkipInjected = true;
 
         public static void SetupSystemHook()
         {
@@ -56,7 +59,7 @@ namespace Transliterator.Core.Keyboard
         {
             NativeMethods.UnhookWindowsHookEx(hookId);
             IsHookSetup = false;
-        } 
+        }
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -68,7 +71,6 @@ namespace Transliterator.Core.Keyboard
                 bool isModifier = keyboardLowLevelHookStruct.VirtualKeyCode.IsModifier();
                 string character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
 
-
                 // Check the key to find if there any modifiers, store these in the global values.
                 switch (keyboardLowLevelHookStruct.VirtualKeyCode)
                 {
@@ -78,39 +80,49 @@ namespace Transliterator.Core.Keyboard
                             _capsLock = !_capsLock;
                         }
                         break;
+
                     case VirtualKeyCode.NumLock:
                         if (isKeyDown)
                         {
                             _numLock = !_numLock;
                         }
                         break;
+
                     case VirtualKeyCode.Scroll:
                         if (isKeyDown)
                         {
                             _scrollLock = !_scrollLock;
                         }
                         break;
+
                     case VirtualKeyCode.LeftShift:
                         _leftShift = isKeyDown;
                         break;
+
                     case VirtualKeyCode.RightShift:
                         _rightShift = isKeyDown;
                         break;
+
                     case VirtualKeyCode.LeftControl:
                         _leftCtrl = isKeyDown;
                         break;
+
                     case VirtualKeyCode.RightControl:
                         _rightCtrl = isKeyDown;
                         break;
+
                     case VirtualKeyCode.LeftMenu:
                         _leftAlt = isKeyDown;
                         break;
+
                     case VirtualKeyCode.RightMenu:
                         _rightAlt = isKeyDown;
                         break;
+
                     case VirtualKeyCode.LeftWin:
                         _leftWin = isKeyDown;
                         break;
+
                     case VirtualKeyCode.RightWin:
                         _rightWin = isKeyDown;
                         break;
@@ -137,17 +149,23 @@ namespace Transliterator.Core.Keyboard
                     Character = character
                 };
 
-
-                if (isKeyDown && keyboardLowLevelHookStruct.VirtualKeyCode != VirtualKeyCode.Packet)
+                if (isKeyDown)
                 {
-                    Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed" + " (" + character + ")");
-                    KeyPressed?.Invoke(null, keyEventArgs);
+                    // TODO: Refactor conditional
+                    if (SkipInjected && keyboardLowLevelHookStruct.VirtualKeyCode != VirtualKeyCode.Packet)
+                    {
+                    }
+                    else
+                    {
+                        Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed" + " (" + character + ")");
+                        KeyPressed?.Invoke(null, keyEventArgs);
+                    }
                 }
 
                 if (keyEventArgs.Handled)
                 {
                     return 1;
-                }           
+                }
             }
 
             return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);

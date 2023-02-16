@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
+using Transliterator.Core.Keyboard;
 using Transliterator.Helpers;
 using Transliterator.Services;
 using Transliterator.Views;
@@ -102,11 +103,11 @@ namespace Transliterator.ViewModels
             //loggerService.LogMessage(this, $"Key Logger memory: [{memory}]");
         }
 
-        // TODO: Uncomment after migrating more things from old project
         [RelayCommand]
         private void AllowInjectedKeys()
         {
-            //liveTransliterator.keyLogger.gkh.alwaysAllowInjected = true;
+            KeyboardHook.SkipInjected = false;
+            loggerService.LogMessage(this, "Injected Keys will now be handled by Keyboard Hook");
         }
 
         // TODO: Uncomment after migrating more things from old project

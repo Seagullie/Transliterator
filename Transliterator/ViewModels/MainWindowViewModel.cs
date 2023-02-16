@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using Transliterator.Core;
+using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
+using Transliterator.Core.Structs;
 using Transliterator.Services;
 using Transliterator.Views;
 using Wpf.Ui.Common;
@@ -45,6 +47,7 @@ namespace Transliterator.ViewModels
 
         // TODO: Refactor into TransliteratorTypeController or something like this
         private readonly BufferedTransliteratorService bufferedTransliteratorService;
+
         private readonly SettingsService settingsService;
 
         public MainWindowViewModel()
@@ -57,10 +60,6 @@ namespace Transliterator.ViewModels
             // TODO: Connect to backend
             AppState = "On";
             ToggleAppStateShortcut = "Alt + T";
-
-
-            
-
         }
 
         private void LoadTransliterationTables()
@@ -77,7 +76,7 @@ namespace Transliterator.ViewModels
 
         partial void OnSelectedTransliterationTableChanged(string value)
         {
-            if (!string.IsNullOrEmpty(value)) 
+            if (!string.IsNullOrEmpty(value))
             {
                 bufferedTransliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
             }

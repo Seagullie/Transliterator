@@ -19,7 +19,7 @@ namespace Transliterator.Core.Keyboard.Tests
     {
         private string keyboardHookMemory = String.Empty;
 
-        private void KeyPressedHandler(object? sender, KeyEventArgs e)
+        private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
         {
             keyboardHookMemory += e.Character;
             e.Handled = true;

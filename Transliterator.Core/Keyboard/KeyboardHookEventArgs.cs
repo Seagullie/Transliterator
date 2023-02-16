@@ -3,11 +3,11 @@ using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Keyboard
 {
-    public class KeyEventArgs
+    public class KeyboardHookEventArgs
     {
-        public static KeyEventArgs KeyDown(VirtualKeyCode virtualKeyCode, string character = "")
+        public static KeyboardHookEventArgs KeyDown(VirtualKeyCode virtualKeyCode, string character = "")
         {
-            return new KeyEventArgs
+            return new KeyboardHookEventArgs
             {
                 Key = virtualKeyCode,
                 IsKeyDown = true,
@@ -16,9 +16,9 @@ namespace Transliterator.Core.Keyboard
             };
         }
 
-        public static KeyEventArgs KeyUp(VirtualKeyCode virtualKeyCode, string character = "")
+        public static KeyboardHookEventArgs KeyUp(VirtualKeyCode virtualKeyCode, string character = "")
         {
-            return new KeyEventArgs
+            return new KeyboardHookEventArgs
             {
                 Key = virtualKeyCode,
                 IsKeyDown = false,

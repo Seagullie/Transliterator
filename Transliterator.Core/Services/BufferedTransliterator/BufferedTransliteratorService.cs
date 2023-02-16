@@ -56,7 +56,7 @@ namespace Transliterator.Core.Services
             SetTableModel(relativePathToJsonFile);
         }
 
-        private void KeyPressedHandler(object? sender, KeyEventArgs e)
+        private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
         {
             if (HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
 
@@ -85,7 +85,7 @@ namespace Transliterator.Core.Services
         }
 
         // TODO: Rename
-        private string AdaptCase(string transliterated, KeyEventArgs e = null)
+        private string AdaptCase(string transliterated, KeyboardHookEventArgs e = null)
         {  // TODO: Change case logic
             if (e != null && (e.IsShift || e.IsCapsLockActive))
             {
@@ -96,7 +96,7 @@ namespace Transliterator.Core.Services
         }
 
         // keep buffer in sync with keyboard input by erasing last character on backspace
-        public bool HandleBackspace(object? sender, KeyEventArgs e)
+        public bool HandleBackspace(object? sender, KeyboardHookEventArgs e)
         {
             if (e.Character != "\b")
             {
@@ -128,7 +128,7 @@ namespace Transliterator.Core.Services
         // Irrelevant = everything that is not needed for transliteration
         // things that are needed for transliteration:
         // table keys, backspace
-        public bool SkipIrrelevant(object? sender, KeyEventArgs e)
+        public bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
         {
             string renderedCharacter = e.Character.ToLower();
 

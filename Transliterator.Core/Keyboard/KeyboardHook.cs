@@ -149,13 +149,18 @@ namespace Transliterator.Core.Keyboard
                     Character = character
                 };
 
-                if (isKeyDown)
+                ExtendedKeyFlags flags = keyEventArgs.Flags;
+                bool isInjected = flags == ExtendedKeyFlags.Injected;
+
+                // TODO: Refactor conditional
+                if (isInjected && SkipInjected)
                 {
-                    // TODO: Refactor conditional
-                    if (SkipInjected && keyboardLowLevelHookStruct.VirtualKeyCode != VirtualKeyCode.Packet)
-                    {
-                    }
-                    else
+                    Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " ignored (injected)" + " (" + character + ")");
+                }
+                else
+                {
+                    // keyboardLowLevelHookStruct.VirtualKeyCode != VirtualKeyCode.Packet
+                    if (isKeyDown)
                     {
                         Debug.WriteLine(keyboardLowLevelHookStruct.VirtualKeyCode + " pressed" + " (" + character + ")");
                         KeyPressed?.Invoke(null, keyEventArgs);

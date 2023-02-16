@@ -1,7 +1,6 @@
-﻿using System;
-using Transliterator.Core.Helpers.Events;
+﻿using Transliterator.Core.Helpers.Events;
 
-namespace Transliterator.Services
+namespace Transliterator.Core.Services
 {
     public class LoggerService
     {

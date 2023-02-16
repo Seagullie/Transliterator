@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Transliterator.Core.Helpers.Events;
 using Transliterator.Core.Keyboard;
-using Transliterator.Services;
+using Transliterator.Core.Services;
 using Transliterator.ViewModels;
 using MouseButton = System.Windows.Input.MouseButton;
 using RichTextBox = System.Windows.Controls.RichTextBox;

@@ -1,572 +1,568 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Transliterator.Helpers
+namespace Transliterator.Helpers;
+
+public class Utilities
 {
-    public class Utilities
+    [DllImport("user32.dll")]
+    private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
+
+    public static string GetCurrentKbLayout()
     {
-        [DllImport("user32.dll")]
-        private static extern long GetKeyboardLayoutName(StringBuilder pwszKLID);
+        string layoutCode = GetLayoutCode();
+        string humanReadableLayoutName = MapLayoutName(layoutCode
+            );
+        return humanReadableLayoutName;
+    }
 
-        public static string GetCurrentKbLayout()
+    public static string GetLayoutCode()
+    {
+        const int KL_NAMELENGTH = 9;
+        var name = new StringBuilder(KL_NAMELENGTH);
+        GetKeyboardLayoutName(name);
+
+        return name.ToString();
+    }
+
+    public static string[] GetAllFilesInFolder(string pathToFolder)
+    {
+        DirectoryInfo d = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathToFolder));
+
+        FileInfo[] Files = d.GetFiles("*");
+        return Files.Select(file => file.Name).ToArray();
+    }
+
+    public static bool IsUpperCase(string text)
+    {
+        return text.All(char.IsUpper);
+    }
+
+    public static bool IsLowerCase(string text)
+    {
+        return text.All(char.IsLower);
+    }
+
+    // many characters do not have an uppercase version. For example, "!", "?" ":" can't be uppercased, while letters such as a(A), b(B), c(C) do indeed have uppercase variant
+    public static bool HasUpperCase(string character)
+    {
+        return character.ToLower() != character.ToUpper();
+    }
+
+    public static bool IsNonASCII(string text)
+    {
+        // does C# have .isASCII ?
+        // here some simple solution to this:
+        // https://stackoverflow.com/questions/18596245/in-c-how-can-i-detect-if-a-character-is-a-non-ascii-character
+
+        if (text.Any((char_) =>
         {
-            string layoutCode = GetLayoutCode();
-            string humanReadableLayoutName = MapLayoutName(layoutCode
-                );
-            return humanReadableLayoutName;
-        }
+            return char_ >= 128;
+        })) return true;
+        return false;
+    }
 
-        public static string GetLayoutCode()
+    public static string MapLayoutName(string code = null)
+    {
+        if (code == null)
+            code = GetLayoutCode();
+
+        switch (code)
         {
-            const int KL_NAMELENGTH = 9;
-            var name = new StringBuilder(KL_NAMELENGTH);
-            GetKeyboardLayoutName(name);
+            case "0000041C":
+                return "Albanian";
 
-            return name.ToString();
-        }
+            case "00000401":
+                return "Arabic (101)";
 
-        public static string[] GetAllFilesInFolder(string pathToFolder)
-        {
-            DirectoryInfo d = new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathToFolder));
+            case "00010401":
+                return "Arabic (102)";
 
-            FileInfo[] Files = d.GetFiles("*");
-            return Files.Select(file => file.Name).ToArray();
-        }
+            case "00020401":
+                return "Arabic (102) Azerty";
 
-        public static bool IsUpperCase(string text)
-        {
-            return text.All(char.IsUpper);
-        }
+            case "0000042B":
+                return "Armenian eastern";
 
-        public static bool IsLowerCase(string text)
-        {
-            return text.All(char.IsLower);
-        }
+            case "0001042B":
+                return "Armenian Western";
 
-        // many characters do not have an uppercase version. For example, "!", "?" ":" can't be uppercased, while letters such as a(A), b(B), c(C) do indeed have uppercase variant
-        public static bool HasUpperCase(string character)
-        {
-            return character.ToLower() != character.ToUpper();
-        }
+            case "0000044D":
+                return "Assamese - inscript";
 
-        public static bool IsNonASCII(string text)
-        {
-            // does C# have .isASCII ?
-            // here some simple solution to this:
-            // https://stackoverflow.com/questions/18596245/in-c-how-can-i-detect-if-a-character-is-a-non-ascii-character
+            case "0000082C":
+                return "Azeri Cyrillic";
 
-            if (text.Any((char_) =>
-            {
-                return char_ >= 128;
-            })) return true;
-            return false;
-        }
+            case "0000042C":
+                return "Azeri Latin";
 
-        public static string MapLayoutName(string code = null)
-        {
-            if (code == null)
-                code = GetLayoutCode();
+            case "0000046D":
+                return "Bashkir";
 
-            switch (code)
-            {
-                case "0000041C":
-                    return "Albanian";
+            case "00000423":
+                return "Belarusian";
 
-                case "00000401":
-                    return "Arabic (101)";
+            case "0000080C":
+                return "Belgian French";
 
-                case "00010401":
-                    return "Arabic (102)";
+            case "00000813":
+                return "Belgian (period)";
 
-                case "00020401":
-                    return "Arabic (102) Azerty";
+            case "0001080C":
+                return "Belgian (comma)";
 
-                case "0000042B":
-                    return "Armenian eastern";
+            case "00000445":
+                return "Bengali";
 
-                case "0001042B":
-                    return "Armenian Western";
+            case "00010445":
+                return "Bengali - inscript (legacy)";
 
-                case "0000044D":
-                    return "Assamese - inscript";
+            case "00020445":
+                return "Bengali - inscript";
 
-                case "0000082C":
-                    return "Azeri Cyrillic";
+            case "0000201A":
+                return "Bosnian (cyrillic)";
 
-                case "0000042C":
-                    return "Azeri Latin";
+            case "00030402":
+                return "Bulgarian";
 
-                case "0000046D":
-                    return "Bashkir";
+            case "00000402":
+                return "Bulgarian(typewriter)";
 
-                case "00000423":
-                    return "Belarusian";
+            case "00010402":
+                return "Bulgarian (latin)";
 
-                case "0000080C":
-                    return "Belgian French";
+            case "00020402":
+                return "Bulgarian (phonetic)";
 
-                case "00000813":
-                    return "Belgian (period)";
+            case "00040402":
+                return "Bulgarian (phonetic traditional)";
 
-                case "0001080C":
-                    return "Belgian (comma)";
+            case "00011009":
+                return "Canada Multilingual";
 
-                case "00000445":
-                    return "Bengali";
+            case "00001009":
+                return "Canada French";
 
-                case "00010445":
-                    return "Bengali - inscript (legacy)";
+            case "00000C0C":
+                return "Canada French (legacy)";
 
-                case "00020445":
-                    return "Bengali - inscript";
+            case "00000404":
+                return "Chinese (traditional) - us keyboard";
 
-                case "0000201A":
-                    return "Bosnian (cyrillic)";
+            case "00000804":
+                return "Chinese (simplified) -us keyboard";
 
-                case "00030402":
-                    return "Bulgarian";
+            case "00000C04":
+                return "Chinese (traditional, hong kong s.a.r.) - us keyboard";
 
-                case "00000402":
-                    return "Bulgarian(typewriter)";
+            case "00001004":
+                return "Chinese (simplified, singapore) - us keyboard";
 
-                case "00010402":
-                    return "Bulgarian (latin)";
+            case "00001404":
+                return "Chinese (traditional, macao s.a.r.) - us keyboard";
 
-                case "00020402":
-                    return "Bulgarian (phonetic)";
+            case "00000405":
+                return "Czech";
 
-                case "00040402":
-                    return "Bulgarian (phonetic traditional)";
+            case "00020405":
+                return "Czech programmers";
 
-                case "00011009":
-                    return "Canada Multilingual";
+            case "00010405":
+                return "Czech (qwerty)";
 
-                case "00001009":
-                    return "Canada French";
+            case "0000041A":
+                return "Croatian";
 
-                case "00000C0C":
-                    return "Canada French (legacy)";
+            case "00000439":
+                return "Deanagari - inscript";
 
-                case "00000404":
-                    return "Chinese (traditional) - us keyboard";
+            case "00000406":
+                return "Danish";
 
-                case "00000804":
-                    return "Chinese (simplified) -us keyboard";
+            case "00000465":
+                return "Divehi phonetic";
 
-                case "00000C04":
-                    return "Chinese (traditional, hong kong s.a.r.) - us keyboard";
+            case "00010465":
+                return "Divehi typewriter";
 
-                case "00001004":
-                    return "Chinese (simplified, singapore) - us keyboard";
+            case "00000413":
+                return "Dutch";
 
-                case "00001404":
-                    return "Chinese (traditional, macao s.a.r.) - us keyboard";
+            case "00000425":
+                return "Estonian";
 
-                case "00000405":
-                    return "Czech";
+            case "00000438":
+                return "Faeroese";
 
-                case "00020405":
-                    return "Czech programmers";
+            case "0000040B":
+                return "Finnish";
 
-                case "00010405":
-                    return "Czech (qwerty)";
+            case "0001083B":
+                return "Finnish with sami";
 
-                case "0000041A":
-                    return "Croatian";
+            case "0000040C":
+                return "French";
 
-                case "00000439":
-                    return "Deanagari - inscript";
+            case "00011809":
+                return "Gaelic";
 
-                case "00000406":
-                    return "Danish";
+            case "00000437":
+                return "Georgian";
 
-                case "00000465":
-                    return "Divehi phonetic";
+            case "00020437":
+                return "Georgian (ergonomic)";
 
-                case "00010465":
-                    return "Divehi typewriter";
+            case "00010437":
+                return "Georgian (qwerty)";
 
-                case "00000413":
-                    return "Dutch";
+            case "00000407":
+                return "German";
 
-                case "00000425":
-                    return "Estonian";
+            case "00010407":
+                return "German (ibm)";
 
-                case "00000438":
-                    return "Faeroese";
+            case "0000046F":
+                return "Greenlandic";
 
-                case "0000040B":
-                    return "Finnish";
+            case "00000468":
+                return "Hausa";
 
-                case "0001083B":
-                    return "Finnish with sami";
+            case "0000040D":
+                return "Hebrew";
 
-                case "0000040C":
-                    return "French";
+            case "00010439":
+                return "Hindi traditional";
 
-                case "00011809":
-                    return "Gaelic";
+            case "00000408":
+                return "Greek";
 
-                case "00000437":
-                    return "Georgian";
+            case "00010408":
+                return "Greek (220)";
 
-                case "00020437":
-                    return "Georgian (ergonomic)";
+            case "00030408":
+                return "Greek (220) latin";
 
-                case "00010437":
-                    return "Georgian (qwerty)";
+            case "00020408":
+                return "Greek (319)";
 
-                case "00000407":
-                    return "German";
+            case "00040408":
+                return "Greek (319) latin";
 
-                case "00010407":
-                    return "German (ibm)";
+            case "00050408":
+                return "Greek latin";
 
-                case "0000046F":
-                    return "Greenlandic";
+            case "00060408":
+                return "Greek polyonic";
 
-                case "00000468":
-                    return "Hausa";
+            case "00000447":
+                return "Gujarati";
 
-                case "0000040D":
-                    return "Hebrew";
+            case "0000040E":
+                return "Hungarian";
 
-                case "00010439":
-                    return "Hindi traditional";
+            case "0001040E":
+                return "Hungarian 101 key";
 
-                case "00000408":
-                    return "Greek";
+            case "0000040F":
+                return "Icelandic";
 
-                case "00010408":
-                    return "Greek (220)";
+            case "00000470":
+                return "Igbo";
 
-                case "00030408":
-                    return "Greek (220) latin";
+            case "0000085D":
+                return "Inuktitut - latin";
 
-                case "00020408":
-                    return "Greek (319)";
+            case "0001045D":
+                return "Inuktitut - naqittaut";
 
-                case "00040408":
-                    return "Greek (319) latin";
+            case "00001809":
+                return "Irish";
 
-                case "00050408":
-                    return "Greek latin";
+            case "00000410":
+                return "Italian";
 
-                case "00060408":
-                    return "Greek polyonic";
+            case "00010410":
+                return "Italian (142)";
 
-                case "00000447":
-                    return "Gujarati";
+            case "00000411":
+                return "Japanese";
 
-                case "0000040E":
-                    return "Hungarian";
+            case "0000044B":
+                return "Kannada";
 
-                case "0001040E":
-                    return "Hungarian 101 key";
+            case "0000043F":
+                return "Kazakh";
 
-                case "0000040F":
-                    return "Icelandic";
+            case "00000453":
+                return "Khmer";
 
-                case "00000470":
-                    return "Igbo";
+            case "00000412":
+                return "Korean";
 
-                case "0000085D":
-                    return "Inuktitut - latin";
+            case "00000440":
+                return "Kyrgyz cyrillic";
 
-                case "0001045D":
-                    return "Inuktitut - naqittaut";
+            case "00000454":
+                return "Lao";
 
-                case "00001809":
-                    return "Irish";
+            case "0000080A":
+                return "Latin america";
 
-                case "00000410":
-                    return "Italian";
+            case "00000426":
+                return "Latvian";
 
-                case "00010410":
-                    return "Italian (142)";
+            case "00010426":
+                return "Latvian (qwerty)";
 
-                case "00000411":
-                    return "Japanese";
+            case "00010427":
+                return "Lithuanian";
 
-                case "0000044B":
-                    return "Kannada";
+            case "00000427":
+                return "Lithuanian ibm";
 
-                case "0000043F":
-                    return "Kazakh";
+            case "00020427":
+                return "Lithuanian standard";
 
-                case "00000453":
-                    return "Khmer";
+            case "0000046E":
+                return "Luxembourgish";
 
-                case "00000412":
-                    return "Korean";
+            case "0000042F":
+                return "Macedonian (fyrom)";
 
-                case "00000440":
-                    return "Kyrgyz cyrillic";
+            case "0001042F":
+                return "Macedonian (fyrom) - standard";
 
-                case "00000454":
-                    return "Lao";
+            case "0000044C":
+                return "Malayalam";
 
-                case "0000080A":
-                    return "Latin america";
+            case "0000043A":
+                return "Maltese 47-key";
 
-                case "00000426":
-                    return "Latvian";
+            case "0001043A":
+                return "Maltese 48-key";
 
-                case "00010426":
-                    return "Latvian (qwerty)";
+            case "0000044E":
+                return "Marathi";
 
-                case "00010427":
-                    return "Lithuanian";
+            case "00000481":
+                return "Maroi";
 
-                case "00000427":
-                    return "Lithuanian ibm";
+            case "00000450":
+                return "Mongolian cyrillic";
 
-                case "00020427":
-                    return "Lithuanian standard";
+            case "00000850":
+                return "Mongolian (mongolian script)";
 
-                case "0000046E":
-                    return "Luxembourgish";
+            case "00000461":
+                return "Nepali";
 
-                case "0000042F":
-                    return "Macedonian (fyrom)";
+            case "00000414":
+                return "Norwegian";
 
-                case "0001042F":
-                    return "Macedonian (fyrom) - standard";
+            case "0000043B":
+                return "Norwegian with sami";
 
-                case "0000044C":
-                    return "Malayalam";
+            case "00000448":
+                return "Oriya";
 
-                case "0000043A":
-                    return "Maltese 47-key";
+            case "00000463":
+                return "Pashto (afghanistan)";
 
-                case "0001043A":
-                    return "Maltese 48-key";
+            case "00000429":
+                return "Persian";
 
-                case "0000044E":
-                    return "Marathi";
+            case "00000415":
+                return "Polish (programmers)";
 
-                case "00000481":
-                    return "Maroi";
+            case "00010415":
+                return "Polish (214)";
 
-                case "00000450":
-                    return "Mongolian cyrillic";
+            case "00000816":
+                return "Portuguese";
 
-                case "00000850":
-                    return "Mongolian (mongolian script)";
+            case "00000416":
+                return "Portuguese (brazillian abnt)";
 
-                case "00000461":
-                    return "Nepali";
+            case "00010416":
+                return "Portuguese (brazillian abnt2)";
 
-                case "00000414":
-                    return "Norwegian";
+            case "00000446":
+                return "Punjabi";
 
-                case "0000043B":
-                    return "Norwegian with sami";
+            case "00010418":
+                return "Romanian (standard)";
 
-                case "00000448":
-                    return "Oriya";
+            case "00000418":
+                return "Romanian (legacy)";
 
-                case "00000463":
-                    return "Pashto (afghanistan)";
+            case "00020418":
+                return "Romanian (programmers)";
 
-                case "00000429":
-                    return "Persian";
+            case "00000419":
+                return "Russian";
 
-                case "00000415":
-                    return "Polish (programmers)";
+            case "00010419":
+                return "Russian (typewriter)";
 
-                case "00010415":
-                    return "Polish (214)";
+            case "0002083B":
+                return "Sami extended finland-sweden";
 
-                case "00000816":
-                    return "Portuguese";
+            case "0001043B":
+                return "Sami extended norway";
 
-                case "00000416":
-                    return "Portuguese (brazillian abnt)";
+            case "00000C1A":
+                return "Serbian (cyrillic)";
 
-                case "00010416":
-                    return "Portuguese (brazillian abnt2)";
+            case "0000081A":
+                return "Serbian (latin)";
 
-                case "00000446":
-                    return "Punjabi";
+            case "0000046C":
+                return "Sesotho sa Leboa";
 
-                case "00010418":
-                    return "Romanian (standard)";
+            case "00000432":
+                return "Setswana";
 
-                case "00000418":
-                    return "Romanian (legacy)";
+            case "0000045B":
+                return "Sinhala";
 
-                case "00020418":
-                    return "Romanian (programmers)";
+            case "0001045B":
+                return "Sinhala -Wij 9";
 
-                case "00000419":
-                    return "Russian";
+            case "0000041B":
+                return "Slovak";
 
-                case "00010419":
-                    return "Russian (typewriter)";
+            case "0001041B":
+                return "Slovak (qwerty)";
 
-                case "0002083B":
-                    return "Sami extended finland-sweden";
+            case "00000424":
+                return "Slovenian";
 
-                case "0001043B":
-                    return "Sami extended norway";
+            case "0001042E":
+                return "Sorbian extended";
 
-                case "00000C1A":
-                    return "Serbian (cyrillic)";
+            case "0002042E":
+                return "Sorbian standard";
 
-                case "0000081A":
-                    return "Serbian (latin)";
+            case "0000042E":
+                return "Sorbian standard (legacy)";
 
-                case "0000046C":
-                    return "Sesotho sa Leboa";
+            case "0000040A":
+                return "Spanish";
 
-                case "00000432":
-                    return "Setswana";
+            case "0001040A":
+                return "Spanish variation";
 
-                case "0000045B":
-                    return "Sinhala";
+            case "0000041D":
+                return "Swedish";
 
-                case "0001045B":
-                    return "Sinhala -Wij 9";
+            case "0000083B":
+                return "Swedish with sami";
 
-                case "0000041B":
-                    return "Slovak";
+            case "00000807":
+                return "Swiss german";
 
-                case "0001041B":
-                    return "Slovak (qwerty)";
+            case "0000100C":
+                return "Swiss french";
 
-                case "00000424":
-                    return "Slovenian";
+            case "0000045A":
+                return "Syriac";
 
-                case "0001042E":
-                    return "Sorbian extended";
+            case "0001045A":
+                return "Syriac phonetic";
 
-                case "0002042E":
-                    return "Sorbian standard";
+            case "00000428":
+                return "Tajik";
 
-                case "0000042E":
-                    return "Sorbian standard (legacy)";
+            case "00000449":
+                return "Tamil";
 
-                case "0000040A":
-                    return "Spanish";
+            case "00000444":
+                return "Tatar";
 
-                case "0001040A":
-                    return "Spanish variation";
+            case "0000044A":
+                return "Telugu";
 
-                case "0000041D":
-                    return "Swedish";
+            case "0000041E":
+                return "Thai Kedmanee";
 
-                case "0000083B":
-                    return "Swedish with sami";
+            case "0002041E":
+                return "Thai Kedmanee (non-shiftlock)";
 
-                case "00000807":
-                    return "Swiss german";
+            case "0001041E":
+                return "Thai Pattachote";
 
-                case "0000100C":
-                    return "Swiss french";
+            case "0003041E":
+                return "Thai Pattachote (non-shiftlock)";
 
-                case "0000045A":
-                    return "Syriac";
+            case "00000451":
+                return "Tibetan (prc)";
 
-                case "0001045A":
-                    return "Syriac phonetic";
+            case "0001041F":
+                return "Turkish F";
 
-                case "00000428":
-                    return "Tajik";
+            case "0000041F":
+                return "Turkish Q";
 
-                case "00000449":
-                    return "Tamil";
+            case "00000442":
+                return "Turkmen";
 
-                case "00000444":
-                    return "Tatar";
+            case "00000422":
+                return "Ukrainian";
 
-                case "0000044A":
-                    return "Telugu";
+            case "00020422":
+                return "Ukrainian (enhanced)";
 
-                case "0000041E":
-                    return "Thai Kedmanee";
+            case "00000809":
+                return "United Kingdom";
 
-                case "0002041E":
-                    return "Thai Kedmanee (non-shiftlock)";
+            case "00000452":
+                return "United Kingdom Extended";
 
-                case "0001041E":
-                    return "Thai Pattachote";
+            case "00000409":
+                return "United States";
 
-                case "0003041E":
-                    return "Thai Pattachote (non-shiftlock)";
+            case "00010409":
+                return "United States - dvorak";
 
-                case "00000451":
-                    return "Tibetan (prc)";
+            case "00030409":
+                return "United States - dvorak left hand";
 
-                case "0001041F":
-                    return "Turkish F";
+            case "00050409":
+                return "United States - dvorak right hand";
 
-                case "0000041F":
-                    return "Turkish Q";
+            case "00004009":
+                return "United States - india";
 
-                case "00000442":
-                    return "Turkmen";
+            case "00020409":
+                return "United States - international";
 
-                case "00000422":
-                    return "Ukrainian";
+            case "00000420":
+                return "Urdu";
 
-                case "00020422":
-                    return "Ukrainian (enhanced)";
+            case "00010480":
+                return "Uyghur";
 
-                case "00000809":
-                    return "United Kingdom";
+            case "00000480":
+                return "Uyghur (legacy)";
 
-                case "00000452":
-                    return "United Kingdom Extended";
+            case "00000843":
+                return "Uzbek cyrillic";
 
-                case "00000409":
-                    return "United States";
+            case "0000042A":
+                return "Vietnamese";
 
-                case "00010409":
-                    return "United States - dvorak";
+            case "00000485":
+                return "Yakut";
 
-                case "00030409":
-                    return "United States - dvorak left hand";
+            case "0000046A":
+                return "Yoruba";
 
-                case "00050409":
-                    return "United States - dvorak right hand";
+            case "00000488":
+                return "Wolof";
 
-                case "00004009":
-                    return "United States - india";
-
-                case "00020409":
-                    return "United States - international";
-
-                case "00000420":
-                    return "Urdu";
-
-                case "00010480":
-                    return "Uyghur";
-
-                case "00000480":
-                    return "Uyghur (legacy)";
-
-                case "00000843":
-                    return "Uzbek cyrillic";
-
-                case "0000042A":
-                    return "Vietnamese";
-
-                case "00000485":
-                    return "Yakut";
-
-                case "0000046A":
-                    return "Yoruba";
-
-                case "00000488":
-                    return "Wolof";
-
-                default:
-                    return "unknown";
-            }
+            default:
+                return "unknown";
         }
     }
 }

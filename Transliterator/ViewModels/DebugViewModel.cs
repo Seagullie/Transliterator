@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
 using Transliterator.Core.Keyboard;
+using Transliterator.Core.Services;
 using Transliterator.Helpers;
-using Transliterator.Services;
 using Transliterator.Views;
 
 namespace Transliterator.ViewModels

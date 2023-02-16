@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using Transliterator.Services;
+﻿using Transliterator.Core.Services;
 
 namespace Transliterator.Core.Models;
 
-public class TransliterationTable
+public partial class TransliterationTable
 {
     private LoggerService loggerService;
 
@@ -57,7 +56,10 @@ public class TransliterationTable
             }
         }
     }
+}
 
+public partial class TransliterationTable
+{
     public bool IsStartOfCombination(string text)
     {
         text = text.ToLower();

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transliterator.Core.Helpers.Events;
+using Transliterator.Core.Models;
 using Transliterator.Services;
 
 namespace Transliterator.Core.Services.BufferedTransliterator
@@ -18,11 +19,11 @@ namespace Transliterator.Core.Services.BufferedTransliterator
         {
         }
 
-        public void Add(string item, TableKeyAnalyzerService keyAnalyzer)
+        public void Add(string item, TransliterationTable tableModel)
         {
             // sometimes combo can be broken by a character contributing towards bigger combo. e. g, "s" (combo init for "sh") can be broken by c and then followed by h for "sch" ("щ")
 
-            if (keyAnalyzer.EndsWithBrokenCombo(GetAsString() + item) && !keyAnalyzer.IsPartOfCombination(GetAsString() + item))
+            if (tableModel.EndsWithBrokenCombo(GetAsString() + item) && !tableModel.IsPartOfCombination(GetAsString() + item))
             {
                 {
                     ComboBrokenEvent?.Invoke(GetAsString());

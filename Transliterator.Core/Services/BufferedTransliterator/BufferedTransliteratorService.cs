@@ -13,24 +13,20 @@ namespace Transliterator.Core.Services
 {
     public class BufferedTransliteratorService : BaseTransliterator
     {
-        public TransliterationTable TransliterationTable 
+        public TransliterationTable TransliterationTable
         {
             get => transliterationTable;
             set
             {
                 if (value != transliterationTable)
                 {
-                    if (value != null)
-                    {
-                        tableKeyAnalyzerService = new(value.Combos.ToArray());
-
-                    }
                     transliterationTable = value;
                 }
             }
         }
 
-        private TableKeyAnalyzerService tableKeyAnalyzerService;
+        private LoggerService loggerService;
+
         private BufferedTransliterator.Buffer buffer = new();
         // at any given time, buffer can be in these 5 states:
         // 1. empty
@@ -41,11 +37,9 @@ namespace Transliterator.Core.Services
 
         public BufferedTransliteratorService()
         {
+            loggerService = LoggerService.GetInstance();
+
             KeyboardHook.SetupSystemHook();
-
-            KeyboardHook.KeyPressed += HandleBackspace;
-
-            KeyboardHook.KeyPressed += SkipIrrelevant;
             KeyboardHook.KeyPressed += KeyPressedHandler;
 
             buffer.ComboBrokenEvent += (bufferContent) =>
@@ -60,25 +54,22 @@ namespace Transliterator.Core.Services
         public new void SetTableModel(string relativePathToJsonFile)
         {
             SetTableModel(relativePathToJsonFile);
-            tableKeyAnalyzerService = new TableKeyAnalyzerService(TransliterationTable.Combos.ToArray());
         }
 
         private void KeyPressedHandler(object? sender, KeyEventArgs e)
         {
-            if (e.ShouldPassHint)
-            {
-                return;
-            }
+            if (HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
 
             // suppress keypress
             e.Handled = true;
 
             // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
-            string renderedCharacter = e.Character;
-            buffer.Add(renderedCharacter, tableKeyAnalyzerService);
+            string renderedCharacter = e.Character.ToLower();
+            loggerService.LogMessage(this, $"This key was pressed {renderedCharacter}");
+            buffer.Add(renderedCharacter, TransliterationTable);
 
             // check if should wait for complete combo
-            bool defer = tableKeyAnalyzerService.IsStartOfCombination(buffer.GetAsString());
+            bool defer = TransliterationTable.IsStartOfCombination(buffer.GetAsString());
 
             if (!defer)
             {
@@ -105,19 +96,16 @@ namespace Transliterator.Core.Services
         }
 
         // keep buffer in sync with keyboard input by erasing last character on backspace
-        public void HandleBackspace(object? sender, KeyEventArgs e)
+        public bool HandleBackspace(object? sender, KeyEventArgs e)
         {
             if (e.Character != "\b")
             {
-                return;
+                return false;
             }
-
-            // signal other handlers that this event shouldn't be suppressed or handled
-            e.ShouldPassHint = true;
 
             if (buffer.Count() == 0)
             {
-                return;
+                return true;
             }
             // ctrl + backspace erases entire word and needs additional handling. Here word = any sequence of characters such as abcdefg123, but not punctuation or other special symbols
             if (e.IsLeftControl || e.IsRightControl)
@@ -132,32 +120,37 @@ namespace Transliterator.Core.Services
             {
                 buffer.RemoveAt(buffer.Count() - 1);
             }
+
+            return true;
         }
 
         // TODO: Rename
         // Irrelevant = everything that is not needed for transliteration
         // things that are needed for transliteration:
         // table keys, backspace
-        public void SkipIrrelevant(object? sender, KeyEventArgs e)
+        public bool SkipIrrelevant(object? sender, KeyEventArgs e)
         {
             string renderedCharacter = e.Character.ToLower();
 
             // shift is used for capitalization and should not be ignored
             bool isShortcut = e.IsModifier && !e.IsShift;
-            bool isIrrelevant = !TransliterationTable.Keys.Contains(renderedCharacter) || isShortcut;
+            bool isIrrelevant = !TransliterationTable.Alphabet.Contains(renderedCharacter) || isShortcut;
 
             if (isIrrelevant)
             {
-                // signal other handlers that this event shouldn't be suppressed or handled
-                e.ShouldPassHint = true;
+                loggerService.LogMessage(this, $"This key was skipped as irrelevant: {renderedCharacter}");
 
                 // transliterate whatever is left in buffer
                 // but only if key is not a modifier. Otherwise combos get broken by simply pressing shift, for example
-                if (e.IsModifier) return;
+                if (e.IsModifier) return true;
 
                 var transliteratedBuffer = Transliterate(buffer.GetAsString());
                 KeyboardInputGenerator.TextEntry(AdaptCase(transliteratedBuffer, e));
+
+                return true;
             }
+
+            return false;
         }
     }
 }

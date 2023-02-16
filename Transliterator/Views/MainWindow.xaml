@@ -36,14 +36,14 @@
     <Grid Margin="40,0,40,15" HorizontalAlignment="Stretch">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="222*" />
-            <ColumnDefinition Width="247*" />
-            <ColumnDefinition Width="247*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25*" />
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="25*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <StackPanel
@@ -66,16 +66,17 @@
 
         <StackPanel
             Grid.Column="2"
+            Width="200"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             helpers:MarginSetter.LastItemMargin="5"
             helpers:MarginSetter.Margin="5">
             <ComboBox
                 HorizontalAlignment="Stretch"
-                ItemsSource="{Binding TranslitTables}"
-                SelectedItem="{Binding SelectedTranslitTable}" />
+                ItemsSource="{Binding TransliterationTables}"
+                SelectedItem="{Binding SelectedTransliterationTable}" />
             <Button
-                HorizontalAlignment="Stretch"
+                HorizontalAlignment="Right"
                 HorizontalContentAlignment="Right"
                 Command="{Binding OpenTableViewWindowCommand}"
                 Content="Show Table" />

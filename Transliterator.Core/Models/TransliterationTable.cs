@@ -8,7 +8,7 @@ public class TransliterationTable
 
     public Dictionary<string, string> ReplacementMap { get; private set; } = new();
 
-    public List<string> Keys { get; private set; }
+    public List<string> Keys { get; private set; } = new();
 
     // Combo = more than one letter. Examples of combos: ch, sh, zh,
     // while s, d, f are not combos

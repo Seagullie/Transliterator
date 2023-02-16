@@ -13,6 +13,23 @@ namespace Transliterator.Core.Services
 {
     public class BufferedTransliteratorService : BaseTransliterator
     {
+        public TransliterationTable TransliterationTable 
+        {
+            get => transliterationTable;
+            set
+            {
+                if (value != transliterationTable)
+                {
+                    if (value != null)
+                    {
+                        tableKeyAnalyzerService = new(value.Combos.ToArray());
+
+                    }
+                    transliterationTable = value;
+                }
+            }
+        }
+
         private TableKeyAnalyzerService tableKeyAnalyzerService;
         private BufferedTransliterator.Buffer buffer = new();
         // at any given time, buffer can be in these 5 states:
@@ -42,8 +59,8 @@ namespace Transliterator.Core.Services
 
         public new void SetTableModel(string relativePathToJsonFile)
         {
-            base.SetTableModel(relativePathToJsonFile);
-            tableKeyAnalyzerService = new TableKeyAnalyzerService(transliterationTable.Combos.ToArray());
+            SetTableModel(relativePathToJsonFile);
+            tableKeyAnalyzerService = new TableKeyAnalyzerService(TransliterationTable.Combos.ToArray());
         }
 
         private void KeyPressedHandler(object? sender, KeyEventArgs e)
@@ -127,7 +144,7 @@ namespace Transliterator.Core.Services
 
             // shift is used for capitalization and should not be ignored
             bool isShortcut = e.IsModifier && !e.IsShift;
-            bool isIrrelevant = !transliterationTable.Keys.Contains(renderedCharacter) || isShortcut;
+            bool isIrrelevant = !TransliterationTable.Keys.Contains(renderedCharacter) || isShortcut;
 
             if (isIrrelevant)
             {

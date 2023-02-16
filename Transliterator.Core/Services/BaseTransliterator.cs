@@ -8,7 +8,7 @@ namespace Transliterator.Services
 {
     public class BaseTransliterator
     {
-        public TransliterationTable transliterationTable;
+        protected TransliterationTable transliterationTable;
 
         public BaseTransliterator()
         {

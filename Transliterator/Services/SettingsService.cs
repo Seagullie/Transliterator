@@ -26,7 +26,7 @@ namespace Transliterator.Services
 
         public bool IsStateOverlayEnabled { get; set; } = true;
 
-        public bool IsTranslitEnabledAtStartup { get; set; }
+        public bool IsTransliteratorEnabledAtStartup { get; set; }
 
         public bool IsAltShiftGlobalShortcutEnabled { get; set; } = true;
 
@@ -34,24 +34,25 @@ namespace Transliterator.Services
 
         // TODO: Add theming settings
 
-        public string LastSelectedTranslitTable { get; set; }
+        public string LastSelectedTransliterationTable { get; set; } = "";
 
-        public string PathToCustomToggleOnSound { get; set; }
+        public string PathToCustomToggleOnSound { get; set; } = "";
 
-        public string PathToCustomToggleOffSound { get; set; }
+        public string PathToCustomToggleOffSound { get; set; } = "";
 
         // HotKeys
         public HotKey ToggleHotKey { get; set; }
 
         // Events
-        public event EventHandler SettingsResetEvent;
+        public event EventHandler? SettingsResetEvent;
 
-        public event EventHandler SettingsLoadedEvent;
+        public event EventHandler? SettingsLoadedEvent;
 
-        public event EventHandler SettingsSavedEvent;
+        public event EventHandler? SettingsSavedEvent;
 
         private SettingsService()
         {
+            Load();
         }
 
         public static SettingsService GetInstance()

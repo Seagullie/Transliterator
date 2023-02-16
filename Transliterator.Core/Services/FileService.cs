@@ -44,7 +44,7 @@ namespace Transliterator.Core.Services
         }
 
         // TODO: Improve?
-        public static List<string> GetFiles(string path)
+        public static List<string> GetFilePaths(string path)
         {
             if (Directory.Exists(path))
             {
@@ -53,14 +53,17 @@ namespace Transliterator.Core.Services
             else return new List<string>();
         }
 
-        public static List<string> GetFilenames(string path)
+        public static List<string> GetFileNamesWithoutExtension(string path)
         {
-            var files = GetFiles(path);
+            var files = GetFilePaths(path);
+
             List<string> names = new List<string>();
+
             foreach (var file in files)
             {
-                names.Add(Path.GetFileName(file));
+                names.Add(Path.GetFileNameWithoutExtension(file));
             }
+
             return names;
         }
     }

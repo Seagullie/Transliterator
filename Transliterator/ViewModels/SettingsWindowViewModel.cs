@@ -62,7 +62,7 @@ namespace Transliterator.ViewModels
             IsMinimizedStartEnabled = settingsService.IsMinimizedStartEnabled;
             IsAutoStartEnabled = settingsService.IsAutoStartEnabled;
             IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
-            IsTranslitEnabledAtStartup = settingsService.IsTranslitEnabledAtStartup;
+            IsTranslitEnabledAtStartup = settingsService.IsTransliteratorEnabledAtStartup;
             IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
             IsBufferInputEnabled = settingsService.IsBufferInputEnabled;
             ToggleHotKey = settingsService.ToggleHotKey;
@@ -153,7 +153,7 @@ namespace Transliterator.ViewModels
             settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
             settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
             settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
-            settingsService.IsTranslitEnabledAtStartup = IsTranslitEnabledAtStartup;
+            settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
             settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
             settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
             settingsService.ToggleHotKey = ToggleHotKey;

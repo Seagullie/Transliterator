@@ -7,7 +7,8 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : BaseTransliterator
 {
-    private bool _state;
+    // TODO: Sync with settings
+    private bool _state = true;
 
     public bool State { get => _state; set => SetState(value); }
 
@@ -20,6 +21,7 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     public event EventHandler StateChangedEvent;
 
+    // Do we really need this simple check? It's not like setting same translit table is expensive or causes any issues
     public TransliterationTable TransliterationTable
     {
         get => transliterationTable;
@@ -30,6 +32,14 @@ public class BufferedTransliteratorService : BaseTransliterator
                 transliterationTable = value;
             }
         }
+    }
+
+    private static BufferedTransliteratorService _instance;
+
+    public static BufferedTransliteratorService GetInstance()
+    {
+        _instance ??= new BufferedTransliteratorService();
+        return _instance;
     }
 
     private LoggerService loggerService;
@@ -52,12 +62,13 @@ public class BufferedTransliteratorService : BaseTransliterator
         buffer.ComboBrokenEvent += (bufferContent) =>
         {
             var transliteratedBuffer = Transliterate(bufferContent);
-            KeyboardInputGenerator.TextEntry(AdaptCase(transliteratedBuffer));
+            EnterTransliterationResults(AdaptCase(transliteratedBuffer));
 
             return true;
         };
     }
 
+    // haha
     public new void SetTableModel(string relativePathToJsonFile)
     {
         SetTableModel(relativePathToJsonFile);
@@ -81,8 +92,14 @@ public class BufferedTransliteratorService : BaseTransliterator
         if (!defer)
         {
             var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            KeyboardInputGenerator.TextEntry(AdaptCase(transliteratedBuffer, e));
+            EnterTransliterationResults(AdaptCase(transliteratedBuffer, e));
         }
+    }
+
+    virtual public string EnterTransliterationResults(string text)
+    {
+        KeyboardInputGenerator.TextEntry(text);
+        return text;
     }
 
     public new string Transliterate(string text)
@@ -152,7 +169,7 @@ public class BufferedTransliteratorService : BaseTransliterator
             if (e.IsModifier) return true;
 
             var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            KeyboardInputGenerator.TextEntry(AdaptCase(transliteratedBuffer, e));
+            EnterTransliterationResults(AdaptCase(transliteratedBuffer, e));
 
             return true;
         }

@@ -1,4 +1,5 @@
-﻿using Transliterator.Core.Helpers.Events;
+﻿using System.Diagnostics;
+using Transliterator.Core.Helpers.Events;
 
 namespace Transliterator.Core.Services
 {
@@ -24,6 +25,7 @@ namespace Transliterator.Core.Services
         public void LogMessage(object sender, string message, string color = null)
         {
             NewLogMessage?.Invoke(sender, new NewLogMessageEventArg(message, color));
+            Debug.WriteLine(message);
         }
     }
 }

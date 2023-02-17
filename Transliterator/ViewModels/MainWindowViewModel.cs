@@ -53,7 +53,7 @@ namespace Transliterator.ViewModels
         public MainWindowViewModel()
         {
             settingsService = SettingsService.GetInstance();
-            bufferedTransliteratorService = new BufferedTransliteratorService();
+            bufferedTransliteratorService = BufferedTransliteratorService.GetInstance();
 
             LoadTransliterationTables();
 

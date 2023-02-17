@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,12 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Transliterator.Core.Keyboard;
+using Transliterator.Core.Services;
 
 namespace Transliterator.CoreTests.Keyboard
 {
     public partial class EventLoopForm : Form
     {
         public string keyboardHookMemory = "";
+        private Mock<BufferedTransliteratorService> mock;
+        public BufferedTransliteratorService bufferedTransliteratorService;
 
         public EventLoopForm()
         {
@@ -22,10 +26,28 @@ namespace Transliterator.CoreTests.Keyboard
             Visible = false;
 
             KeyboardHook.SkipInjected = false;
+            InitializeComponent();
+        }
+
+        // TODO: Rename
+        public void AttachKeyboardHook()
+        {
             KeyboardHook.SetupSystemHook();
             KeyboardHook.KeyPressed += KeyPressedHandler;
+        }
 
-            InitializeComponent();
+        public void AttachBufferedTransliteratorService()
+        {
+            //bufferedTransliteratorService = BufferedTransliteratorService.GetInstance();
+
+            // replace whatever the translit is using to output results with mock function
+            // which will simply store the results in a variable
+            mock = new Mock<BufferedTransliteratorService>();
+            bufferedTransliteratorService = mock.Object;
+            // state may depend on settings or whatever, so better set it to true here
+            bufferedTransliteratorService.State = true;
+
+            mock.Setup(foo => foo.EnterTransliterationResults(It.IsAny<string>())).Returns((string s) => keyboardHookMemory += s);
         }
 
         private void EventLoopForm_Load(object sender, EventArgs e)

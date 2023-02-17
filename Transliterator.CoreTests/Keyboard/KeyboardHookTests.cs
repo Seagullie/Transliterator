@@ -28,6 +28,7 @@ namespace Transliterator.Core.Keyboard.Tests
         {
             // Runs before each test
             testWindow = new();
+            testWindow.AttachKeyboardHook();
 
             new Thread(() =>
             {

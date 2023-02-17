@@ -120,6 +120,12 @@ namespace Transliterator.ViewModels
             debugWindow.Show();
         }
 
+        [RelayCommand]
+        private void ToggleAppState()
+        {
+            bufferedTransliteratorService.State = !bufferedTransliteratorService.State;
+        }
+
         public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
         {
             string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{transliterationTablesPath}\\{fileName}.json"));

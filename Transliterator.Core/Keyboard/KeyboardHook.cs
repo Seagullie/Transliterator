@@ -14,6 +14,7 @@ public static class KeyboardHook
 
     // Flags for the current state
     private static bool _leftShift;
+
     private static bool _rightShift;
     private static bool _leftAlt;
     private static bool _rightAlt;
@@ -24,12 +25,13 @@ public static class KeyboardHook
 
     // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
     private static bool _capsLock;
+
     private static bool _numLock;
-    private static bool _scrollLock;       
+    private static bool _scrollLock;
 
     /// <summary>
-		/// Handle to the hook, need this to unhook and call the next hook
-		/// </summary>
+    /// Handle to the hook, need this to unhook and call the next hook
+    /// </summary>
     private static IntPtr hookId = IntPtr.Zero;
 
     public static bool IsHookSetup { get; private set; }
@@ -99,7 +101,20 @@ public static class KeyboardHook
 
         var keyboardLowLevelHookStruct = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));
         bool isModifier = keyboardLowLevelHookStruct.VirtualKeyCode.IsModifier();
-        string character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
+
+        string character;
+
+        // TODO: Annotate
+        if (keyboardLowLevelHookStruct.VirtualKeyCode == VirtualKeyCode.Packet)
+        {
+            uint scanCode = keyboardLowLevelHookStruct.ScanCode;
+            // can't convert to string right away, Convert.ToString simply gives me the scanCode back. So I have to chain it like this
+            character = Convert.ToChar(scanCode).ToString();
+        }
+        else
+        {
+            character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
+        }
 
         // Check the key to find if there any modifiers, store these in the global values.
         switch (keyboardLowLevelHookStruct.VirtualKeyCode)

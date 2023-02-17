@@ -1,4 +1,5 @@
-﻿using Transliterator.Core.Keyboard;
+﻿using System;
+using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Services;
 
@@ -6,6 +7,19 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : BaseTransliterator
 {
+    private bool _state;
+
+    public bool State { get => _state; set => SetState(value); }
+
+    private void SetState(bool value)
+    {
+        _state = value;
+        if (!_state) buffer.Clear();
+        StateChangedEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    public event EventHandler StateChangedEvent;
+
     public TransliterationTable TransliterationTable
     {
         get => transliterationTable;
@@ -51,7 +65,7 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
     {
-        if (HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
+        if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
 
         // suppress keypress
         e.Handled = true;

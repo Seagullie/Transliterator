@@ -21,6 +21,13 @@ namespace Transliterator.Core.Services.Tests
 
         // TODO: Implement after figuring out how to test KeyboardHook
         [TestMethod()]
+        public void TestUppercaseCombo()
+        {
+            string testString = "Щука";
+        }
+
+        // TODO: Implement after figuring out how to test KeyboardHook
+        [TestMethod()]
         public void TestComboBreakByPunctuation()
         {
             string testString = "sc!";

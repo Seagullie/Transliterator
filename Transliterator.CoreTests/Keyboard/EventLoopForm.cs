@@ -13,10 +13,14 @@ namespace Transliterator.CoreTests.Keyboard
 {
     public partial class EventLoopForm : Form
     {
-        public string keyboardHookMemory = "garbage";
+        public string keyboardHookMemory = "";
 
         public EventLoopForm()
         {
+            Width = 0;
+            Height = 0;
+            Visible = false;
+
             KeyboardHook.SkipInjected = false;
             KeyboardHook.SetupSystemHook();
             KeyboardHook.KeyPressed += KeyPressedHandler;
@@ -26,20 +30,9 @@ namespace Transliterator.CoreTests.Keyboard
 
         private void EventLoopForm_Load(object sender, EventArgs e)
         {
-            KeyboardInputGenerator.TextEntry("a");
-            Thread.Sleep(50);
-
-            KeyboardInputGenerator.TextEntry("b");
-            Thread.Sleep(50);
-
-            KeyboardInputGenerator.TextEntry("c");
-            Thread.Sleep(50);
-
-            KeyboardInputGenerator.TextEntry("d");
-            Thread.Sleep(50);
         }
 
-        private void KeyPressedHandler(object? sender, Core.Keyboard.KeyEventArgs e)
+        private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
         {
             keyboardHookMemory += e.Character;
             e.Handled = true;

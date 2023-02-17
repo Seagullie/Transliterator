@@ -5,23 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transliterator.Core.Models;
-using Transliterator.Services;
-using Transliterator.Helpers;
-using System.Diagnostics;
 using Transliterator.CoreTests.Keyboard;
 
 namespace Transliterator.Core.Keyboard.Tests
 {
     [TestClass()]
-    public class KeyboardHookTests
+    public class KeyboardInputGeneratorTests
     {
         public EventLoopForm testWindow;
         private int delayBetweenEachKeypress = 10;
-
-        public KeyboardHookTests()
-        {
-        }
 
         [TestInitialize]
         public void Initialize()
@@ -36,16 +28,16 @@ namespace Transliterator.Core.Keyboard.Tests
         }
 
         [TestMethod()]
-        public void ListenToGeneratedKeys()
+        public void InjectText()
         {
             // arrange
             string testString = "abcd";
 
             // act
 
-            foreach (char i in testString)
+            foreach (char c in testString)
             {
-                KeyboardInputGenerator.TextEntry(i.ToString());
+                KeyboardInputGenerator.TextEntry(c.ToString());
                 Thread.Sleep(delayBetweenEachKeypress);
             }
 
@@ -55,81 +47,59 @@ namespace Transliterator.Core.Keyboard.Tests
         }
 
         [TestMethod()]
-        public void ListenToGeneratedDifferentCaseKeys()
+        public void InjectEmojis()
         {
             // arrange
-            string testString = "aBcD";
+            string testString = "😀🤣😇";
 
             // act
 
-            foreach (char i in testString)
+            foreach (char c in testString)
             {
-                KeyboardInputGenerator.TextEntry(i.ToString());
+                KeyboardInputGenerator.TextEntry(c.ToString());
                 Thread.Sleep(delayBetweenEachKeypress);
             }
 
             // assert
-            string expected = "aBcD";
+            string expected = "😀🤣😇";
             Assert.AreEqual(expected, testWindow.keyboardHookMemory);
         }
 
         [TestMethod()]
-        public void ListenToGeneratedCyrillicKeys()
+        public void InjectOsuEmojis()
         {
             // arrange
-            string testString = "абвгд";
+            string testString = "😃😛😥😊😎😭👎😏😈👍😑✋😀😠👼😬😡😆😖😍😮😯";
 
             // act
 
-            foreach (char i in testString)
+            foreach (char c in testString)
             {
-                KeyboardInputGenerator.TextEntry(i.ToString());
+                KeyboardInputGenerator.TextEntry(c.ToString());
                 Thread.Sleep(delayBetweenEachKeypress);
             }
 
             // assert
-            string expected = "абвгд";
+            string expected = "😃😛😥😊😎😭👎😏😈👍😑✋😀😠👼😬😡😆😖😍😮😯";
             Assert.AreEqual(expected, testWindow.keyboardHookMemory);
         }
 
         [TestMethod()]
-        public void ListenToGeneratedPunctuation()
+        public void InjectUnicode()
         {
             // arrange
-            string testString = ";!_#";
+            string testString = "♂☢–⛤";
 
             // act
 
-            foreach (char i in testString)
+            foreach (char c in testString)
             {
-                KeyboardInputGenerator.TextEntry(i.ToString());
+                KeyboardInputGenerator.TextEntry(c.ToString());
                 Thread.Sleep(delayBetweenEachKeypress);
             }
 
             // assert
-            string expected = ";!_#";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
-        }
-
-        [TestMethod()]
-        public void SkipInjected()
-        {
-            // arrange
-            string testString = "абвгд";
-            KeyboardHook.SkipInjected = true;
-
-            // act
-
-            foreach (char i in testString)
-            {
-                KeyboardInputGenerator.TextEntry(i.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
-
-            KeyboardHook.SkipInjected = false;
-
-            // assert
-            string expected = "";
+            string expected = "♂☢–⛤";
             Assert.AreEqual(expected, testWindow.keyboardHookMemory);
         }
     }

@@ -29,7 +29,7 @@ namespace Transliterator.CoreTests.Keyboard
             InitializeComponent();
         }
 
-        private void KeyPressedHandler(object? sender, Core.Keyboard.KeyEventArgs e)
+        private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
         {
             keyboardHookMemory += e.Character;
             e.Handled = true;

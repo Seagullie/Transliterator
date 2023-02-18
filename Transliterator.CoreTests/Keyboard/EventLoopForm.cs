@@ -47,6 +47,11 @@ namespace Transliterator.CoreTests.Keyboard
 
         private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
         {
+            if (e.Handled)
+            {
+                return;
+            }
+
             keyboardHookMemory += e.Character;
             e.Handled = true;
         }

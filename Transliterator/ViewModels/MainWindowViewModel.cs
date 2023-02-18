@@ -42,23 +42,28 @@ namespace Transliterator.ViewModels
         private ObservableCollection<MenuItem> _trayMenuItems = new();
 
         [ObservableProperty]
-        private string selectedTransliterationTable;
+        private string _selectedTransliterationTable;
 
         [ObservableProperty]
-        private List<string> transliterationTables;
+        private List<string> _transliterationTables;
 
         public MainWindowViewModel()
         {
             settingsService = SettingsService.GetInstance();
             bufferedTransliteratorService = BufferedTransliteratorService.GetInstance();
 
+            if (settingsService.LastSelectedTransliterationTable != string.Empty)
+            {
+                bufferedTransliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
+            }
+
             LoadTransliterationTables();
 
-            // TODO: Connect to backend
             AppState = "On";
-            ToggleAppStateShortcut = "Alt + T";
+            ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
         }
 
+        // TODO: Move to Service
         public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
         {
             string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{transliterationTablesPath}\\{fileName}.json"));
@@ -130,6 +135,13 @@ namespace Transliterator.ViewModels
         private void ToggleAppState()
         {
             bufferedTransliteratorService.State = !bufferedTransliteratorService.State;
+            AppState = bufferedTransliteratorService.State ? "On" : "Off";
+        }
+
+        public void SaveSettings()
+        {
+            settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable;
+            settingsService.Save();
         }
     }
 }

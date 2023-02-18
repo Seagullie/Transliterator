@@ -28,6 +28,9 @@ namespace Transliterator.Core.Services.Tests
             // Runs before each test
             testWindow = new();
             testWindow.AttachBufferedTransliteratorService();
+            // catch everything skipped by translit handler for full input picture
+            // for some reason, input characters are captured as well, even though they are supposed to be e.Handled = true by translit handler and not passed to the next handler
+            testWindow.AttachKeyboardHook();
             testWindow.bufferedTransliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson("Resources/TranslitTables/tableLAT-UKR"));
 
             new Thread(() =>
@@ -36,7 +39,12 @@ namespace Transliterator.Core.Services.Tests
             }).Start();
         }
 
-        // TODO: Implement after figuring out how to test KeyboardHook
+        [TestCleanup]
+        public void Cleanup()
+        {
+            KeyboardHook.ShutdownSystemHook();
+        }
+
         [TestMethod()]
         public void TestComboBreakByOtherKey()
         {
@@ -91,7 +99,6 @@ namespace Transliterator.Core.Services.Tests
             Assert.AreEqual(expected, testWindow.keyboardHookMemory);
         }
 
-        // TODO: Implement after figuring out how to test KeyboardHook
         [TestMethod()]
         public void TestComboBreakByPunctuation()
         {
@@ -106,8 +113,7 @@ namespace Transliterator.Core.Services.Tests
             }
 
             // assert
-            // "!" isn't included as it's not in alphabet and doesn't get transliterated
-            string expected = "сц";
+            string expected = "сц!";
             Assert.AreEqual(expected, testWindow.keyboardHookMemory);
         }
     }

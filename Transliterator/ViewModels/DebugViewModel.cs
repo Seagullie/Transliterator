@@ -60,7 +60,8 @@ public partial class DebugViewModel : ObservableObject
     [RelayCommand]
     private void AllowInjectedKeys()
     {
-        KeyboardHook.SkipInjected = false;
+        // TODO: AllowInjectedKeys
+        //KeyboardHook.SkipInjected = false;
         loggerService.LogMessage(this, "Injected Keys will now be handled by Keyboard Hook");
     }
 

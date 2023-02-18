@@ -21,12 +21,16 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     private LoggerService loggerService;
 
+    private readonly KeyboardHook _keyboardHook;
+
+
+
     public BufferedTransliteratorService()
     {
         loggerService = LoggerService.GetInstance();
 
-        KeyboardHook.SetupSystemHook();
-        KeyboardHook.KeyPressed += KeyPressedHandler;
+        _keyboardHook = new();
+        _keyboardHook.KeyPressed += KeyPressedHandler;
 
         buffer.ComboBrokenEvent += (bufferContent) =>
         {

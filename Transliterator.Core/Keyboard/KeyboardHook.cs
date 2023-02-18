@@ -1,19 +1,19 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Native;
 using Transliterator.Core.Structs;
 
 namespace Transliterator.Core.Keyboard;
 
-public static class KeyboardHook
+public sealed class KeyboardHook : IDisposable
 {
     private const int WmKeyDown = 256;
     private const int WmSysKeyDown = 260;
 
     // Flags for the current state
     private static bool _leftAlt;
+
     private static bool _leftCtrl;
     private static bool _leftShift;
     private static bool _leftWin;
@@ -24,39 +24,59 @@ public static class KeyboardHook
 
     // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
     private static bool _capsLock;
+
     private static bool _numLock;
     private static bool _scrollLock;
 
     /// <summary>
     /// Handle to the hook, need this to unhook and call the next hook
     /// </summary>
-    private static IntPtr hookId = IntPtr.Zero;
+    private IntPtr _hookId = IntPtr.Zero;
 
-    public static event EventHandler<KeyboardHookEventArgs>? KeyPressed;
+    public event EventHandler<KeyboardHookEventArgs>? KeyPressed;
 
-    public static bool IsHookSetup { get; private set; }
+    private NativeMethods.LowLevelKeyboardProc _proc;
 
-    public static bool SkipInjected { get; set; } = true;
+    public bool SkipInjected { get; set; } = true;
 
-    public static void SetupSystemHook()
+    public KeyboardHook()
     {
         SyncLockState();
-
+        _proc = HookCallback;
+        SetHook(_proc);
+    }
+    private IntPtr SetHook(NativeMethods.LowLevelKeyboardProc proc)
+    {
         using (Process curProcess = Process.GetCurrentProcess())
+        using (ProcessModule curModule = curProcess.MainModule)
         {
-            using (ProcessModule curModule = curProcess.MainModule)
-            {
-                hookId = NativeMethods.SetWindowsHookEx(HookTypes.WH_KEYBOARD_LL, HookCallback, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
-            }
+            return NativeMethods.SetWindowsHookEx(HookTypes.WH_KEYBOARD_LL, proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
         }
-
-        IsHookSetup = true;
     }
 
-    public static void ShutdownSystemHook()
+    public void ShutdownSystemHook()
     {
-        NativeMethods.UnhookWindowsHookEx(hookId);
-        IsHookSetup = false;
+        NativeMethods.UnhookWindowsHookEx(_hookId);
+    }
+
+    ~KeyboardHook()
+    {
+        Dispose(false);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (_hookId != IntPtr.Zero)
+        {
+            NativeMethods.UnhookWindowsHookEx(_hookId);
+            _hookId = IntPtr.Zero;
+        }
     }
 
     /// <summary>
@@ -83,7 +103,7 @@ public static class KeyboardHook
         }
         else
         {
-            character = KeyCodeToUnicode(keyboardLowLevelHookStruct.VirtualKeyCode);
+            character = keyboardLowLevelHookStruct.VirtualKeyCode.ToUnicode();
         }
 
         // Check the key to find if there any modifiers, store these in the global values.
@@ -167,51 +187,32 @@ public static class KeyboardHook
         return keyEventArgs;
     }
 
-    private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
         if (nCode >= 0)
         {
             var eventArgs = CreateKeyboardEventArgs(wParam, lParam);
 
+            // Skip the injected key
             if (SkipInjected && eventArgs.Flags == ExtendedKeyFlags.Injected)
             {
                 Debug.WriteLine(eventArgs.Key + " ignored (injected)" + " (" + eventArgs.Character + ")");
+                return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
             }
-            else
+
+            if (eventArgs.IsKeyDown)
             {
-                if (eventArgs.IsKeyDown)
+                Debug.WriteLine(eventArgs.Key + " pressed" + " (" + eventArgs.Character + ")");
+                KeyPressed?.Invoke(this, eventArgs);
+
+                if (eventArgs.Handled)
                 {
-                    Debug.WriteLine(eventArgs.Key + " pressed" + " (" + eventArgs.Character + ")");
-                    KeyPressed?.Invoke(null, eventArgs);
+                    return 1;
                 }
             }
-
-            if (eventArgs.Handled)
-            {
-                return 1;
-            }
         }
 
-        return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
-    }
-
-    private static string KeyCodeToUnicode(VirtualKeyCode virtualKeyCode)
-    {
-        byte[] keyboardState = new byte[255];
-        bool keyboardStateStatus = NativeMethods.GetKeyboardState(keyboardState);
-
-        if (!keyboardStateStatus)
-        {
-            return "";
-        }
-
-        uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
-        IntPtr inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(0);
-
-        StringBuilder result = new StringBuilder();
-        _ = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
-
-        return result.ToString();
+        return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
     }
 
     private static void SyncLockState()

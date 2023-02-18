@@ -31,7 +31,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         buffer.ComboBrokenEvent += (bufferContent) =>
         {
             var transliteratedBuffer = Transliterate(bufferContent);
-            EnterTransliterationResults(AdaptCase(transliteratedBuffer));
+            EnterTransliterationResults(transliteratedBuffer);
 
             return true;
         };
@@ -95,23 +95,17 @@ public class BufferedTransliteratorService : BaseTransliterator
         return true;
     }
 
-    // haha
-    public new void SetTableModel(string relativePathToJsonFile)
-    {
-        SetTableModel(relativePathToJsonFile);
-    }
-
     // TODO: Rename
     // Irrelevant = everything that is not needed for transliteration
     // things that are needed for transliteration:
     // table keys, backspace
     public bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
     {
-        string renderedCharacter = e.Character.ToLower();
+        string renderedCharacter = e.Character;
 
         // shift is used for capitalization and should not be ignored
         bool isShortcut = e.IsModifier && !e.IsShift;
-        bool isIrrelevant = !TransliterationTable.Alphabet.Contains(renderedCharacter) || isShortcut;
+        bool isIrrelevant = !TransliterationTable.isInAlphabet(renderedCharacter) || isShortcut;
 
         if (isIrrelevant)
         {
@@ -122,7 +116,7 @@ public class BufferedTransliteratorService : BaseTransliterator
             if (e.IsModifier) return true;
 
             var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            EnterTransliterationResults(AdaptCase(transliteratedBuffer, e));
+            EnterTransliterationResults(transliteratedBuffer);
 
             return true;
         }
@@ -156,7 +150,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         e.Handled = true;
 
         // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
-        string renderedCharacter = e.Character.ToLower();
+        string renderedCharacter = e.Character;
         loggerService.LogMessage(this, $"This key was pressed {renderedCharacter}");
         buffer.Add(renderedCharacter, TransliterationTable);
 
@@ -166,7 +160,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         if (!defer)
         {
             var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            EnterTransliterationResults(AdaptCase(transliteratedBuffer, e));
+            EnterTransliterationResults(transliteratedBuffer);
         }
     }
 

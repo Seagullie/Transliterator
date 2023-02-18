@@ -55,31 +55,26 @@ public partial class TransliterationTable
         Combos = Keys.Where(key => key.Length > 1).ToList();
         UpdateAlphabet();
     }
-}
 
-public partial class TransliterationTable
-{
+    public bool isInAlphabet(string key)
+    {
+        {
+            return Alphabet.Contains(key.ToLower());
+        }
+    }
+
     // Removes last character of text param and checks whether the remainder ends with combo init
     public bool EndsWithBrokenCombo(string text)
     {
-        if (text.Length < 2)
-        {
-            return false;
-        }
-
-        if (IsCombo(text))
+        if (text.Length < 2 || IsCombo(text) || Combos.Count == 0)
         {
             return false;
         }
 
         string textWithoutLastCharacter = text.Substring(0, text.Length - 1);
-        if (Combos.Count == 0)
-        {
-            return false;
-        }
 
         // Clamping combo length to text length:
-        int longestComboLen = textWithoutLastCharacter.Length < Combos[0].Length ? textWithoutLastCharacter.Length : Combos[0].Length;
+        int longestComboLen = Math.Clamp(Combos[0].Length, 0, textWithoutLastCharacter.Length); // textWithoutLastCharacter.Length < Combos[0].Length ? textWithoutLastCharacter.Length : Combos[0].Length;
 
         for (int i = 1; i < longestComboLen + 1; i++)
         {
@@ -107,11 +102,13 @@ public partial class TransliterationTable
 
     public bool IsCombo(string text)
     {
-        return Combos.Contains(text);
+        return Combos.Contains(text.ToLower());
     }
 
     public bool IsComboFinisher(string character)
     {
+        character = character.ToLower();
+
         foreach (string combo in Combos)
         {
             if (combo.EndsWith(character))
@@ -142,25 +139,6 @@ public partial class TransliterationTable
         foreach (string combo in Combos)
         {
             if (combo.StartsWith(text) && combo.Length > text.Length) return true;
-        };
-
-        return false;
-    }
-
-    // Subcombo is a combo within another combo. Example: [sch] (щ) contains [ch] (ч). Thus, [ch] is a subcombo
-    public bool IsSubComboFinisher(string character)
-    {
-        // TODO: Implement
-        return false; // warning danger. Will implement later
-    }
-
-    // Aren't .is_part_of_combination and .EndsWithComboInit the same?
-    // No, cause .EndsWithComboInit checks last character only, while .is_part_of_combination entire parameter on whether it is a substring of existing combo.
-    public bool LastCharacterIsComboInit(string text)
-    {
-        foreach (string combo in Combos)
-        {
-            if (text.EndsWith(combo)) return true;
         };
 
         return false;

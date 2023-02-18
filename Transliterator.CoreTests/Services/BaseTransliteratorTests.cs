@@ -1,12 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Transliterator.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transliterator.Core.Models;
 using Transliterator.Core.Helpers.Exceptions;
+using Transliterator.Core.Models;
 
 // https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022
 

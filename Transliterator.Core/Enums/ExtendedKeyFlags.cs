@@ -15,7 +15,7 @@ namespace Transliterator.Core.Enums;
 public enum ExtendedKeyFlags : uint
 {
     /// <summary>
-    /// No flags
+    ///     No flags
     /// </summary>
     None = 0,
 

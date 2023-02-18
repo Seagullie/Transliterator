@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Windows.Data;
 
-namespace Transliterator.Helpers
-{
-    internal class InvertBoolConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value != null && value is bool)
-            {
-                return !((bool)value);
-            }
-            return true;
-        }
+namespace Transliterator.Helpers;
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+public class InvertBoolConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    {
+        if (value != null && value is bool)
         {
-            if (value != null && value is bool)
-            {
-                return !((bool)value);
-            }
-            return true;
+            return !((bool)value);
         }
+        return true;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    {
+        if (value != null && value is bool)
+        {
+            return !((bool)value);
+        }
+        return true;
     }
 }

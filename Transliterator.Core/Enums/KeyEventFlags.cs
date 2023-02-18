@@ -1,14 +1,11 @@
 ﻿// Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-using System;
 
 namespace Transliterator.Core.Enums;
 
 /// <summary>
-///     This enum specifies various aspects of a keystroke. This member can be certain combinations of the following
-///     values.
-///     See
-///     <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx">KEYBDINPUT structure</a>
+///     This enum specifies various aspects of a keystroke. This member can be certain combinations of the following values.
+///     See <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms646271(v=vs.85).aspx">KEYBDINPUT structure</a>
 /// </summary>
 [Flags]
 public enum KeyEventFlags : uint

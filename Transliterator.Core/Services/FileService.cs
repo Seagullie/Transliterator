@@ -5,12 +5,12 @@ namespace Transliterator.Core.Services;
 
 public static class FileService
 {
-    public static string BaseDirectory { get; }
-
     static FileService()
     {
         BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
     }
+
+    public static string BaseDirectory { get; }
 
     public static T Read<T>(string folderPath, string fileName)
     {

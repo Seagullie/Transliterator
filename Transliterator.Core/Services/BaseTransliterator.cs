@@ -14,6 +14,42 @@ public class BaseTransliterator
     {
     }
 
+    // TODO: Implement
+    public virtual string GetCaseForNonalphabeticString(string replacement)
+    {
+        return replacement;
+    }
+
+    // how to read the param list:
+    // replace all "words" in "text" with "replacement"
+    public string ReplaceKeepCase(string word, string replacement, string text)
+    {
+        Func<Match, string> onMatch = match =>
+        {
+            string matchString = match.Value;
+
+            // nonalphabetic characters don't have uppercase
+            // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
+            if (!Utilities.HasUpperCase(matchString))
+            {
+                return GetCaseForNonalphabeticString(replacement);
+            }
+
+            if (Utilities.IsLowerCase(matchString)) return replacement.ToLower();
+            if (char.IsUpper(matchString[0])) return replacement.ToUpper();
+            // ^TODO: handle case when the replacement consists of several letters
+
+            // if last character is uppercase, replacement should be uppercase as well:
+            if (char.IsUpper(matchString[matchString.Length - 1])) return replacement.ToUpper();
+            // not sure if C# has a method for converting to titlecase
+            if (Utilities.IsUpperCase(matchString)) return replacement.ToUpper();
+
+            return replacement;
+        };
+
+        return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
+    }
+
     public void SetTableModel(string relativePathToJsonFile)
     {
         Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, relativePathToJsonFile);
@@ -52,41 +88,5 @@ public class BaseTransliterator
         }
 
         return transliteratedText;
-    }
-
-    // how to read the param list:
-    // replace all "words" in "text" with "replacement"
-    public string ReplaceKeepCase(string word, string replacement, string text)
-    {
-        Func<Match, string> onMatch = match =>
-        {
-            string matchString = match.Value;
-
-            // nonalphabetic characters don't have uppercase
-            // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
-            if (!Utilities.HasUpperCase(matchString))
-            {
-                return GetCaseForNonalphabeticString(replacement);
-            }
-
-            if (Utilities.IsLowerCase(matchString)) return replacement.ToLower();
-            if (char.IsUpper(matchString[0])) return replacement.ToUpper();
-            // ^TODO: handle case when the replacement consists of several letters
-
-            // if last character is uppercase, replacement should be uppercase as well:
-            if (char.IsUpper(matchString[matchString.Length - 1])) return replacement.ToUpper();
-            // not sure if C# has a method for converting to titlecase
-            if (Utilities.IsUpperCase(matchString)) return replacement.ToUpper();
-
-            return replacement;
-        };
-
-        return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
-    }
-
-    // TODO: Implement
-    virtual public string GetCaseForNonalphabeticString(string replacement)
-    {
-        return replacement;
     }
 }

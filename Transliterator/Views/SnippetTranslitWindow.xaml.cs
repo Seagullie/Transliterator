@@ -1,39 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows.Input;
 using Transliterator.ViewModels;
 
-namespace Transliterator.Views
+namespace Transliterator.Views;
+
+public partial class SnippetTranslitWindow
 {
-    /// <summary>
-    /// Interaction logic for SnippetTranslitWindow.xaml
-    /// </summary>
-    public partial class SnippetTranslitWindow
+    public SnippetTranslitWindow()
     {
-        public SnippetTranslitViewModel ViewModel { get; private set; }
+        InitializeComponent();
+        ViewModel = new();
+        DataContext = ViewModel;
+    }
 
-        public SnippetTranslitWindow()
-        {
-            InitializeComponent();
-            ViewModel = new();
-            DataContext = ViewModel;
-        }
+    public SnippetTranslitViewModel ViewModel { get; private set; }
 
-        // make window draggable
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
-        }
+    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        // Make window draggable
+        if (e.ChangedButton == MouseButton.Left)
+            DragMove();
     }
 }

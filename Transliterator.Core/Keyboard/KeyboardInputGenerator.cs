@@ -13,22 +13,6 @@ namespace Transliterator.Core.Keyboard;
 public static class KeyboardInputGenerator
 {
     /// <summary>
-    ///     Generate key down
-    /// </summary>
-    /// <param name="keycodes">VirtualKeyCodes for the key downs</param>
-    /// <returns>number of input events generated</returns>
-    public static uint KeyDown(params VirtualKeyCode[] keycodes)
-    {
-        var keyboardInputs = new KeyboardInput[keycodes.Length];
-        var index = 0;
-        foreach (var virtualKeyCode in keycodes)
-        {
-            keyboardInputs[index++] = KeyboardInput.ForKeyDown(virtualKeyCode);
-        }
-        return NativeMethods.SendInput(Input.CreateKeyboardInputs(keyboardInputs));
-    }
-
-    /// <summary>
     ///     Generate a key combination press(es)
     /// </summary>
     /// <param name="keycodes">params VirtualKeyCodes</param>
@@ -47,6 +31,22 @@ public static class KeyboardInputGenerator
             keyboardInputs[index++] = KeyboardInput.ForKeyUp(virtualKeyCode);
         }
 
+        return NativeMethods.SendInput(Input.CreateKeyboardInputs(keyboardInputs));
+    }
+
+    /// <summary>
+    ///     Generate key down
+    /// </summary>
+    /// <param name="keycodes">VirtualKeyCodes for the key downs</param>
+    /// <returns>number of input events generated</returns>
+    public static uint KeyDown(params VirtualKeyCode[] keycodes)
+    {
+        var keyboardInputs = new KeyboardInput[keycodes.Length];
+        var index = 0;
+        foreach (var virtualKeyCode in keycodes)
+        {
+            keyboardInputs[index++] = KeyboardInput.ForKeyDown(virtualKeyCode);
+        }
         return NativeMethods.SendInput(Input.CreateKeyboardInputs(keyboardInputs));
     }
 
@@ -84,12 +84,12 @@ public static class KeyboardInputGenerator
     }
 
     /// <summary>
-    /// Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted text entry via the keyboard.
+    ///     Calls the Win32 SendInput method with a stream of KeyDown and KeyUp messages in order to simulate uninterrupted text entry via the keyboard.
     /// </summary>
     /// <param name="text">The text to be simulated.</param>
     public static uint TextEntry(string text)
     {
-        if (text.Length > uint.MaxValue / 2) 
+        if (text.Length > uint.MaxValue / 2)
             throw new ArgumentException(string.Format("The text parameter is too long. It must be less than {0} characters.", uint.MaxValue / 2), nameof(text));
 
         var keyboardInputs = new List<KeyboardInput>();
@@ -103,7 +103,7 @@ public static class KeyboardInputGenerator
     }
 
     /// <summary>
-    /// Simulates a single character text entry via the keyboard.
+    ///     Simulates a single character text entry via the keyboard.
     /// </summary>
     /// <param name="character">The unicode character to be simulated.</param>
     public static uint TextEntry(char character)

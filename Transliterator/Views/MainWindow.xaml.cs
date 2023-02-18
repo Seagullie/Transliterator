@@ -1,42 +1,30 @@
-﻿using System.Threading;
-using System.Windows.Input;
-using Transliterator.Core;
-using Transliterator.Core.Enums;
-using Transliterator.Core.Keyboard;
+﻿using System.Windows.Input;
 using Transliterator.ViewModels;
 
-// TODO: Rename namespace to Transliterator.Views
-namespace Transliterator.Views
+namespace Transliterator.Views;
+
+public partial class MainWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow
+    public MainWindow()
     {
-        public MainWindowViewModel ViewModel { get; private set; }
+        InitializeComponent();
+        ViewModel = new();
+        DataContext = ViewModel;
+    }
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            ViewModel = new();
-            DataContext = ViewModel;
+    public MainWindowViewModel ViewModel { get; private set; }
 
-            
-        }
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+        // TODO: Uncomment after migrating other things referenced by the methods
+        //ViewModel.SaveSettings();
+        //ViewModel.DisposeOfNotifyIcon();
+    }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // Make window draggable
-            if (e.ChangedButton == MouseButton.Left)
-                DragMove();
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // TODO: Uncomment after migrating other things referenced by the methods
-
-            //ViewModel.SaveSettings();
-            //ViewModel.DisposeOfNotifyIcon();
-        }
+    private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        // Make window draggable
+        if (e.ChangedButton == MouseButton.Left)
+            DragMove();
     }
 }

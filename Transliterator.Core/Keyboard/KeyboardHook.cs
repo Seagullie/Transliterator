@@ -13,19 +13,17 @@ public static class KeyboardHook
     private const int WmSysKeyDown = 260;
 
     // Flags for the current state
-    private static bool _leftShift;
-
-    private static bool _rightShift;
     private static bool _leftAlt;
-    private static bool _rightAlt;
     private static bool _leftCtrl;
-    private static bool _rightCtrl;
+    private static bool _leftShift;
     private static bool _leftWin;
+    private static bool _rightAlt;
+    private static bool _rightCtrl;
+    private static bool _rightShift;
     private static bool _rightWin;
 
     // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
     private static bool _capsLock;
-
     private static bool _numLock;
     private static bool _scrollLock;
 
@@ -34,11 +32,11 @@ public static class KeyboardHook
     /// </summary>
     private static IntPtr hookId = IntPtr.Zero;
 
+    public static event EventHandler<KeyboardHookEventArgs>? KeyPressed;
+
     public static bool IsHookSetup { get; private set; }
 
     public static bool SkipInjected { get; set; } = true;
-
-    public static event EventHandler<KeyboardHookEventArgs>? KeyPressed;
 
     public static void SetupSystemHook()
     {
@@ -59,34 +57,6 @@ public static class KeyboardHook
     {
         NativeMethods.UnhookWindowsHookEx(hookId);
         IsHookSetup = false;
-    }
-
-    private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-    {
-        if (nCode >= 0)
-        {
-            var eventArgs = CreateKeyboardEventArgs(wParam, lParam);
-
-            if (SkipInjected && eventArgs.Flags == ExtendedKeyFlags.Injected)
-            {
-                Debug.WriteLine(eventArgs.Key + " ignored (injected)" + " (" + eventArgs.Character + ")");
-            }
-            else
-            {
-                if (eventArgs.IsKeyDown)
-                {
-                    Debug.WriteLine(eventArgs.Key + " pressed" + " (" + eventArgs.Character + ")");
-                    KeyPressed?.Invoke(null, eventArgs);
-                }
-            }
-
-            if (eventArgs.Handled)
-            {
-                return 1;
-            }
-        }
-
-        return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
     }
 
     /// <summary>
@@ -197,11 +167,32 @@ public static class KeyboardHook
         return keyEventArgs;
     }
 
-    private static void SyncLockState()
+    private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        _capsLock = NativeMethods.GetKeyState(VirtualKeyCode.Capital) > 0;
-        _numLock = NativeMethods.GetKeyState(VirtualKeyCode.NumLock) > 0;
-        _scrollLock = NativeMethods.GetKeyState(VirtualKeyCode.Scroll) > 0;
+        if (nCode >= 0)
+        {
+            var eventArgs = CreateKeyboardEventArgs(wParam, lParam);
+
+            if (SkipInjected && eventArgs.Flags == ExtendedKeyFlags.Injected)
+            {
+                Debug.WriteLine(eventArgs.Key + " ignored (injected)" + " (" + eventArgs.Character + ")");
+            }
+            else
+            {
+                if (eventArgs.IsKeyDown)
+                {
+                    Debug.WriteLine(eventArgs.Key + " pressed" + " (" + eventArgs.Character + ")");
+                    KeyPressed?.Invoke(null, eventArgs);
+                }
+            }
+
+            if (eventArgs.Handled)
+            {
+                return 1;
+            }
+        }
+
+        return NativeMethods.CallNextHookEx(hookId, nCode, wParam, lParam);
     }
 
     private static string KeyCodeToUnicode(VirtualKeyCode virtualKeyCode)
@@ -221,5 +212,12 @@ public static class KeyboardHook
         _ = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
 
         return result.ToString();
+    }
+
+    private static void SyncLockState()
+    {
+        _capsLock = NativeMethods.GetKeyState(VirtualKeyCode.Capital) > 0;
+        _numLock = NativeMethods.GetKeyState(VirtualKeyCode.NumLock) > 0;
+        _scrollLock = NativeMethods.GetKeyState(VirtualKeyCode.Scroll) > 0;
     }
 }

@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Runtime.InteropServices;
-using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Structs;
 
@@ -14,8 +13,6 @@ namespace Transliterator.Core.Structs;
 [StructLayout(LayoutKind.Sequential)]
 public struct MouseInput
 {
-    private const MouseEventFlags MouseMoveMouseEventFlags = MouseEventFlags.Absolute | MouseEventFlags.Virtualdesk | MouseEventFlags.Move;
-
     /// <summary>
     ///     The absolute position of the mouse, or the amount of motion since the last mouse event was generated,
     ///     depending on the value of the dwFlags member.
@@ -55,7 +52,7 @@ public struct MouseInput
     ///     A set of bit flags that specify various aspects of mouse motion and button clicks.
     ///     The bits in this member can be any reasonable combination of the following values.
     /// </summary>
-    private MouseEventFlags MouseEventFlags;
+    private uint MouseEventFlags;
 
     /// <summary>
     ///     The time stamp for the event, in milliseconds. If this parameter is 0, the system will provide its own time stamp.

@@ -1,14 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Transliterator.Core.Keyboard;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transliterator.Core.Models;
-using Transliterator.Services;
-using Transliterator.Helpers;
-using System.Diagnostics;
 using Transliterator.CoreTests.Keyboard;
 
 namespace Transliterator.Core.Keyboard.Tests

@@ -1,51 +1,46 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
-using System.IO;
-using System.Windows;
 using Transliterator.Services;
-using Transliterator.Views;
 
-namespace Transliterator.ViewModels
+namespace Transliterator.ViewModels;
+
+public partial class SnippetTranslitViewModel : ObservableObject
 {
-    public partial class SnippetTranslitViewModel : ObservableObject
+    [ObservableProperty]
+    private bool _shouldTransliterateOnTheFly;
+
+    [ObservableProperty]
+    private string _transliterationResults;
+
+    [ObservableProperty]
+    private string _userInput;
+
+    private BaseTransliterator baseTransliterator;
+
+    public SnippetTranslitViewModel()
     {
-        private BaseTransliterator baseTransliterator;
+        baseTransliterator = new();
+        // TODO: remove hardcoding
+        baseTransliterator.SetTableModel("Resources/TranslitTables/tableLAT-UKR.json");
+    }
 
-        [ObservableProperty]
-        private string _userInput;
-
-        [ObservableProperty]
-        private string _transliterationResults;
-
-        [ObservableProperty]
-        private bool _shouldTransliterateOnTheFly;
-
-        public SnippetTranslitViewModel()
+    // For some reason, this handler is called only when "Transliterate" button is clicked
+    // TODO: Fix bug
+    partial void OnUserInputChanged(string value)
+    {
+        if (ShouldTransliterateOnTheFly)
         {
-            baseTransliterator = new();
-            // TODO: remove hardcoding
-            baseTransliterator.SetTableModel("Resources/TranslitTables/tableLAT-UKR.json");
-        }
-
-        [RelayCommand]
-        private void TransliterateSnippet()
-        {
-            string textToTransliterate = UserInput;
+            string textToTransliterate = value;
             string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
             TransliterationResults = transliterationResults;
         }
+    }
 
-        // for some reason, this handler is called only when "Transliterate" button is clicked
-        // TODO: Fix bug
-        partial void OnUserInputChanged(string value)
-        {
-            if (ShouldTransliterateOnTheFly)
-            {
-                string textToTransliterate = value;
-                string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
-                TransliterationResults = transliterationResults;
-            }
-        }
+    [RelayCommand]
+    private void TransliterateSnippet()
+    {
+        string textToTransliterate = UserInput;
+        string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
+        TransliterationResults = transliterationResults;
     }
 }

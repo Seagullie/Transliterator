@@ -1,5 +1,4 @@
-﻿using System;
-using Transliterator.Core.Keyboard;
+﻿using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Services;
 
@@ -7,50 +6,20 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : BaseTransliterator
 {
+    private static BufferedTransliteratorService _instance;
+
     // TODO: Sync with settings
     private bool _state = true;
 
-    public bool State { get => _state; set => SetState(value); }
-
-    private void SetState(bool value)
-    {
-        _state = value;
-        if (!_state) buffer.Clear();
-        StateChangedEvent?.Invoke(this, EventArgs.Empty);
-    }
-
-    public event EventHandler StateChangedEvent;
-
-    // Do we really need this simple check? It's not like setting same translit table is expensive or causes any issues
-    public TransliterationTable TransliterationTable
-    {
-        get => transliterationTable;
-        set
-        {
-            if (value != transliterationTable)
-            {
-                transliterationTable = value;
-            }
-        }
-    }
-
-    private static BufferedTransliteratorService _instance;
-
-    public static BufferedTransliteratorService GetInstance()
-    {
-        _instance ??= new BufferedTransliteratorService();
-        return _instance;
-    }
-
-    private LoggerService loggerService;
-
-    private BufferedTransliterator.Buffer buffer = new();
-    // at any given time, buffer can be in these 5 states:
+    // At any given time, buffer can be in these 5 states:
     // 1. empty
     // 2. contains a single character that is not a combo
     // 3. contains a single character that is a combo init
     // 4. contains several characters that are part of a combo
     // 5. contains a full combo
+    private BufferedTransliterator.Buffer buffer = new();
+
+    private LoggerService loggerService;
 
     public BufferedTransliteratorService()
     {
@@ -68,55 +37,33 @@ public class BufferedTransliteratorService : BaseTransliterator
         };
     }
 
-    // haha
-    public new void SetTableModel(string relativePathToJsonFile)
+    public event EventHandler StateChangedEvent;
+
+    public bool State { get => _state; set => SetState(value); }
+
+    // Do we really need this simple check? It's not like setting same translit table is expensive or causes any issues
+    public TransliterationTable TransliterationTable
     {
-        SetTableModel(relativePathToJsonFile);
-    }
-
-    private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
-    {
-        if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
-
-        // suppress keypress
-        e.Handled = true;
-
-        // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
-        string renderedCharacter = e.Character.ToLower();
-        loggerService.LogMessage(this, $"This key was pressed {renderedCharacter}");
-        buffer.Add(renderedCharacter, TransliterationTable);
-
-        // check if should wait for complete combo
-        bool defer = TransliterationTable.IsStartOfCombination(buffer.GetAsString());
-
-        if (!defer)
+        get => transliterationTable;
+        set
         {
-            var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            EnterTransliterationResults(AdaptCase(transliteratedBuffer, e));
+            if (value != transliterationTable)
+            {
+                transliterationTable = value;
+            }
         }
     }
 
-    virtual public string EnterTransliterationResults(string text)
+    public static BufferedTransliteratorService GetInstance()
+    {
+        _instance ??= new BufferedTransliteratorService();
+        return _instance;
+    }
+
+    public virtual string EnterTransliterationResults(string text)
     {
         KeyboardInputGenerator.TextEntry(text);
         return text;
-    }
-
-    public new string Transliterate(string text)
-    {
-        buffer.Clear();
-        return base.Transliterate(text);
-    }
-
-    // TODO: Rename
-    private string AdaptCase(string transliterated, KeyboardHookEventArgs e = null)
-    {  // TODO: Change case logic
-        if (e != null && (e.IsShift || e.IsCapsLockActive))
-        {
-            return transliterated.ToUpper();
-        }
-
-        return transliterated;
     }
 
     // keep buffer in sync with keyboard input by erasing last character on backspace
@@ -148,6 +95,12 @@ public class BufferedTransliteratorService : BaseTransliterator
         return true;
     }
 
+    // haha
+    public new void SetTableModel(string relativePathToJsonFile)
+    {
+        SetTableModel(relativePathToJsonFile);
+    }
+
     // TODO: Rename
     // Irrelevant = everything that is not needed for transliteration
     // things that are needed for transliteration:
@@ -175,5 +128,52 @@ public class BufferedTransliteratorService : BaseTransliterator
         }
 
         return false;
+    }
+
+    public new string Transliterate(string text)
+    {
+        buffer.Clear();
+        return base.Transliterate(text);
+    }
+
+    // TODO: Rename
+    private string AdaptCase(string transliterated, KeyboardHookEventArgs e = null)
+    {
+        // TODO: Change case logic
+        if (e != null && (e.IsShift || e.IsCapsLockActive))
+        {
+            return transliterated.ToUpper();
+        }
+
+        return transliterated;
+    }
+
+    private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
+    {
+        if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
+
+        // suppress keypress
+        e.Handled = true;
+
+        // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
+        string renderedCharacter = e.Character.ToLower();
+        loggerService.LogMessage(this, $"This key was pressed {renderedCharacter}");
+        buffer.Add(renderedCharacter, TransliterationTable);
+
+        // check if should wait for complete combo
+        bool defer = TransliterationTable.IsStartOfCombination(buffer.GetAsString());
+
+        if (!defer)
+        {
+            var transliteratedBuffer = Transliterate(buffer.GetAsString());
+            EnterTransliterationResults(AdaptCase(transliteratedBuffer, e));
+        }
+    }
+
+    private void SetState(bool value)
+    {
+        _state = value;
+        if (!_state) buffer.Clear();
+        StateChangedEvent?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -4,12 +4,12 @@ namespace Transliterator.Core.Services.BufferedTransliterator;
 
 public class Buffer : List<string>
 {
-    // TODO: Refactor. Predicate requires returning bool and that's not what is necessary
-    public event Predicate<string> ComboBrokenEvent;
-
     public Buffer()
     {
     }
+
+    // TODO: Refactor. Predicate requires returning bool and that's not what is necessary
+    public event Predicate<string>? ComboBrokenEvent;
 
     public void Add(string item, TransliterationTable tableModel)
     {

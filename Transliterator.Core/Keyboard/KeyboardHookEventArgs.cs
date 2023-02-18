@@ -1,41 +1,36 @@
-﻿using System.Text;
+﻿// Copyright (c) Dapplo and contributors. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Text;
 using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Keyboard;
 
 public class KeyboardHookEventArgs
 {
-    public static KeyboardHookEventArgs KeyDown(VirtualKeyCode virtualKeyCode, string character = "")
+    public string Character { get; set; } = "";
+
+    /// <summary>
+    /// Returns the DateTimeOffset for this event
+    /// </summary>
+    public DateTimeOffset EventTime
     {
-        return new KeyboardHookEventArgs
+        get
         {
-            Key = virtualKeyCode,
-            IsKeyDown = true,
-            IsModifier = virtualKeyCode.IsModifier(),
-            Character = character
-        };
+            var runningTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - TimeStamp);
+            return DateTimeOffset.Now.Subtract(runningTimeSpan);
+        }
     }
 
-    public static KeyboardHookEventArgs KeyUp(VirtualKeyCode virtualKeyCode, string character = "")
-    {
-        return new KeyboardHookEventArgs
-        {
-            Key = virtualKeyCode,
-            IsKeyDown = false,
-            IsModifier = virtualKeyCode.IsModifier(),
-            Character = character
-        };
-    }
+    /// <summary>
+    /// Details on the keyboard event
+    /// </summary>
+    public ExtendedKeyFlags Flags { get; internal set; } = ExtendedKeyFlags.None;
 
     /// <summary>
     ///     Set this to true if the event is handled, other event-handlers in the chain will not be called
     /// </summary>
     public bool Handled { get; set; }
-
-    /// <summary>
-    /// Specifies if this event is for a modifier key (shift, control, alt etc)
-    /// </summary>
-    public bool IsModifier { get; internal set; }
 
     /// <summary>
     ///     True if Alt key is pressed
@@ -51,6 +46,16 @@ public class KeyboardHookEventArgs
     ///     True if control is pressed
     /// </summary>
     public bool IsControl => IsLeftControl || IsRightControl;
+
+    /// <summary>
+    /// Test if this event is injected by another process with a lower integrity level
+    /// </summary>
+    public bool IsInjectedByLowerIntegrityLevelProcess => (Flags & ExtendedKeyFlags.Injected) != 0 && (Flags & ExtendedKeyFlags.LowerIntegretyInjected) != 0;
+
+    /// <summary>
+    /// Test if this event is injected by another process
+    /// </summary>
+    public bool IsInjectedByProcess => (Flags & ExtendedKeyFlags.Injected) != 0;
 
     /// <summary>
     ///     Is this a key down, else it's up
@@ -76,6 +81,11 @@ public class KeyboardHookEventArgs
     ///     Is the windows key on the left side pressed?
     /// </summary>
     public bool IsLeftWindows { get; internal set; }
+
+    /// <summary>
+    /// Specifies if this event is for a modifier key (shift, control, alt etc)
+    /// </summary>
+    public bool IsModifier { get; internal set; }
 
     /// <summary>
     ///     Is the num-lock currently active?
@@ -132,34 +142,28 @@ public class KeyboardHookEventArgs
     /// </summary>
     public uint TimeStamp { get; internal set; }
 
-    /// <summary>
-    /// Returns the DateTimeOffset for this event
-    /// </summary>
-    public DateTimeOffset EventTime
+    public static KeyboardHookEventArgs KeyDown(VirtualKeyCode virtualKeyCode, string character = "")
     {
-        get
+        return new KeyboardHookEventArgs
         {
-            var runningTimeSpan = TimeSpan.FromMilliseconds(Environment.TickCount - TimeStamp);
-            return DateTimeOffset.Now.Subtract(runningTimeSpan);
-        }
+            Key = virtualKeyCode,
+            IsKeyDown = true,
+            IsModifier = virtualKeyCode.IsModifier(),
+            Character = character
+        };
     }
 
-    /// <summary>
-    /// Details on the keyboard event
-    /// </summary>
-    public ExtendedKeyFlags Flags { get; internal set; } = ExtendedKeyFlags.None;
+    public static KeyboardHookEventArgs KeyUp(VirtualKeyCode virtualKeyCode, string character = "")
+    {
+        return new KeyboardHookEventArgs
+        {
+            Key = virtualKeyCode,
+            IsKeyDown = false,
+            IsModifier = virtualKeyCode.IsModifier(),
+            Character = character
+        };
+    }
 
-    /// <summary>
-    /// Test if this event is injected by another process
-    /// </summary>
-    public bool IsInjectedByProcess => (Flags & ExtendedKeyFlags.Injected) != 0;
-
-    /// <summary>
-    /// Test if this event is injected by another process with a lower integrity level
-    /// </summary>
-    public bool IsInjectedByLowerIntegrityLevelProcess => (Flags & ExtendedKeyFlags.Injected) != 0 && (Flags & ExtendedKeyFlags.LowerIntegretyInjected) != 0;
-
-    /// <inheritdoc />
     public override string ToString()
     {
         var dump = new StringBuilder();
@@ -224,6 +228,4 @@ public class KeyboardHookEventArgs
         }
         return dump.ToString();
     }
-
-    public string Character { get; set; } = "";
 }

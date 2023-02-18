@@ -39,14 +39,11 @@ internal static partial class NativeMethods
     [DllImport(User32, SetLastError = true)]
     private static extern uint SendInput(uint nInputs, [MarshalAs(UnmanagedType.LPArray)][In] Structs.Input[] inputs, int cbSize);
 
-    [DllImport(User32)]
-    public static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
-
     [DllImport(User32, CharSet = CharSet.Auto, ExactSpelling = true)]
     public static extern IntPtr GetKeyboardLayout(uint dwLayout);
 
     [DllImport(User32)]
-    public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+    public static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
 
     [DllImport(User32)]
     public static extern bool GetKeyboardState(byte[] lpKeyState);
@@ -59,4 +56,7 @@ internal static partial class NativeMethods
     [DllImport(User32, ExactSpelling = true)]
     [ResourceExposure(ResourceScope.None)]
     public static extern ushort GetKeyState(VirtualKeyCode keyCode);
+
+    [DllImport(User32)]
+    public static extern uint MapVirtualKey(uint uCode, uint uMapType);
 }

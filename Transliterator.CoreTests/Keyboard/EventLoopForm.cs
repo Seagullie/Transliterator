@@ -10,21 +10,25 @@ namespace Transliterator.CoreTests.Keyboard
         private Mock<BufferedTransliteratorService> mock;
         public BufferedTransliteratorService bufferedTransliteratorService;
 
+
+        private KeyboardHook _keyboardHook;
+
         public EventLoopForm()
         {
             Width = 0;
             Height = 0;
             Visible = false;
 
-            KeyboardHook.SkipInjected = false;
+            _keyboardHook = new KeyboardHook();
+
+            _keyboardHook.SkipInjected = false;
             InitializeComponent();
         }
 
         // TODO: Rename
         public void AttachKeyboardHook()
         {
-            KeyboardHook.SetupSystemHook();
-            KeyboardHook.KeyPressed += KeyPressedHandler;
+            _keyboardHook.KeyPressed += KeyPressedHandler;
         }
 
         public void AttachBufferedTransliteratorService()

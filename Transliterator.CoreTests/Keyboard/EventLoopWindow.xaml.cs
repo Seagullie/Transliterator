@@ -12,7 +12,8 @@ namespace Transliterator.CoreTests.Keyboard
 
         public EventLoopWindow()
         {
-            KeyboardHook.KeyPressed += KeyPressedHandler;
+            // TODO: Fix EventLoopWindow
+            //KeyboardHook.KeyPressed += KeyPressedHandler;
 
             InitializeComponent();
         }

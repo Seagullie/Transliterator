@@ -42,7 +42,7 @@ namespace Transliterator.Core.Services.Tests
         [TestCleanup]
         public void Cleanup()
         {
-            KeyboardHook.ShutdownSystemHook();
+            //KeyboardHook.ShutdownSystemHook();
         }
 
         [TestMethod()]

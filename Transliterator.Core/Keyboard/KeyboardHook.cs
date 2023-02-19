@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Native;
 using Transliterator.Core.Structs;
+
+[assembly: InternalsVisibleTo("Transliterator.CoreTests")]
 
 namespace Transliterator.Core.Keyboard;
 

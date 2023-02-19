@@ -34,11 +34,11 @@ internal sealed class KeyboardHook : IDisposable
     /// </summary>
     private IntPtr _hookId = IntPtr.Zero;
 
-    public event EventHandler<KeyboardHookEventArgs>? KeyPressed;
+    public event EventHandler<KeyboardHookEventArgs>? KeyDown;
 
     private NativeMethods.LowLevelKeyboardProc _proc;
 
-    public bool SkipInjected { get; set; } = true;
+    public bool SkipUnicodeKeys { get; set; } = true;
 
     public KeyboardHook()
     {
@@ -188,17 +188,17 @@ internal sealed class KeyboardHook : IDisposable
         {
             var eventArgs = CreateKeyboardEventArgs(wParam, lParam);
 
-            // Skip the injected key
-            if (SkipInjected && eventArgs.Flags == ExtendedKeyFlags.Injected)
+            // Skip the unicode input
+            if (SkipUnicodeKeys && eventArgs.Key == VirtualKeyCode.Packet)
             {
-                Debug.WriteLine(eventArgs.Key + " ignored (injected)" + " (" + eventArgs.Character + ")");
+                Debug.WriteLine(eventArgs.Key + " ignored " + " (" + eventArgs.Character + ")");
                 return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
             }
 
             if (eventArgs.IsKeyDown)
             {
                 Debug.WriteLine(eventArgs.Key + " pressed" + " (" + eventArgs.Character + ")");
-                KeyPressed?.Invoke(this, eventArgs);
+                KeyDown?.Invoke(this, eventArgs);
 
                 if (eventArgs.Handled)
                 {

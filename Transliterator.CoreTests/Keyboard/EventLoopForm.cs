@@ -21,14 +21,14 @@ namespace Transliterator.CoreTests.Keyboard
 
             _keyboardHook = new KeyboardHook();
 
-            _keyboardHook.SkipInjected = false;
+            _keyboardHook.SkipUnicodeKeys = false;
             InitializeComponent();
         }
 
         // TODO: Rename
         public void AttachKeyboardHook()
         {
-            _keyboardHook.KeyPressed += KeyPressedHandler;
+            _keyboardHook.KeyDown += KeyPressedHandler;
         }
 
         public void AttachBufferedTransliteratorService()

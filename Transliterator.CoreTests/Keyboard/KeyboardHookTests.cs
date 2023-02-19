@@ -1,128 +1,126 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Transliterator.CoreTests.Keyboard;
+using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Keyboard.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class KeyboardHookTests
     {
-        public EventLoopForm testWindow;
-        private const int delayBetweenEachKeypress = 10;
-
-        public KeyboardHookTests()
-        {
-        }
+        private KeyboardHook _hook;
 
         [TestInitialize]
-        public void Initialize()
+        public void Setup()
         {
-            // Runs before each test
-            testWindow = new();
-            testWindow.AttachKeyboardHook();
-
-            new Thread(() =>
-            {
-                testWindow.Show();
-            }).Start();
+            _hook = new KeyboardHook();
         }
 
-        [TestMethod()]
+        [TestCleanup]
+        public void Teardown()
+        {
+            _hook.Dispose();
+        }
+
+        [TestMethod]
+        public void TestKeyDownEvent()
+        {
+            // Arrange
+            bool eventFired = false;
+            _hook.KeyDown += (sender, args) => { eventFired = true; };
+
+            // Act
+            KeyboardInputGenerator.KeyDown(VirtualKeyCode.KeyA);
+
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.IsTrue(eventFired, "KeyDown event was not fired");
+        }
+
+        [TestMethod]
+        public void TestUnicodeKeyDownEvent()
+        {
+            // Arrange
+            bool eventFired = false;
+            _hook.KeyDown += (sender, args) => { eventFired = true; };
+
+            // Act
+            KeyboardInputGenerator.TextEntry("A");
+
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.IsFalse(eventFired, "Unicode key should not trigger KeyDown event");
+        }
+
+        [TestMethod]
         public void ListenToGeneratedKeys()
         {
-            // arrange
+            // Arrange
             string testString = "abcd";
+            string outputString = "";
 
-            // act
+            _hook.SkipUnicodeKeys = false;
+            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            foreach (char i in testString)
-            {
-                KeyboardInputGenerator.TextEntry(i.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            // assert
-            string expected = "abcd";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, outputString);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ListenToGeneratedDifferentCaseKeys()
         {
-            // arrange
+            // Arrange
             string testString = "aBcD";
+            string outputString = "";
 
-            // act
+            _hook.SkipUnicodeKeys = false;
+            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            foreach (char i in testString)
-            {
-                KeyboardInputGenerator.TextEntry(i.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            // assert
-            string expected = "aBcD";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, outputString);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ListenToGeneratedCyrillicKeys()
         {
-            // arrange
+            // Arrange
             string testString = "абвгд";
+            string outputString = "";
 
-            // act
+            _hook.SkipUnicodeKeys = false;
+            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            foreach (char i in testString)
-            {
-                KeyboardInputGenerator.TextEntry(i.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            // assert
-            string expected = "абвгд";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, outputString);
         }
 
         [TestMethod()]
         public void ListenToGeneratedPunctuation()
         {
-            // arrange
+            // Arrange
             string testString = ";!_#";
+            string outputString = "";
 
-            // act
+            _hook.SkipUnicodeKeys = false;
+            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            foreach (char i in testString)
-            {
-                KeyboardInputGenerator.TextEntry(i.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            // assert
-            string expected = ";!_#";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, outputString);
         }
-
-        // TODO: Fix SkipInjected test method
-        //[TestMethod()]
-        //public void SkipInjected()
-        //{
-        //    // arrange
-        //    string testString = "абвгд";
-        //    KeyboardHook.SkipInjected = true;
-
-        //    // act
-
-        //    foreach (char i in testString)
-        //    {
-        //        KeyboardInputGenerator.TextEntry(i.ToString());
-        //        Thread.Sleep(delayBetweenEachKeypress);
-        //    }
-
-        //    KeyboardHook.SkipInjected = false;
-
-        //    // assert
-        //    string expected = "";
-        //    Assert.AreEqual(expected, testWindow.keyboardHookMemory);
-        //}
     }
 }

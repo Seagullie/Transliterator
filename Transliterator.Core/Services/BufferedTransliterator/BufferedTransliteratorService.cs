@@ -30,7 +30,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         loggerService = LoggerService.GetInstance();
 
         _keyboardHook = new();
-        _keyboardHook.KeyPressed += KeyPressedHandler;
+        _keyboardHook.KeyDown += KeyPressedHandler;
 
         buffer.ComboBrokenEvent += (bufferContent) =>
         {

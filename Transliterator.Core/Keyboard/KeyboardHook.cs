@@ -6,14 +6,13 @@ using Transliterator.Core.Structs;
 
 namespace Transliterator.Core.Keyboard;
 
-public sealed class KeyboardHook : IDisposable
+internal sealed class KeyboardHook : IDisposable
 {
     private const int WmKeyDown = 256;
     private const int WmSysKeyDown = 260;
 
     // Flags for the current state
     private static bool _leftAlt;
-
     private static bool _leftCtrl;
     private static bool _leftShift;
     private static bool _leftWin;
@@ -24,7 +23,6 @@ public sealed class KeyboardHook : IDisposable
 
     // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
     private static bool _capsLock;
-
     private static bool _numLock;
     private static bool _scrollLock;
 
@@ -45,6 +43,7 @@ public sealed class KeyboardHook : IDisposable
         _proc = HookCallback;
         SetHook(_proc);
     }
+
     private IntPtr SetHook(NativeMethods.LowLevelKeyboardProc proc)
     {
         using (Process curProcess = Process.GetCurrentProcess())
@@ -98,7 +97,6 @@ public sealed class KeyboardHook : IDisposable
         if (keyboardLowLevelHookStruct.VirtualKeyCode == VirtualKeyCode.Packet)
         {
             uint scanCode = keyboardLowLevelHookStruct.ScanCode;
-            // can't convert to string right away, Convert.ToString simply gives me the scanCode back. So I have to chain it like this
             character = Convert.ToChar(scanCode).ToString();
         }
         else
@@ -111,23 +109,17 @@ public sealed class KeyboardHook : IDisposable
         {
             case VirtualKeyCode.Capital:
                 if (isKeyDown)
-                {
                     _capsLock = !_capsLock;
-                }
                 break;
 
             case VirtualKeyCode.NumLock:
                 if (isKeyDown)
-                {
                     _numLock = !_numLock;
-                }
                 break;
 
             case VirtualKeyCode.Scroll:
                 if (isKeyDown)
-                {
                     _scrollLock = !_scrollLock;
-                }
                 break;
 
             case VirtualKeyCode.LeftShift:
@@ -165,23 +157,23 @@ public sealed class KeyboardHook : IDisposable
 
         var keyEventArgs = new KeyboardHookEventArgs
         {
-            TimeStamp = keyboardLowLevelHookStruct.TimeStamp,
-            Key = keyboardLowLevelHookStruct.VirtualKeyCode,
+            Character = character,
             Flags = keyboardLowLevelHookStruct.Flags,
-            IsModifier = isModifier,
+            IsCapsLockActive = _capsLock,
             IsKeyDown = isKeyDown,
-            IsLeftShift = _leftShift,
-            IsRightShift = _rightShift,
             IsLeftAlt = _leftAlt,
-            IsRightAlt = _rightAlt,
             IsLeftControl = _leftCtrl,
-            IsRightControl = _rightCtrl,
+            IsLeftShift = _leftShift,
             IsLeftWindows = _leftWin,
+            IsModifier = isModifier,
+            IsNumLockActive = _numLock,
+            IsRightAlt = _rightAlt,
+            IsRightControl = _rightCtrl,
+            IsRightShift = _rightShift,
             IsRightWindows = _rightWin,
             IsScrollLockActive = _scrollLock,
-            IsNumLockActive = _numLock,
-            IsCapsLockActive = _capsLock,
-            Character = character
+            Key = keyboardLowLevelHookStruct.VirtualKeyCode,
+            TimeStamp = keyboardLowLevelHookStruct.TimeStamp
         };
 
         return keyEventArgs;

@@ -31,7 +31,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.KeyDown(VirtualKeyCode.KeyA);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.IsTrue(eventFired, "KeyDown event was not fired");
         }
 
@@ -46,7 +45,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry("A");
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.IsFalse(eventFired, "Unicode key should not trigger KeyDown event");
         }
 
@@ -63,9 +61,7 @@ namespace Transliterator.Core.Keyboard.Tests
             // Act
             KeyboardInputGenerator.TextEntry(testString);
 
-
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, outputString);
         }
 
@@ -83,7 +79,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, outputString);
         }
 
@@ -101,7 +96,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, outputString);
         }
 
@@ -119,7 +113,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, outputString);
         }
     }

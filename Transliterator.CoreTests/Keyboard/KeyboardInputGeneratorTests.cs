@@ -36,7 +36,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, _output);
         }
 
@@ -50,7 +49,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, _output);
         }
 
@@ -64,7 +62,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, _output);
         }
 
@@ -78,7 +75,6 @@ namespace Transliterator.Core.Keyboard.Tests
             KeyboardInputGenerator.TextEntry(testString);
 
             // Assert
-            Thread.Sleep(100);  // wait for the event handler to run
             Assert.AreEqual(testString, _output);
         }
     }

@@ -61,6 +61,10 @@ public partial class SettingsService
             var settings = File.ReadAllText(configurationFilePath);
             JsonConvert.PopulateObject(settings, this, JsonSerializerSettings);
         }
+        else
+        {
+            Save();
+        }
 
         SynchronizeJSONAndWindowsStartupSettings();
 

@@ -23,8 +23,6 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     private readonly KeyboardHook _keyboardHook;
 
-
-
     public BufferedTransliteratorService()
     {
         loggerService = LoggerService.GetInstance();
@@ -64,6 +62,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         return _instance;
     }
 
+    // "virtual" for testing purposes
     public virtual string EnterTransliterationResults(string text)
     {
         KeyboardInputGenerator.TextEntry(text);
@@ -103,7 +102,9 @@ public class BufferedTransliteratorService : BaseTransliterator
     // Irrelevant = everything that is not needed for transliteration
     // things that are needed for transliteration:
     // table keys, backspace
-    public bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
+
+    // "virtual" for testing purposes
+    public virtual bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
     {
         string renderedCharacter = e.Character;
 
@@ -134,18 +135,6 @@ public class BufferedTransliteratorService : BaseTransliterator
         return base.Transliterate(text);
     }
 
-    // TODO: Rename
-    private string AdaptCase(string transliterated, KeyboardHookEventArgs e = null)
-    {
-        // TODO: Change case logic
-        if (e != null && (e.IsShift || e.IsCapsLockActive))
-        {
-            return transliterated.ToUpper();
-        }
-
-        return transliterated;
-    }
-
     private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
     {
         if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
@@ -173,5 +162,12 @@ public class BufferedTransliteratorService : BaseTransliterator
         _state = value;
         if (!_state) buffer.Clear();
         StateChangedEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    // this method is for test purposes only
+    // TODO: Move to test version of the class
+    public void AllowUnicode()
+    {
+        _keyboardHook.SkipUnicodeKeys = false;
     }
 }

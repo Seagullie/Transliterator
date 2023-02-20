@@ -1,101 +1,85 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Transliterator.CoreTests.Keyboard;
 
 namespace Transliterator.Core.Keyboard.Tests
 {
     [TestClass()]
     public class KeyboardInputGeneratorTests
     {
-        public EventLoopForm testWindow;
-        private int delayBetweenEachKeypress = 10;
+        private KeyboardHook _hook;
+        private string _output = "";
 
-        [TestInitialize]
-        public void Initialize()
+        public KeyboardInputGeneratorTests()
         {
-            // Runs before each test
-            testWindow = new();
-            testWindow.AttachKeyboardHook();
+            _hook = new KeyboardHook();
+            _hook.SkipUnicodeKeys = false;
+            _hook.KeyDown += (sender, args) => { _output += args.Character; };
+        }
 
-            new Thread(() =>
-            {
-                testWindow.Show();
-            }).Start();
+        ~KeyboardInputGeneratorTests()
+        {
+            _hook.Dispose();
+        }
+
+        [TestInitialize()]
+        public void Cleanup()
+        {
+            _output = "";
         }
 
         [TestMethod()]
         public void InjectText()
         {
-            // arrange
+            // Arrange
             string testString = "abcd";
 
-            // act
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            foreach (char c in testString)
-            {
-                KeyboardInputGenerator.TextEntry(c.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
-
-            // assert
-            string expected = "abcd";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, _output);
         }
 
         [TestMethod()]
         public void InjectEmojis()
         {
-            // arrange
+            // Arrange
             string testString = "😀🤣😇";
 
-            // act
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            foreach (char c in testString)
-            {
-                KeyboardInputGenerator.TextEntry(c.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
-
-            // assert
-            string expected = "😀🤣😇";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, _output);
         }
 
         [TestMethod()]
         public void InjectOsuEmojis()
         {
-            // arrange
+            // Arrange
             string testString = "😃😛😥😊😎😭👎😏😈👍😑✋😀😠👼😬😡😆😖😍😮😯";
 
-            // act
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            foreach (char c in testString)
-            {
-                KeyboardInputGenerator.TextEntry(c.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
-
-            // assert
-            string expected = "😃😛😥😊😎😭👎😏😈👍😑✋😀😠👼😬😡😆😖😍😮😯";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, _output);
         }
 
         [TestMethod()]
         public void InjectUnicode()
         {
-            // arrange
+            // Arrange
             string testString = "♂☢–⛤";
 
-            // act
+            // Act
+            KeyboardInputGenerator.TextEntry(testString);
 
-            foreach (char c in testString)
-            {
-                KeyboardInputGenerator.TextEntry(c.ToString());
-                Thread.Sleep(delayBetweenEachKeypress);
-            }
-
-            // assert
-            string expected = "♂☢–⛤";
-            Assert.AreEqual(expected, testWindow.keyboardHookMemory);
+            // Assert
+            Thread.Sleep(100);  // wait for the event handler to run
+            Assert.AreEqual(testString, _output);
         }
     }
 }

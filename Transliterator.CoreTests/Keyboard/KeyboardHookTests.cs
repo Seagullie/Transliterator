@@ -3,24 +3,24 @@ using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Keyboard.Tests
 {
-    [TestClass]
+    [TestClass()]
     public class KeyboardHookTests
     {
         private KeyboardHook _hook;
 
-        [TestInitialize]
+        [TestInitialize()]
         public void Setup()
         {
             _hook = new KeyboardHook();
         }
 
-        [TestCleanup]
+        [TestCleanup()]
         public void Teardown()
         {
             _hook.Dispose();
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void TestKeyDownEvent()
         {
             // Arrange
@@ -35,7 +35,7 @@ namespace Transliterator.Core.Keyboard.Tests
             Assert.IsTrue(eventFired, "KeyDown event was not fired");
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void TestUnicodeKeyDownEvent()
         {
             // Arrange
@@ -50,7 +50,7 @@ namespace Transliterator.Core.Keyboard.Tests
             Assert.IsFalse(eventFired, "Unicode key should not trigger KeyDown event");
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void ListenToGeneratedKeys()
         {
             // Arrange
@@ -69,7 +69,7 @@ namespace Transliterator.Core.Keyboard.Tests
             Assert.AreEqual(testString, outputString);
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void ListenToGeneratedDifferentCaseKeys()
         {
             // Arrange
@@ -87,7 +87,7 @@ namespace Transliterator.Core.Keyboard.Tests
             Assert.AreEqual(testString, outputString);
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void ListenToGeneratedCyrillicKeys()
         {
             // Arrange

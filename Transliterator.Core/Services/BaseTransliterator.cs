@@ -58,7 +58,7 @@ public class BaseTransliterator
 
     // TODO: Fix it not correctly transliterating strings with both "''" (apostrophe) and "'" (soft sign) in it
     // Test: TransliterateWordsWithApostropheAndSoftSign
-    public string Transliterate(string text)
+    public virtual string Transliterate(string text)
     {
         if (transliterationTable == null)
         {

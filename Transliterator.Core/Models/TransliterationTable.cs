@@ -82,7 +82,7 @@ public partial class TransliterationTable
             string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);
             if (EndsWithComboInit(substr))
             {
-                loggerService.LogMessage(this, $"broken combo detected: {text}");
+                loggerService.LogMessage(this, $"[Table]: Broken combo detected: {text}");
                 return true;
             }
         }
@@ -142,5 +142,14 @@ public partial class TransliterationTable
         };
 
         return false;
+    }
+
+    public bool IsOneToOneReplacementChar(string text)
+    {
+        text = text.ToLower();
+
+        bool isOneChar = text.Length == 1;
+        bool notInCombo = !IsPartOfCombination(text);
+        return isOneChar && notInCombo;
     }
 }

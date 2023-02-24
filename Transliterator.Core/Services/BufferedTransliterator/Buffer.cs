@@ -2,6 +2,7 @@
 
 namespace Transliterator.Core.Services.BufferedTransliterator;
 
+// can be confused with System.Buffer
 public class Buffer : List<string>
 {
     public Buffer()
@@ -11,7 +12,7 @@ public class Buffer : List<string>
     // TODO: Refactor. Predicate requires returning bool and that's not what is necessary
     public event Predicate<string>? ComboBrokenEvent;
 
-    public void Add(string item, TransliterationTable tableModel)
+    public virtual void Add(string item, TransliterationTable tableModel)
     {
         // sometimes combo can be broken by a character contributing towards bigger combo. e. g, "s" (combo init for "sh") can be broken by c and then followed by h for "sch" ("щ")
 

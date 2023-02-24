@@ -18,7 +18,8 @@ namespace Transliterator.ViewModels
         private const string transliterationTablesPath = "Resources/TranslitTables";
 
         // TODO: Refactor into TransliteratorTypeController or something like this
-        private readonly BufferedTransliteratorService bufferedTransliteratorService;
+        //private readonly BufferedTransliteratorService bufferedTransliteratorService;
+        private readonly UnbufferedTransliteratorService unbufferedTransliteratorService;
 
         private readonly SettingsService settingsService;
 
@@ -50,11 +51,11 @@ namespace Transliterator.ViewModels
         public MainWindowViewModel()
         {
             settingsService = SettingsService.GetInstance();
-            bufferedTransliteratorService = BufferedTransliteratorService.GetInstance();
+            unbufferedTransliteratorService = UnbufferedTransliteratorService.GetInstance();
 
             if (settingsService.LastSelectedTransliterationTable != string.Empty)
             {
-                bufferedTransliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
+                unbufferedTransliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
             }
 
             LoadTransliterationTables();
@@ -127,15 +128,15 @@ namespace Transliterator.ViewModels
         {
             if (!string.IsNullOrEmpty(value))
             {
-                bufferedTransliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
+                unbufferedTransliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
             }
         }
 
         [RelayCommand]
         private void ToggleAppState()
         {
-            bufferedTransliteratorService.State = !bufferedTransliteratorService.State;
-            AppState = bufferedTransliteratorService.State ? "On" : "Off";
+            unbufferedTransliteratorService.State = !unbufferedTransliteratorService.State;
+            AppState = unbufferedTransliteratorService.State ? "On" : "Off";
         }
 
         public void SaveSettings()

@@ -28,13 +28,11 @@ public class BufferedTransliteratorService : BaseTransliterator
         loggerService = LoggerService.GetInstance();
 
         _keyboardHook = new();
-        _keyboardHook.KeyDown += KeyPressedHandler;
+        _keyboardHook.KeyDown += HandleKeyPressed;
 
         buffer.ComboBrokenEvent += (bufferContent) =>
         {
-            var transliteratedBuffer = Transliterate(bufferContent);
-            EnterTransliterationResults(transliteratedBuffer);
-
+            Transliterate(bufferContent);
             return true;
         };
     }
@@ -114,47 +112,56 @@ public class BufferedTransliteratorService : BaseTransliterator
 
         if (isIrrelevant)
         {
-            loggerService.LogMessage(this, $"This key was skipped as irrelevant: {renderedCharacter}");
+            loggerService.LogMessage(this, $"[Transliterator]: This key was skipped as irrelevant: {renderedCharacter}");
 
             // transliterate whatever is left in buffer
             // but only if key is not a modifier. Otherwise combos get broken by simply pressing shift, for example
             if (e.IsModifier) return true;
 
-            var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            EnterTransliterationResults(transliteratedBuffer);
-
+            Transliterate(buffer.GetAsString());
             return true;
         }
 
         return false;
     }
 
-    public new string Transliterate(string text)
+    public new virtual string Transliterate(string text)
     {
+        var transliteratedText = base.Transliterate(text);
         buffer.Clear();
-        return base.Transliterate(text);
+
+        EnterTransliterationResults(transliteratedText);
+
+        return transliteratedText;
     }
 
-    protected void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
+    // check if should wait for complete combo
+    protected virtual bool ShouldDeferTransliteration()
+    {
+        bool defer = TransliterationTable.IsStartOfCombination(buffer.GetAsString());
+        return defer;
+    }
+
+    protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
         if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
 
-        // suppress keypress
-        e.Handled = true;
+        SuppressKeypress(e);
 
         // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
         string renderedCharacter = e.Character;
-        loggerService.LogMessage(this, $"This key was pressed {renderedCharacter}");
-        buffer.Add(renderedCharacter, TransliterationTable);
+        AddToBuffer(renderedCharacter);
 
-        // check if should wait for complete combo
-        bool defer = TransliterationTable.IsStartOfCombination(buffer.GetAsString());
-
-        if (!defer)
+        if (!ShouldDeferTransliteration())
         {
-            var transliteratedBuffer = Transliterate(buffer.GetAsString());
-            EnterTransliterationResults(transliteratedBuffer);
+            Transliterate(buffer.GetAsString());
         }
+    }
+
+    // prevent the kbevent from reaching other applications
+    protected virtual void SuppressKeypress(KeyboardHookEventArgs e)
+    {
+        e.Handled = true;
     }
 
     private void SetState(bool value)
@@ -164,8 +171,14 @@ public class BufferedTransliteratorService : BaseTransliterator
         StateChangedEvent?.Invoke(this, EventArgs.Empty);
     }
 
+    // this method is for testing purposes only
     protected void AllowUnicode()
     {
         _keyboardHook.SkipUnicodeKeys = false;
+    }
+
+    protected virtual void AddToBuffer(string renderedCharacter)
+    {
+        buffer.Add(renderedCharacter, TransliterationTable);
     }
 }

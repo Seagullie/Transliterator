@@ -16,6 +16,7 @@ internal sealed class KeyboardHook : IDisposable
 
     // Flags for the current state
     private static bool _leftAlt;
+
     private static bool _leftCtrl;
     private static bool _leftShift;
     private static bool _leftWin;
@@ -26,6 +27,7 @@ internal sealed class KeyboardHook : IDisposable
 
     // Flags for the lock keys, initialize the locking keys state one time, these will be updated later
     private static bool _capsLock;
+
     private static bool _numLock;
     private static bool _scrollLock;
 
@@ -191,13 +193,14 @@ internal sealed class KeyboardHook : IDisposable
             // Skip the unicode input
             if (SkipUnicodeKeys && eventArgs.Key == VirtualKeyCode.Packet)
             {
-                Debug.WriteLine(eventArgs.Key + " ignored " + " (" + eventArgs.Character + ")");
+                Debug.WriteLine($"{eventArgs.Key} ignored ({eventArgs.Character})", $"[KeyboardHook {GetHashCode()}]");
+
                 return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
             }
 
             if (eventArgs.IsKeyDown)
             {
-                Debug.WriteLine(eventArgs.Key + " pressed" + " (" + eventArgs.Character + ")");
+                Debug.WriteLine($"{eventArgs.Key} pressed ({eventArgs.Character})", $"[KeyboardHook {GetHashCode()}]");
                 KeyDown?.Invoke(this, eventArgs);
 
                 if (eventArgs.Handled)

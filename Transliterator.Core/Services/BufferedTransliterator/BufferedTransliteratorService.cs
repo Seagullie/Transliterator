@@ -17,7 +17,7 @@ public class BufferedTransliteratorService : BaseTransliterator
     // 3. contains a single character that is a combo init
     // 4. contains several characters that are part of a combo
     // 5. contains a full combo
-    private BufferedTransliterator.Buffer buffer = new();
+    protected BufferedTransliterator.Buffer buffer = new();
 
     private LoggerService loggerService;
 
@@ -135,7 +135,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         return base.Transliterate(text);
     }
 
-    private void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
+    protected void KeyPressedHandler(object? sender, KeyboardHookEventArgs e)
     {
         if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
 
@@ -164,9 +164,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         StateChangedEvent?.Invoke(this, EventArgs.Empty);
     }
 
-    // this method is for test purposes only
-    // TODO: Move to test version of the class
-    public void AllowUnicode()
+    protected void AllowUnicode()
     {
         _keyboardHook.SkipUnicodeKeys = false;
     }

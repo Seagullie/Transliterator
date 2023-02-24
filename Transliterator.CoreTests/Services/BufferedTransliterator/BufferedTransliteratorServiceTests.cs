@@ -7,63 +7,17 @@ using Transliterator.Core.Models;
 
 namespace Transliterator.Core.Services.Tests
 {
-    // TODO: Refactor into mocks once I learn how to use them properly
-    internal class BufferedTransliteratorServiceTestClass : BufferedTransliteratorService
-    {
-        public string transliterationResults = "";
-
-        private static BufferedTransliteratorServiceTestClass _instance = null;
-
-        public static new BufferedTransliteratorServiceTestClass GetInstance()
-        {
-            _instance ??= new BufferedTransliteratorServiceTestClass();
-            return _instance;
-        }
-
-        // repalces base method with logging function for input param
-        public override string EnterTransliterationResults(string text)
-        {
-            transliterationResults += text;
-            return text;
-        }
-
-        // decorates base SkipIrrelevant
-        public override bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
-        {
-            bool skipped = base.SkipIrrelevant(sender, e);
-            if (skipped)
-            {
-                transliterationResults += e.Character;
-            }
-
-            return skipped;
-        }
-    }
-
     [TestClass()]
     public class BufferedTransliteratorServiceTests
     {
         private BufferedTransliteratorServiceTestClass _transliteratorService;
-        private int delayBetweenEachKeypress = 100;
-
-        // TODO: Move to Utilities or something
-        public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
-        {
-            string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{fileName}.json"));
-            dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
-            Dictionary<string, string> TableAsDictionary = deserializedTableObj;
-
-            return TableAsDictionary;
-        }
 
         public BufferedTransliteratorServiceTests()
         {
             _transliteratorService = BufferedTransliteratorServiceTestClass.GetInstance();
-            // state may depend on settings or whatever, so better set it to true here
-            _transliteratorService.State = true;
-            _transliteratorService.AllowUnicode();
 
-            _transliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson("Resources/TranslitTables/tableLAT-UKR"));
+            // TODO: Write tests for other tables
+            _transliteratorService.TransliterationTable = new TransliterationTable(_transliteratorService.ReadReplacementMapFromJson("Resources/TranslitTables/tableLAT-UKR"));
         }
 
         [TestInitialize()]
@@ -117,6 +71,37 @@ namespace Transliterator.Core.Services.Tests
 
             // assert
             string expected = "сонце";
+            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+        }
+
+        [TestMethod]
+        public void TestNoComboChars()
+        {
+            // arrange
+            string testString = "kolo";
+
+            // act
+            // make sure each char in test string does not belong to a combo
+            foreach (char chr in testString) Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfCombination(chr.ToString()), $"{chr} belongs to a combo");
+
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "коло";
+            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+        }
+
+        [TestMethod()]
+        public void TestCombo()
+        {
+            // arrange
+            string testString = "schuka";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "щука";
             Assert.AreEqual(expected, _transliteratorService.transliterationResults);
         }
 

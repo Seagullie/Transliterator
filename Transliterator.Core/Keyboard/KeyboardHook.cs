@@ -200,7 +200,7 @@ internal sealed class KeyboardHook : IDisposable
 
             if (eventArgs.IsKeyDown)
             {
-                Debug.WriteLine($"{eventArgs.Key} pressed ({eventArgs.Character})", $"[KeyboardHook {GetHashCode()}]");
+                Debug.WriteLine($"{eventArgs.Key} pressed down ({eventArgs.Character})", $"[KeyboardHook {GetHashCode()}]");
                 KeyDown?.Invoke(this, eventArgs);
 
                 if (eventArgs.Handled)

@@ -13,10 +13,10 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     // At any given time, buffer can be in these 5 states:
     // 1. empty
-    // 2. contains a single character that is not a combo
-    // 3. contains a single character that is a combo init
-    // 4. contains several characters that are part of a combo
-    // 5. contains a full combo
+    // 2. contains a single character that is an isolated grapheme
+    // 3. contains a single character that is a beginning of MultiGraph
+    // 4. contains several characters that are part of a MultiGraph
+    // 5. contains a full MultiGraph
     protected BufferedTransliterator.Buffer buffer = new();
 
     private LoggerService loggerService;
@@ -75,7 +75,7 @@ public class BufferedTransliteratorService : BaseTransliterator
             return false;
         }
 
-        if (buffer.Count() == 0)
+        if (buffer.Count == 0)
         {
             return true;
         }
@@ -108,7 +108,7 @@ public class BufferedTransliteratorService : BaseTransliterator
 
         // shift is used for capitalization and should not be ignored
         bool isShortcut = e.IsModifier && !e.IsShift;
-        bool isIrrelevant = !TransliterationTable.isInAlphabet(renderedCharacter) || isShortcut;
+        bool isIrrelevant = !TransliterationTable.IsInAlphabet(renderedCharacter) || isShortcut;
 
         if (isIrrelevant)
         {
@@ -135,10 +135,10 @@ public class BufferedTransliteratorService : BaseTransliterator
         return transliteratedText;
     }
 
-    // check if should wait for complete combo
+    // check if should wait for complete MultiGraph
     protected virtual bool ShouldDeferTransliteration()
     {
-        bool defer = TransliterationTable.IsStartOfCombination(buffer.GetAsString());
+        bool defer = TransliterationTable.IsStartOfMultiGraph(buffer.GetAsString());
         return defer;
     }
 

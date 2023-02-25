@@ -36,7 +36,7 @@ namespace Transliterator.Core.Models.Tests
             string character = "H";
 
             // act
-            bool isInAlphabet = transliterationTable.isInAlphabet(character);
+            bool isInAlphabet = transliterationTable.IsInAlphabet(character);
 
             // assert
 
@@ -44,55 +44,55 @@ namespace Transliterator.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void EndsWithBrokenComboTest()
+        public void EndsWithBrokenMultiGraphTest()
         {
             // arrange
             string text = "sCk";
 
             // act
-            bool isBrokenCombo = transliterationTable.EndsWithBrokenCombo(text);
+            bool isBrokenCombo = transliterationTable.EndsWithBrokenMultiGraph(text);
 
             // assert
             Assert.IsTrue(isBrokenCombo);
         }
 
         [TestMethod()]
-        public void EndsWithComboInitTest()
+        public void EndsWithMultiGraphInitTest()
         {
             // arrange
             string text = "cJ";
 
             // act
-            bool endsWithComboInit = transliterationTable.EndsWithComboInit(text);
+            bool endsWithComboInit = transliterationTable.EndsWithMultiGraphInit(text);
 
             // assert
             Assert.IsTrue(endsWithComboInit);
         }
 
         [TestMethod()]
-        public void IsAddingUpToComboTest()
+        public void IsAddingUpToMultiGraphTest()
         {
             // arrange
             string prefix = "SC";
             string text = "H";
 
             // act
-            bool isAddingUpToCombo = transliterationTable.IsAddingUpToCombo(prefix, text);
+            bool isAddingUpToCombo = transliterationTable.IsAddingUpToMultiGraph(prefix, text);
 
             // assert
             Assert.IsTrue(isAddingUpToCombo);
         }
 
         [TestMethod()]
-        public void IsComboTest()
+        public void IsMultiGraphTest()
         {
             // arrange
             string combo = "sCh";
             string notCombo = "hCs";
 
             // act
-            bool isCombo = transliterationTable.IsCombo(combo);
-            bool isNotCombo = !transliterationTable.IsCombo(notCombo);
+            bool isCombo = transliterationTable.IsMultiGraph(combo);
+            bool isNotCombo = !transliterationTable.IsMultiGraph(notCombo);
 
             // assert
 
@@ -101,20 +101,20 @@ namespace Transliterator.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void IsComboFinisherTest()
+        public void IsMultiGraphFinisherTest()
         {
             // arrange
             string character = "H";
 
             // act
-            bool isComboFinisher = transliterationTable.IsComboFinisher(character);
+            bool isComboFinisher = transliterationTable.IsMultiGraphFinisher(character);
 
             // assert
             Assert.IsTrue(isComboFinisher);
         }
 
         [TestMethod()]
-        public void IsPartOfCombinationTest()
+        public void IsPartOfMultiGraphTest()
         {
             // arrange
             string comboPartSingleChar = "C";
@@ -122,9 +122,9 @@ namespace Transliterator.Core.Models.Tests
             string comboPartSeveralChars2 = "CH";
 
             // act
-            bool isSingleCharPartOfCombination = transliterationTable.IsPartOfCombination(comboPartSingleChar);
-            bool isSeveralChars1PartOfCombination = transliterationTable.IsPartOfCombination(comboPartSeveralChars1);
-            bool isSeveralChars2PartOfCombination = transliterationTable.IsPartOfCombination(comboPartSeveralChars2);
+            bool isSingleCharPartOfCombination = transliterationTable.IsPartOfMultiGraph(comboPartSingleChar);
+            bool isSeveralChars1PartOfCombination = transliterationTable.IsPartOfMultiGraph(comboPartSeveralChars1);
+            bool isSeveralChars2PartOfCombination = transliterationTable.IsPartOfMultiGraph(comboPartSeveralChars2);
 
             // assert
             Assert.IsTrue(isSingleCharPartOfCombination);
@@ -133,19 +133,37 @@ namespace Transliterator.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void IsStartOfCombinationTest()
+        public void IsStartOfMultiGraphTest()
         {
             // arrange
-            string comboStartSingleChar = "C";
-            string comboStartSeveralChars1 = "SC";
+            string MultiGraphStartSingleChar = "C";
+            string MultiGraphStartSeveralChars1 = "SC";
 
             // act
-            bool isSingleCharPartOfCombination = transliterationTable.IsPartOfCombination(comboStartSingleChar);
-            bool isSeveralChars1PartOfCombination = transliterationTable.IsPartOfCombination(comboStartSeveralChars1);
+            bool isSingleCharPartOfMultiGraph = transliterationTable.IsPartOfMultiGraph(MultiGraphStartSingleChar);
+            bool isSeveralChars1PartOfMultiGraph = transliterationTable.IsPartOfMultiGraph(MultiGraphStartSeveralChars1);
 
             // assert
-            Assert.IsTrue(isSingleCharPartOfCombination);
-            Assert.IsTrue(isSeveralChars1PartOfCombination);
+            Assert.IsTrue(isSingleCharPartOfMultiGraph);
+            Assert.IsTrue(isSeveralChars1PartOfMultiGraph);
+        }
+
+        [TestMethod()]
+        public void IsIsolatedGraphemeTest()
+        {
+            // arrange
+            string oneToOneReplacementChars = "kolo";
+            string notOneToOneReplacementChars = "zhcj";
+
+            // act & assert
+            foreach (char ch in oneToOneReplacementChars)
+            {
+                Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(ch.ToString()), $"{ch} is not one-to-one replacement char");
+            }
+            foreach (char ch in notOneToOneReplacementChars)
+            {
+                Assert.IsFalse(transliterationTable.IsIsolatedGrapheme(ch.ToString()), $"{ch} is one-to-one replacement char");
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ using Transliterator.Core.Keyboard;
 namespace Transliterator.Core.Services
 {
     // this version of translit still uses buffer, but only as storage container. User input, however, is not buffered
-    // (except for one-to-one replacements)
+    // (except for Isolated Graphemes. Those can be transliterated right away so there is no need to pass and instantly erase a character)
     public class UnbufferedTransliteratorService : BufferedTransliteratorService
     {
         private static UnbufferedTransliteratorService _instance;
@@ -33,16 +33,17 @@ namespace Transliterator.Core.Services
         {
             // do nothing. That's intended
 
-            // unless that's one-to-one replacement character
-            if (transliterationTable.IsOneToOneReplacementChar(e.Character))
+            //unless that's Isolated Grapheme
+            if (transliterationTable.IsIsolatedGrapheme(e.Character))
             {
                 e.Handled = true;
             }
-            // or current (one that's in buffer) combination finisher
-            else if (transliterationTable.IsAddingUpToCombo(buffer.GetAsString(), e.Character))
-            {
-                e.Handled = true;
-            }
+
+            //// or current (one that's in buffer) MultiGraph finisher
+            //else if (transliterationTable.IsAddingUpToMultiGraph(buffer.GetAsString(), e.Character))
+            //{
+            //    e.Handled = true;
+            //}
         }
 
         // should never defer as it's unbuffered version
@@ -53,21 +54,21 @@ namespace Transliterator.Core.Services
 
         public override string Transliterate(string text)
         {
-            if (text == string.Empty) return "";
+            // Isolated Graphemes are still buffered
+            //if (!transliterationTable.IsIsolatedGrapheme(text))
+            //{
+            //    int nOfCharsToErase = text.Length;
+            //    // MultiGraph finishers are also suppressed, so no need to erase them
+            //    if (transliterationTable.IsMultiGraph(text))
+            //    {
+            //        nOfCharsToErase -= 1;
+            //    }
+            //    // -1 if
+            //}
 
-            // one-to-one replacement is still buffered
-            if (!transliterationTable.IsOneToOneReplacementChar(text))
-            {
-                int nOfCharsToErase = text.Length;
-                // combo finishers are also suppressed, so no need to erase them
-                if (transliterationTable.IsCombo(text))
-                {
-                    nOfCharsToErase -= 1;
-                }
-                // -1 if
+            int nOfCharsToErase = text.Length;
+            Erase(nOfCharsToErase);
 
-                Erase(nOfCharsToErase);
-            }
             string transilteratedText = base.Transliterate(text);
             return transilteratedText;
         }

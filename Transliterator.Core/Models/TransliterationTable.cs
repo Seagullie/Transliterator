@@ -1,4 +1,6 @@
-﻿using Transliterator.Core.Services;
+﻿using System.Diagnostics;
+using Transliterator.Core.Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Transliterator.Core.Models;
 
@@ -20,9 +22,21 @@ public partial class TransliterationTable
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
     public List<string> Alphabet { get; private set; } = new();
 
-    // Combo = more than one letter. Examples of combos: ch, sh, zh,
-    // while s, d, f are not combos
-    public List<string> Combos { get; private set; } = new();
+    // Multigraph = more than one letter. Examples of MultiGraphs: ch, sh, zh,
+    // while s, d, f are not MultiGraphs, but graphemes
+    public List<string> MultiGraphs { get; private set; } = new();
+
+    public List<string> DiGraphs { get; private set; } = new();
+    public List<string> TriGraphs { get; private set; } = new();
+
+    // tetra and more are going to be bad user experience
+    public List<string> TetraGraphs { get; private set; } = new();
+
+    // Isolated Grapheme = a single letter that doesn't appear in any MultiGraph
+    public List<string> IsolatedGraphemes { get; private set; } = new();
+
+    // MultiGraphGraphemes = a single letter that appears in a MultiGraph
+    public List<string> MultiGraphGraphemes { get; private set; } = new();
 
     public List<string> Keys { get; private set; } = new();
     public string Name { get; set; }
@@ -52,35 +66,41 @@ public partial class TransliterationTable
     private void UpdateKeys()
     {
         Keys = ReplacementMap.Keys.OrderByDescending(key => key.Length).ToList();
-        Combos = Keys.Where(key => key.Length > 1).ToList();
+        MultiGraphs = Keys.Where(key => key.Length > 1).ToList();
+        DiGraphs = Keys.Where(key => key.Length == 2).ToList();
+        TriGraphs = Keys.Where(key => key.Length == 3).ToList();
+        TetraGraphs = Keys.Where(key => key.Length == 4).ToList();
+
+        IsolatedGraphemes = Keys.Where(key => key.Length == 1 && !IsPartOfMultiGraph(key)).ToList();
+        MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key)).ToList();
+
         UpdateAlphabet();
     }
 
-    public bool isInAlphabet(string key)
+    public bool IsInAlphabet(string key)
     {
-        {
-            return Alphabet.Contains(key.ToLower());
-        }
+        return Alphabet.Contains(key.ToLower());
     }
 
-    // Removes last character of text param and checks whether the remainder ends with combo init
-    public bool EndsWithBrokenCombo(string text)
+    // TODO: Annotate
+    // Removes last character of text param and checks whether the remainder ends with unfinished MultiGraph
+    public bool EndsWithBrokenMultiGraph(string text)
     {
-        if (text.Length < 2 || IsCombo(text) || Combos.Count == 0)
+        if (text.Length < 2 || IsMultiGraph(text) || MultiGraphs.Count == 0)
         {
             return false;
         }
 
-        string textWithoutLastCharacter = text.Substring(0, text.Length - 1);
+        string textWithoutLastCharacter = text[..^1];
 
         // Clamping combo length to text length:
-        int longestComboLen = Math.Clamp(Combos[0].Length, 0, textWithoutLastCharacter.Length); // textWithoutLastCharacter.Length < Combos[0].Length ? textWithoutLastCharacter.Length : Combos[0].Length;
+        int longestMultiGraphLen = Math.Clamp(MultiGraphs[0].Length, 0, textWithoutLastCharacter.Length);
 
-        for (int i = 1; i < longestComboLen + 1; i++)
+        for (int i = 1; i < longestMultiGraphLen + 1; i++)
         {
-            // Now check all the substrings on whether those are combo inits or not by slicing more and more each time
+            // Now check all the substrings on whether those are MultiGraph inits or not by slicing more and more each time
             string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);
-            if (EndsWithComboInit(substr))
+            if (EndsWithMultiGraphInit(substr))
             {
                 loggerService.LogMessage(this, $"[Table]: Broken combo detected: {text}");
                 return true;
@@ -90,28 +110,29 @@ public partial class TransliterationTable
         return false;
     }
 
-    public bool EndsWithComboInit(string text)
+    public bool EndsWithMultiGraphInit(string text)
     {
-        return IsStartOfCombination(text[text.Length - 1].ToString());
+        char lastChar = text[^1];
+        return IsStartOfMultiGraph(lastChar.ToString());
     }
 
-    public bool IsAddingUpToCombo(string prefix, string characterFinisher)
+    public bool IsAddingUpToMultiGraph(string prefix, string characterFinisher)
     {
-        return IsCombo(prefix + characterFinisher);
+        return IsMultiGraph(prefix + characterFinisher);
     }
 
-    public bool IsCombo(string text)
+    public bool IsMultiGraph(string text)
     {
-        return Combos.Contains(text.ToLower());
+        return MultiGraphs.Contains(text.ToLower());
     }
 
-    public bool IsComboFinisher(string character)
+    public bool IsMultiGraphFinisher(string text)
     {
-        character = character.ToLower();
+        text = text.ToLower();
 
-        foreach (string combo in Combos)
+        foreach (string mg in MultiGraphs)
         {
-            if (combo.EndsWith(character))
+            if (mg.EndsWith(text))
             {
                 return true;
             }
@@ -120,36 +141,35 @@ public partial class TransliterationTable
         return false;
     }
 
-    public bool IsPartOfCombination(string text)
+    public bool IsPartOfMultiGraph(string text)
     {
         text = text.ToLower();
 
-        foreach (string combo in Combos)
+        foreach (string mg in MultiGraphs)
         {
-            if (combo.Contains(text) && combo.Length > text.Length) return true;
+            if (mg.Contains(text) && mg.Length > text.Length) return true;
         };
 
         return false;
     }
 
-    public bool IsStartOfCombination(string text)
+    public bool IsStartOfMultiGraph(string text)
     {
         text = text.ToLower();
 
-        foreach (string combo in Combos)
+        foreach (string mg in MultiGraphs)
         {
-            if (combo.StartsWith(text) && combo.Length > text.Length) return true;
+            if (mg.StartsWith(text) && mg.Length > text.Length) return true;
         };
 
         return false;
     }
 
-    public bool IsOneToOneReplacementChar(string text)
+    public bool IsIsolatedGrapheme(string text)
     {
         text = text.ToLower();
 
-        bool isOneChar = text.Length == 1;
-        bool notInCombo = !IsPartOfCombination(text);
-        return isOneChar && notInCombo;
+        bool isInIsolatedGraphemeList = IsolatedGraphemes.Contains(text);
+        return isInIsolatedGraphemeList;
     }
 }

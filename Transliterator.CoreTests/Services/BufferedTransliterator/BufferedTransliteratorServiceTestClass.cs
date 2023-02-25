@@ -9,9 +9,6 @@ namespace Transliterator.Core.Services.Tests
 
         private static BufferedTransliteratorServiceTestClass _instance = null;
 
-        // warning: this hook does not override base class hook
-        private KeyboardHook _keyboardHook;
-
         public static new BufferedTransliteratorServiceTestClass GetInstance()
         {
             _instance ??= new BufferedTransliteratorServiceTestClass();

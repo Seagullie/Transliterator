@@ -16,7 +16,7 @@ public class Buffer : List<string>
     {
         // sometimes combo can be broken by a character contributing towards bigger combo. e. g, "s" (combo init for "sh") can be broken by c and then followed by h for "sch" ("щ")
 
-        if (tableModel.EndsWithBrokenCombo(GetAsString() + item) && !tableModel.IsPartOfCombination(GetAsString() + item))
+        if (tableModel.EndsWithBrokenMultiGraph(GetAsString() + item) && !tableModel.IsPartOfMultiGraph(GetAsString() + item))
         {
             {
                 ComboBrokenEvent?.Invoke(GetAsString());

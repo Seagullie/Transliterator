@@ -33,7 +33,7 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestMethod]
-        public void TestComboBreakByOtherKey()
+        public void TestLongWord()
         {
             // arrange
             string testString = "Odynadcjatytomnyj.";
@@ -47,7 +47,25 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestMethod]
-        public void TestComboBreakByComboInit()
+        public void TestMultiGraphBreakByIsolatedGrapheme()
+        {
+            // arrange
+            string combo = "jak";
+            char nonComboChar = combo[^1];
+
+            // act
+            KeyboardInputGenerator.TextEntry(combo);
+            // make sure last char in test string does not belong to a combo
+            Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfMultiGraph(nonComboChar.ToString()), $"{nonComboChar} belongs to a combo");
+
+            // assert
+            string expected = "як";
+            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+        }
+
+        // MG = MultiGraph
+        [TestMethod]
+        public void TestMGBreakByMGInit()
         {
             // arrange
             string testString = "Cjatka";
@@ -60,6 +78,7 @@ namespace Transliterator.Core.Services.Tests
             Assert.AreEqual(expected, _transliteratorService.transliterationResults);
         }
 
+        // TODO: Rename
         [TestMethod]
         public void TestSimple()
         {
@@ -75,14 +94,14 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestMethod]
-        public void TestNoComboChars()
+        public void TestIsolatedGraphemesWord()
         {
             // arrange
             string testString = "kolo";
 
             // act
             // make sure each char in test string does not belong to a combo
-            foreach (char chr in testString) Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfCombination(chr.ToString()), $"{chr} belongs to a combo");
+            foreach (char chr in testString) Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfMultiGraph(chr.ToString()), $"{chr} belongs to a combo");
 
             KeyboardInputGenerator.TextEntry(testString);
 
@@ -92,7 +111,7 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestMethod()]
-        public void TestCombo()
+        public void TestMultiGraph()
         {
             // arrange
             string testString = "schuka";
@@ -106,7 +125,7 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestMethod()]
-        public void TestUppercaseCombo()
+        public void TestUppercaseMultiGraph()
         {
             // arrange
             string testString = "Schuka";
@@ -120,7 +139,7 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestMethod()]
-        public void TestComboBreakByPunctuation()
+        public void TestMultiGraphBreakByPunctuation()
         {
             // arrange
             string testString = "sc!";

@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 
@@ -149,6 +146,20 @@ namespace Transliterator.Core.Services.Tests
 
             // assert
             string expected = "сц!";
+            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+        }
+
+        [TestMethod]
+        public void TestSeveralWords()
+        {
+            // arrange
+            string testString = "Odynadcjatytomnyj slovnyk ukrajins'koji movy.";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "Одинадцятитомний словник української мови.";
             Assert.AreEqual(expected, _transliteratorService.transliterationResults);
         }
     }

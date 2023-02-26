@@ -1,4 +1,5 @@
-﻿using Transliterator.Core.Keyboard;
+﻿using System.Reflection;
+using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Services;
 
@@ -6,11 +7,6 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : BaseTransliterator
 {
-    private static BufferedTransliteratorService _instance;
-
-    // TODO: Sync with settings
-    private bool _state = true;
-
     // At any given time, buffer can be in these 5 states:
     // 1. empty
     // 2. contains a single character that is an isolated grapheme
@@ -19,9 +15,14 @@ public class BufferedTransliteratorService : BaseTransliterator
     // 5. contains a full MultiGraph
     protected BufferedTransliterator.Buffer buffer = new();
 
-    private LoggerService loggerService;
+    private static BufferedTransliteratorService _instance;
 
     private readonly KeyboardHook _keyboardHook;
+
+    // TODO: Sync with settings
+    private bool _state = true;
+
+    private LoggerService loggerService;
 
     public BufferedTransliteratorService()
     {
@@ -30,14 +31,14 @@ public class BufferedTransliteratorService : BaseTransliterator
         _keyboardHook = new();
         _keyboardHook.KeyDown += HandleKeyPressed;
 
-        buffer.ComboBrokenEvent += (bufferContent) =>
+        buffer.MultiGraphBrokenEvent += (IncompleteMultiGraph) =>
         {
-            Transliterate(bufferContent);
+            Transliterate(IncompleteMultiGraph);
             return true;
         };
     }
 
-    public event EventHandler StateChangedEvent;
+    public event EventHandler? StateChangedEvent;
 
     public bool State { get => _state; set => SetState(value); }
 
@@ -60,11 +61,28 @@ public class BufferedTransliteratorService : BaseTransliterator
         return _instance;
     }
 
-    // "virtual" for testing purposes
-    public virtual string EnterTransliterationResults(string text)
+    // TODO: Come up with better way to share the event object
+    private KeyboardHookEventArgs? currentlyHandledKeyboardHookEvent = null;
+
+    protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
-        KeyboardInputGenerator.TextEntry(text);
-        return text;
+        currentlyHandledKeyboardHookEvent = e;
+
+        if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
+
+        // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
+        string renderedCharacter = e.Character;
+        AddToBuffer(renderedCharacter);
+
+        // has to be called after .AddToBuffer()
+        SuppressKeypress(e);
+
+        if (!ShouldDeferTransliteration())
+        {
+            Transliterate(buffer.GetAsString());
+        }
+
+        currentlyHandledKeyboardHookEvent = null;
     }
 
     // keep buffer in sync with keyboard input by erasing last character on backspace
@@ -118,21 +136,29 @@ public class BufferedTransliteratorService : BaseTransliterator
             // but only if key is not a modifier. Otherwise combos get broken by simply pressing shift, for example
             if (e.IsModifier) return true;
 
-            Transliterate(buffer.GetAsString());
+            // TODO: Refactor
+            if (buffer.Count != 0)
+            {
+                // this should trigger broken MG event and transliterate whatever is left in buffer
+                AddToBuffer(renderedCharacter);
+                // remove irrelevant character from buffer afterwards
+                buffer.Clear();
+            }
             return true;
         }
 
         return false;
     }
 
-    public new virtual string Transliterate(string text)
+    protected virtual void AddToBuffer(string renderedCharacter)
     {
-        var transliteratedText = base.Transliterate(text);
-        buffer.Clear();
+        buffer.Add(renderedCharacter, TransliterationTable);
+    }
 
-        EnterTransliterationResults(transliteratedText);
-
-        return transliteratedText;
+    // prevent the kbevent from reaching other applications
+    protected virtual void SuppressKeypress(KeyboardHookEventArgs e)
+    {
+        e.Handled = true;
     }
 
     // check if should wait for complete MultiGraph
@@ -142,33 +168,31 @@ public class BufferedTransliteratorService : BaseTransliterator
         return defer;
     }
 
-    protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
+    // "virtual" for testing purposes
+    public virtual string EnterTransliterationResults(string text)
     {
-        if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
+        KeyboardInputGenerator.TextEntry(text);
+        return text;
+    }
 
-        SuppressKeypress(e);
+    public new virtual string Transliterate(string text)
+    {
+        var transliteratedText = base.Transliterate(text);
+        buffer.Clear();
 
-        // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
-        string renderedCharacter = e.Character;
-        AddToBuffer(renderedCharacter);
+        EnterTransliterationResults(transliteratedText);
+        return transliteratedText;
+    }
 
-        if (!ShouldDeferTransliteration())
+    // we could also copy case from previously entered character
+    public override string GetCaseForNonalphabeticString(string replacement)
+    {
+        if (currentlyHandledKeyboardHookEvent != null && currentlyHandledKeyboardHookEvent.IsCapsLockActive)
         {
-            Transliterate(buffer.GetAsString());
+            return replacement.ToUpper();
         }
-    }
 
-    // prevent the kbevent from reaching other applications
-    protected virtual void SuppressKeypress(KeyboardHookEventArgs e)
-    {
-        e.Handled = true;
-    }
-
-    private void SetState(bool value)
-    {
-        _state = value;
-        if (!_state) buffer.Clear();
-        StateChangedEvent?.Invoke(this, EventArgs.Empty);
+        return replacement;
     }
 
     // this method is for testing purposes only
@@ -177,8 +201,10 @@ public class BufferedTransliteratorService : BaseTransliterator
         _keyboardHook.SkipUnicodeKeys = false;
     }
 
-    protected virtual void AddToBuffer(string renderedCharacter)
+    private void SetState(bool value)
     {
-        buffer.Add(renderedCharacter, TransliterationTable);
+        _state = value;
+        if (!_state) buffer.Clear();
+        StateChangedEvent?.Invoke(this, EventArgs.Empty);
     }
 }

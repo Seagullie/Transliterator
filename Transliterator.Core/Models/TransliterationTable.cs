@@ -32,6 +32,9 @@ public partial class TransliterationTable
     // tetra and more are going to be bad user experience
     public List<string> TetraGraphs { get; private set; } = new();
 
+    // Grapheme = a single letter
+    public List<string> Graphemes { get; private set; } = new();
+
     // Isolated Grapheme = a single letter that doesn't appear in any MultiGraph
     public List<string> IsolatedGraphemes { get; private set; } = new();
 
@@ -67,6 +70,7 @@ public partial class TransliterationTable
     {
         Keys = ReplacementMap.Keys.OrderByDescending(key => key.Length).ToList();
         MultiGraphs = Keys.Where(key => key.Length > 1).ToList();
+        Graphemes = Keys.Where(key => key.Length == 1).ToList();
         DiGraphs = Keys.Where(key => key.Length == 2).ToList();
         TriGraphs = Keys.Where(key => key.Length == 3).ToList();
         TetraGraphs = Keys.Where(key => key.Length == 4).ToList();
@@ -165,11 +169,27 @@ public partial class TransliterationTable
         return false;
     }
 
+    public bool IsGrapheme(string text)
+    {
+        text = text.ToLower();
+
+        bool isInGraphemeList = Graphemes.Contains(text);
+        return isInGraphemeList;
+    }
+
     public bool IsIsolatedGrapheme(string text)
     {
         text = text.ToLower();
 
         bool isInIsolatedGraphemeList = IsolatedGraphemes.Contains(text);
         return isInIsolatedGraphemeList;
+    }
+
+    public bool IsMultiGraphGrapheme(string text)
+    {
+        text = text.ToLower();
+
+        bool isInGraphemeList = MultiGraphGraphemes.Contains(text);
+        return isInGraphemeList;
     }
 }

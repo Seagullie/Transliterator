@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Keyboard;
+using Transliterator.Core.Models;
 
 namespace Transliterator.Core.Services
 {
@@ -18,6 +19,7 @@ namespace Transliterator.Core.Services
         public static new UnbufferedTransliteratorService GetInstance()
         {
             _instance ??= new UnbufferedTransliteratorService();
+
             return _instance;
         }
 
@@ -29,45 +31,51 @@ namespace Transliterator.Core.Services
         }
 
         // should not prevent the kbevent from reaching other applications as this version of transliterator does not buffer user input
+        // exceptions apply
+        // general overview:
+        // we're working at grapheme level here
+        // there are two types of graphemes: isolated and multigraph
+        // isolated graphemes are transliterated right away
+        // multigraph graphemes are skipped, if they start or contribute to a multigraph.
+        // if they finish a multigraph, then they are suppressed and entire multigraph is transliterated
         protected override void SuppressKeypress(KeyboardHookEventArgs e)
         {
-            // do nothing. That's intended
+            string renderedCharacter = e.Character;
+            string bufferAsString = buffer.GetAsString();
+            TransliterationTable table = transliterationTable;
 
-            //unless that's Isolated Grapheme
-            if (transliterationTable.IsIsolatedGrapheme(e.Character))
+            // unless that's Isolated Grapheme
+            // or current (one that's in buffer) MultiGraph finisher
+            if (transliterationTable.IsIsolatedGrapheme(renderedCharacter) || table.IsMultiGraph(bufferAsString))
             {
                 e.Handled = true;
             }
 
-            //// or current (one that's in buffer) MultiGraph finisher
-            //else if (transliterationTable.IsAddingUpToMultiGraph(buffer.GetAsString(), e.Character))
-            //{
-            //    e.Handled = true;
-            //}
+            // or MultiGraph grapheme outside MultiGraph
+            // those can be transliterated instantly. Unless they initiate a MultiGraph
+            else if (!table.IsStartOfMultiGraph(bufferAsString) && table.IsMultiGraphGrapheme(renderedCharacter))
+            {
+                e.Handled = true;
+            }
         }
-
-        // should never defer as it's unbuffered version
-        //protected override bool ShouldDeferTransliteration()
-        //{
-        //    return false;
-        //}
 
         public override string Transliterate(string text)
         {
-            // Isolated Graphemes are still buffered
-            //if (!transliterationTable.IsIsolatedGrapheme(text))
-            //{
-            //    int nOfCharsToErase = text.Length;
-            //    // MultiGraph finishers are also suppressed, so no need to erase them
-            //    if (transliterationTable.IsMultiGraph(text))
-            //    {
-            //        nOfCharsToErase -= 1;
-            //    }
-            //    // -1 if
-            //}
+            TransliterationTable table = TransliterationTable;
+
+            // TODO: Refactor erase block into its own function
+            // -- Erase Block --
+
+            // Main use case for erase is when there is a need to delete graphemes leading up to MultiGraph
 
             int nOfCharsToErase = text.Length;
+            if (table.IsMultiGraph(text)) nOfCharsToErase -= 1;
+
+            // TODO: Annotate
+            else if (table.IsGrapheme(text) && !buffer.MultiGraphBrokenEventIsBeingHandled) nOfCharsToErase = 0;
             Erase(nOfCharsToErase);
+
+            // -- Erase Block --
 
             string transilteratedText = base.Transliterate(text);
             return transilteratedText;

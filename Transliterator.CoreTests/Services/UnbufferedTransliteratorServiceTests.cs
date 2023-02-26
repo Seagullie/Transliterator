@@ -11,9 +11,9 @@ using Transliterator.Core.Models;
 
 namespace Transliterator.Core.Services.Tests
 {
-    // TODO: Fix test inheritance
+    // TODO: Inherit from Buffered Translit tests
     [TestClass()]
-    public class UnbufferedTransliteratorServiceTests : BufferedTransliteratorServiceTests
+    public class UnbufferedTransliteratorServiceTests
     {
         private UnbufferedTransliteratorServiceTestClass _transliteratorService;
 
@@ -26,32 +26,33 @@ namespace Transliterator.Core.Services.Tests
         }
 
         [TestInitialize()]
-        public new void Initialize()
+        public void Initialize()
         {
             // Runs before each test
         }
 
         [TestCleanup()]
-        public new void Teardown()
+        public void Teardown()
         {
-            _transliteratorService.transliterationResults = "";
+            _transliteratorService.IO = "";
+            _transliteratorService.ClearBuffer();
         }
 
         [TestMethod]
-        public new void TestNoComboCharsWord_()
+        public void TestIsolatedGraphemeWord_()
         {
             // arrange
             string testString = "kolo";
 
             // act
-            // make sure each char in test string does not belong to a combo
-            foreach (char chr in testString) Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfMultiGraph(chr.ToString()), $"{chr} belongs to a combo");
+            // make sure each char in test string is an isolated grapheme
+            foreach (char chr in testString) Assert.IsTrue(_transliteratorService.transliterationTable.IsIsolatedGrapheme(chr.ToString()), $"{chr} belongs to a combo");
 
             KeyboardInputGenerator.TextEntry(testString);
 
             // assert
             string expected = "коло";
-            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+            Assert.AreEqual(expected, _transliteratorService.IO);
         }
 
         [TestMethod]
@@ -65,12 +66,12 @@ namespace Transliterator.Core.Services.Tests
 
             // assert
             string expected = "сонце";
-            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+            Assert.AreEqual(expected, _transliteratorService.IO);
         }
 
-        // Todo: test all combofinishers
+        // Todo: test all MG finishers
         [TestMethod]
-        public void TestComboFinishers()
+        public void TestMultiGraphFinishers()
         {
             // arrange
             string testString = "h";
@@ -80,11 +81,11 @@ namespace Transliterator.Core.Services.Tests
 
             // assert
             string expected = "г";
-            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+            Assert.AreEqual(expected, _transliteratorService.IO);
         }
 
         [TestMethod()]
-        public void TestSimpleCombo()
+        public void TestDiGraph()
         {
             // arrange
             string testString = "ch";
@@ -94,7 +95,197 @@ namespace Transliterator.Core.Services.Tests
 
             // assert
             string expected = "ч";
-            Assert.AreEqual(expected, _transliteratorService.transliterationResults);
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // TODO: Test all DiGraphs by iterating over .DiGraphs
+        [TestMethod()]
+        public void TestDiGraphs()
+        {
+            // arrange
+            string testString = "chzhsh";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "чжш";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // TODO: Test all TriGraphs by iterating over .TriGraphs
+        [TestMethod()]
+        public void TestTriGraphs()
+        {
+            // arrange
+            string testString = "sch";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "щ";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // TODO: Test all MultiGraphs by iterating over .MultiGraphs
+        [TestMethod()]
+        public void TestMultiGraphs()
+        {
+            // arrange
+            string testString = "chzhshsch";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "чжшщ";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        [TestMethod()]
+        public void TestBufferStateOnIncompleteMultiGraph_()
+        {
+            // arrange
+            string testString = "sc"; // sch
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "sc";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        [TestMethod()]
+        public void TestBrokenMultiGraph()
+        {
+            // arrange
+            string testString = "ce"; // broken sch or ch
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "це";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // TODO: Rename
+        [TestMethod()]
+        public void TestUnnamed()
+        {
+            // arrange
+            string testString = " k";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = " к";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // Note: This is copypaste from BufferedTransliteratorServiceTests
+        [TestMethod()]
+        public void TestMultiGraphBreakByPunctuation()
+        {
+            // arrange
+            string testString = "sc!";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "сц!";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        [TestMethod()]
+        public void TestMultiGraphStartBreakByPunctuation()
+        {
+            // arrange
+            string testString = "j!";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "й!";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // MG = MultiGraph
+        // Note: This is copypaste from BufferedTransliteratorServiceTests
+        [TestMethod]
+        public void TestMGBreakByMGInit()
+        {
+            // arrange
+            string testString = "cja";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "ця";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        [TestMethod]
+        public void TestLongWord()
+        {
+            // arrange
+            string testString = "Odynadcjatytomnyj.";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "Одинадцятитомний.";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        [TestMethod]
+        public void TestTwoWords()
+        {
+            // arrange
+            string testString = "Odynadcjatytomnyj slovnyk.";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "Одинадцятитомний словник.";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        [TestMethod]
+        public void TestSeveralWords()
+        {
+            // arrange
+            string testString = "Odynadcjatytomnyj slovnyk ukrajins'koji movy.";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "Одинадцятитомний словник української мови.";
+            Assert.AreEqual(expected, _transliteratorService.IO);
+        }
+
+        // TODO: Simulate Caps Lock in Test Class
+        [TestMethod]
+        public void TestNoCaseChars()
+        {
+            // arrange
+            string testString = "SIL' ";
+
+            // act
+            KeyboardInputGenerator.TextEntry(testString);
+
+            // assert
+            string expected = "СІЛЬ ";
+            Assert.AreEqual(expected, _transliteratorService.IO);
         }
     }
 }

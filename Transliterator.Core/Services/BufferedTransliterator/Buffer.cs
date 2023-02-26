@@ -5,12 +5,14 @@ namespace Transliterator.Core.Services.BufferedTransliterator;
 // can be confused with System.Buffer
 public class Buffer : List<string>
 {
+    public bool MultiGraphBrokenEventIsBeingHandled = false;
+
     public Buffer()
     {
     }
 
     // TODO: Refactor. Predicate requires returning bool and that's not what is necessary
-    public event Predicate<string>? ComboBrokenEvent;
+    public event Predicate<string>? MultiGraphBrokenEvent;
 
     public virtual void Add(string item, TransliterationTable tableModel)
     {
@@ -18,9 +20,9 @@ public class Buffer : List<string>
 
         if (tableModel.EndsWithBrokenMultiGraph(GetAsString() + item) && !tableModel.IsPartOfMultiGraph(GetAsString() + item))
         {
-            {
-                ComboBrokenEvent?.Invoke(GetAsString());
-            }
+            MultiGraphBrokenEventIsBeingHandled = true;
+            MultiGraphBrokenEvent?.Invoke(GetAsString());
+            MultiGraphBrokenEventIsBeingHandled = false;
         }
 
         base.Add(item);

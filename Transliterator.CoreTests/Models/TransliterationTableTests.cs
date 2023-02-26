@@ -30,7 +30,7 @@ namespace Transliterator.Core.Models.Tests
         }
 
         [TestMethod()]
-        public void isInAlphabetTest()
+        public void IsInAlphabetTest()
         {
             // arrange
             string character = "H";

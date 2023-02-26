@@ -4,7 +4,7 @@ namespace Transliterator.Core.Services.Tests
 {
     internal class UnbufferedTransliteratorServiceTestClass : UnbufferedTransliteratorService
     {
-        public string transliterationResults = "";
+        public string IO = ""; // iuser input + transliterator output
 
         private static UnbufferedTransliteratorServiceTestClass _instance = null;
 
@@ -24,32 +24,27 @@ namespace Transliterator.Core.Services.Tests
         // repalces base method with logging function for input param
         public override string EnterTransliterationResults(string text)
         {
-            transliterationResults += text;
+            IO += text;
             return text;
-        }
-
-        // decorates base SkipIrrelevant
-        public override bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
-        {
-            bool skipped = base.SkipIrrelevant(sender, e);
-            if (skipped)
-            {
-                transliterationResults += e.Character;
-            }
-
-            return skipped;
         }
 
         // mock erase
         public override void Erase(int times)
         {
-            if (transliterationResults.Length == 1)
+            if (times < 1)
             {
-                transliterationResults = string.Empty;
                 return;
             }
 
-            transliterationResults.Remove((transliterationResults.Length - 1) - times);
+            // TODO: Rewrite
+
+            for (int i = 0; i < times; i++)
+            {
+                if (IO.Length > 0)
+                {
+                    IO = IO.Remove(IO.Length - 1);
+                }
+            }
         }
 
         public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
@@ -82,12 +77,17 @@ namespace Transliterator.Core.Services.Tests
         protected override void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
         {
             base.HandleKeyPressed(sender, e);
-            // if character was skipped to the system as part of a combo, log it for full input picture
+            // if character was skipped to the system as part of a MultiGraph, log it for full input picture
             if (!e.Handled)
             {
                 e.Handled = true;
-                transliterationResults += e.Character;
+                IO += e.Character;
             }
+        }
+
+        public void ClearBuffer()
+        {
+            buffer.Clear();
         }
     }
 }

@@ -143,7 +143,7 @@ namespace Transliterator.Core.Services.Tests
             Assert.AreEqual(expected, _transliteratorService.IO);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void TestBufferStateOnIncompleteMultiGraph_()
         {
             // arrange

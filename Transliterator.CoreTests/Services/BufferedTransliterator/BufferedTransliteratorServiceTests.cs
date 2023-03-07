@@ -7,7 +7,7 @@ namespace Transliterator.Core.Services.Tests
     [TestClass()]
     public class BufferedTransliteratorServiceTests
     {
-        private BufferedTransliteratorServiceTestClass _transliteratorService;
+        private static BufferedTransliteratorServiceTestClass _transliteratorService;
 
         public BufferedTransliteratorServiceTests()
         {
@@ -27,6 +27,12 @@ namespace Transliterator.Core.Services.Tests
         public void Teardown()
         {
             _transliteratorService.transliterationResults = "";
+        }
+
+        [ClassCleanup()]
+        public static void ClassTeardown()
+        {
+            _transliteratorService.DisposeOfKeyDownEventHandler();
         }
 
         [TestMethod]

@@ -4,7 +4,7 @@ namespace Transliterator.Core.Services.Tests
 {
     internal class UnbufferedTransliteratorServiceTestClass : UnbufferedTransliteratorService
     {
-        public string IO = ""; // iuser input + transliterator output
+        public string IO = ""; // user input + transliterator output
 
         private static UnbufferedTransliteratorServiceTestClass _instance = null;
 

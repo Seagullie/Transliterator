@@ -29,7 +29,8 @@ public class BufferedTransliteratorService : BaseTransliterator
     {
         loggerService = LoggerService.GetInstance();
 
-        _keyboardHook = Singleton<KeyboardHook>.Instance;
+        //_keyboardHook = Singleton<KeyboardHook>.Instance;
+        _keyboardHook = new KeyboardHook();
         _keyboardHook.KeyDown += HandleKeyPressed;
 
         buffer.MultiGraphBrokenEvent += (IncompleteMultiGraph) =>
@@ -194,16 +195,22 @@ public class BufferedTransliteratorService : BaseTransliterator
         return replacement;
     }
 
+    private void SetState(bool value)
+    {
+        _state = value;
+        if (!_state) buffer.Clear();
+        StateChangedEvent?.Invoke(this, EventArgs.Empty);
+    }
+
     // this method is for testing purposes only
     protected void AllowUnicode()
     {
         _keyboardHook.SkipUnicodeKeys = false;
     }
 
-    private void SetState(bool value)
+    // this method is for testing purposes only
+    public void DisposeOfKeyDownEventHandler()
     {
-        _state = value;
-        if (!_state) buffer.Clear();
-        StateChangedEvent?.Invoke(this, EventArgs.Empty);
+        _keyboardHook.KeyDown -= HandleKeyPressed;
     }
 }

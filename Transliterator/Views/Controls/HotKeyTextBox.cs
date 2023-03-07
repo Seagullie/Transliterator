@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Transliterator.Core.Models;
 
-
 // References:
 // https://github.com/Tyrrrz/LightBulb
 
@@ -76,6 +75,12 @@ public class HotKeyTextBox : TextBox
 
         // If key has a character and pressed without modifiers or only with Shift - return
         if (HasKeyChar(key) && modifiers is ModifierKeys.None or ModifierKeys.Shift)
+            return;
+
+        // If the system key pressed - return
+        if (key is
+            Key.Escape or Key.Tab or Key.Insert or Key.NumLock or
+            Key.CapsLock or Key.Delete or Key.Back or Key.Return or Key.Oem3)
             return;
 
         // Set value

@@ -122,6 +122,8 @@ public class KeyboardHookEventArgs
     /// </summary>
     public bool IsShift => IsLeftShift || IsRightShift;
 
+    public bool IsShortcut => !IsModifier && (IsWindows || IsAlt || IsControl);
+
     /// <summary>
     ///     Is this a system key
     /// </summary>

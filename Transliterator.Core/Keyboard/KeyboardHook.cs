@@ -162,7 +162,7 @@ internal sealed class KeyboardHook : IDisposable
 
         var keyEventArgs = new KeyboardHookEventArgs
         {
-            Character = character,
+            Character = _capsLock || _leftShift || _rightShift ? character.ToUpper() : character,
             Flags = keyboardLowLevelHookStruct.Flags,
             IsCapsLockActive = _capsLock,
             IsKeyDown = isKeyDown,

@@ -228,4 +228,31 @@ public class KeyboardHookEventArgs
         }
         return dump.ToString();
     }
+
+    public ModifierKeys GetModifierKeys()
+    {
+        ModifierKeys modifierKeys = ModifierKeys.None;
+
+        if (!IsModifier)
+        {
+            if (IsShift)
+            {
+                modifierKeys |= ModifierKeys.Shift;
+            }
+            if (IsControl)
+            {
+                modifierKeys |= ModifierKeys.Control;
+            }
+            if (IsAlt)
+            {
+                modifierKeys |= ModifierKeys.Alt;
+            }
+            if (IsWindows)
+            {
+                modifierKeys |= ModifierKeys.Win;
+            }
+        }
+
+        return modifierKeys;
+    }
 }

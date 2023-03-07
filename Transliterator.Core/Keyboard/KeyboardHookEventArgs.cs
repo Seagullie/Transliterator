@@ -122,6 +122,7 @@ public class KeyboardHookEventArgs
     /// </summary>
     public bool IsShift => IsLeftShift || IsRightShift;
 
+    /// TODO: Annotate
     public bool IsShortcut => !IsModifier && (IsWindows || IsAlt || IsControl);
 
     /// <summary>

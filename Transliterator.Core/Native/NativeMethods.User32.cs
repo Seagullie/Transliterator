@@ -59,4 +59,11 @@ internal static partial class NativeMethods
 
     [DllImport(User32)]
     public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+    [DllImport(User32)]
+    public static extern IntPtr GetForegroundWindow();
+
+    [DllImport(User32)]
+    public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr lpdwProcessId);
+
 }

@@ -53,10 +53,17 @@ public static class VirtualKeyCodeExtensions
         }
 
         uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
-        IntPtr inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(0);
 
-        StringBuilder result = new StringBuilder();
-        _ = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, 5, 0, inputLocaleIdentifier);
+        IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
+        uint threadId = NativeMethods.GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
+        IntPtr inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(threadId);
+
+        StringBuilder result = new StringBuilder(5);
+        int charCount = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, result.Capacity, 0, inputLocaleIdentifier);
+        if (charCount == -1)
+        {
+            return "";
+        }
 
         return result.ToString();
     }

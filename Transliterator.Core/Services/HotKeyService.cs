@@ -1,6 +1,6 @@
-﻿using Transliterator.Core.Enums;
-using Transliterator.Core.Helpers;
+﻿using Transliterator.Core.Helpers;
 using Transliterator.Core.Keyboard;
+using Transliterator.Core.Models;
 
 namespace Transliterator.Core.Services
 {
@@ -16,14 +16,8 @@ namespace Transliterator.Core.Services
             _keyboardHook.KeyDown += HandleKeyPressed;
         }
 
-        public void RegisterHotKey(uint keyCode, uint modifiers, Action action)
+        public void RegisterHotKey(HotKey hotKey, Action action)
         {
-            RegisterHotKey((VirtualKeyCode)keyCode, (ModifierKeys)modifiers, action);
-        }
-
-        public void RegisterHotKey(VirtualKeyCode keyCode, ModifierKeys modifiers, Action action)
-        {
-            var hotKey = new HotKey(keyCode, modifiers);
             if (!_hotKeys.ContainsKey(hotKey))
             {
                 _hotKeys.Add(hotKey, new List<Action>());
@@ -32,14 +26,8 @@ namespace Transliterator.Core.Services
             _hotKeys[hotKey].Add(action);
         }
 
-        public void UnregisterHotKey(uint keyCode, uint modifiers)
+        public void UnregisterHotKey(HotKey hotKey)
         {
-            UnregisterHotKey((VirtualKeyCode)keyCode, (ModifierKeys)modifiers);
-        }
-
-        public void UnregisterHotKey(VirtualKeyCode keyCode, ModifierKeys modifiers)
-        {
-            var hotKey = new HotKey(keyCode, modifiers);
             if (_hotKeys.TryGetValue(hotKey, out var actions))
             {
                 actions.Clear();
@@ -59,33 +47,6 @@ namespace Transliterator.Core.Services
                     action();
                 }
                 e.Handled = true;
-            }
-        }
-
-        private class HotKey
-        {
-            public VirtualKeyCode Key { get; set; }
-            public ModifierKeys Modifiers { get; set; }
-
-            public HotKey(VirtualKeyCode keyCode, ModifierKeys modifiers)
-            {
-                Key = keyCode;
-                Modifiers = modifiers;
-            }
-
-            public override bool Equals(object? obj)
-            {
-                if (obj == null || !(obj is HotKey))
-                {
-                    return false;
-                }
-                HotKey other = (HotKey)obj;
-                return Key == other.Key && Modifiers == other.Modifiers;
-            }
-
-            public override int GetHashCode()
-            {
-                return (int)Key ^ (int)Modifiers;
             }
         }
     }

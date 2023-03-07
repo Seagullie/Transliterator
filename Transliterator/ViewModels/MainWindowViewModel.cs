@@ -8,7 +8,6 @@ using System.Windows.Input;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
-using Transliterator.Models;
 using Transliterator.Services;
 using Transliterator.Views;
 using Wpf.Ui.Common;
@@ -42,7 +41,7 @@ namespace Transliterator.ViewModels
         private ObservableCollection<object> _navigationItems = new();
 
         [ObservableProperty]
-        private string _toggleAppStateShortcut;
+        private HotKey _toggleAppStateShortcut;
 
         [ObservableProperty]
         private ObservableCollection<MenuItem> _trayMenuItems = new();
@@ -56,9 +55,19 @@ namespace Transliterator.ViewModels
         public MainWindowViewModel()
         {
             settingsService = SettingsService.GetInstance();
-            //unbufferedTransliteratorService = UnbufferedTransliteratorService.GetInstance();
-            transliteratorService = BufferedTransliteratorService.GetInstance();
+            settingsService.SettingsSavedEvent += (o, e) =>
+            {
+                hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
+
+                HotKey hotKey = settingsService.ToggleHotKey;
+                ToggleAppStateShortcut = hotKey;
+
+                hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
+            };
+
             hotKeyService = Singleton<HotKeyService>.Instance;
+
+            transliteratorService = BufferedTransliteratorService.GetInstance();
 
             if (settingsService.LastSelectedTransliterationTable != string.Empty)
             {
@@ -68,9 +77,9 @@ namespace Transliterator.ViewModels
             LoadTransliterationTables();
 
             AppState = "On";
-            ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
+            ToggleAppStateShortcut = settingsService.ToggleHotKey;
             HotKey hotKey = settingsService.ToggleHotKey;
-            hotKeyService.RegisterHotKey((uint)KeyInterop.VirtualKeyFromKey(hotKey.Key), (uint)hotKey.Modifiers, () => ToggleAppState());
+            hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
         }
 
         // TODO: Move to Service

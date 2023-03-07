@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Transliterator.Models;
+using Transliterator.Core.Models;
+
 
 // References:
 // https://github.com/Tyrrrz/LightBulb
@@ -30,7 +31,7 @@ public class HotKeyTextBox : TextBox
         if (ContextMenu is not null)
             ContextMenu.Visibility = Visibility.Collapsed;
 
-        Text = HotKey.ToString();
+        Text = HotKey?.ToString();
     }
 
     public HotKey HotKey
@@ -78,7 +79,7 @@ public class HotKeyTextBox : TextBox
             return;
 
         // Set value
-        HotKey = new HotKey(key, modifiers);
+        HotKey = new HotKey((uint)KeyInterop.VirtualKeyFromKey(key), (uint)modifiers);
     }
 
     private static bool HasKeyChar(Key key) => key is

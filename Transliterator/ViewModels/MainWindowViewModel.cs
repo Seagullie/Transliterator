@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows.Input;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
@@ -54,6 +53,8 @@ namespace Transliterator.ViewModels
 
         public MainWindowViewModel()
         {
+            hotKeyService = Singleton<HotKeyService>.Instance;
+
             settingsService = SettingsService.GetInstance();
             settingsService.SettingsSavedEvent += (o, e) =>
             {
@@ -63,9 +64,7 @@ namespace Transliterator.ViewModels
                 ToggleAppStateShortcut = hotKey;
 
                 hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
-            };
-
-            hotKeyService = Singleton<HotKeyService>.Instance;
+            };      
 
             transliteratorService = BufferedTransliteratorService.GetInstance();
 

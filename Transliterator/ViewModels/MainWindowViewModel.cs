@@ -67,6 +67,8 @@ namespace Transliterator.ViewModels
 
             hotKeyService = Singleton<HotKeyService>.Instance;
 
+            transliteratorService = BufferedTransliteratorService.GetInstance();
+
             if (settingsService.LastSelectedTransliterationTable != string.Empty)
             {
                 transliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));

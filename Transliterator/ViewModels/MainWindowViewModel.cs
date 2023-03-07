@@ -21,8 +21,9 @@ namespace Transliterator.ViewModels
         private const string transliterationTablesPath = "Resources/TranslitTables";
 
         // TODO: Refactor into TransliteratorTypeController or something like this
-        //private readonly BufferedTransliteratorService bufferedTransliteratorService;
-        private readonly UnbufferedTransliteratorService unbufferedTransliteratorService;
+        private readonly BufferedTransliteratorService transliteratorService;
+
+        //private readonly UnbufferedTransliteratorService unbufferedTransliteratorService;
 
         private readonly SettingsService settingsService;
         private readonly HotKeyService hotKeyService;
@@ -55,12 +56,13 @@ namespace Transliterator.ViewModels
         public MainWindowViewModel()
         {
             settingsService = SettingsService.GetInstance();
-            unbufferedTransliteratorService = UnbufferedTransliteratorService.GetInstance();
+            //unbufferedTransliteratorService = UnbufferedTransliteratorService.GetInstance();
+            transliteratorService = BufferedTransliteratorService.GetInstance();
             hotKeyService = Singleton<HotKeyService>.Instance;
 
             if (settingsService.LastSelectedTransliterationTable != string.Empty)
             {
-                unbufferedTransliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
+                transliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
             }
 
             LoadTransliterationTables();
@@ -135,15 +137,29 @@ namespace Transliterator.ViewModels
         {
             if (!string.IsNullOrEmpty(value))
             {
-                unbufferedTransliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
+                transliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
             }
         }
 
         [RelayCommand]
         private void ToggleAppState()
         {
-            unbufferedTransliteratorService.State = !unbufferedTransliteratorService.State;
-            AppState = unbufferedTransliteratorService.State ? "On" : "Off";
+            transliteratorService.State = !transliteratorService.State;
+            AppState = transliteratorService.State ? "On" : "Off";
+            PlayToggleSound();
+        }
+
+        private void PlayToggleSound()
+        {
+            string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(transliteratorService.State == true ? "cont" : "pause")}.wav");
+
+            if (transliteratorService.State == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
+                pathToSoundToPlay = settingsService.PathToCustomToggleOnSound;
+
+            if (transliteratorService.State == false && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOffSound))
+                pathToSoundToPlay = settingsService.PathToCustomToggleOffSound;
+
+            SoundPlayerService.Play(pathToSoundToPlay);
         }
 
         public void SaveSettings()

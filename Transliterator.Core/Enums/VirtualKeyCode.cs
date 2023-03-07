@@ -1,6 +1,8 @@
 // Copyright (c) Dapplo and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
+
 namespace Transliterator.Core.Enums;
 
 /// <summary>
@@ -284,131 +286,157 @@ public enum VirtualKeyCode : ushort
     /// <summary>
     ///     A key
     /// </summary>
+    [Description("A")]
     KeyA = 0x41,
 
     /// <summary>
     ///     B key
     /// </summary>
+    [Description("B")]
     KeyB = 0x42,
 
     /// <summary>
     ///     C key
     /// </summary>
+    [Description("C")]
     KeyC = 0x43,
 
     /// <summary>
     ///     D key
     /// </summary>
+    [Description("D")]
     KeyD = 0x44,
 
     /// <summary>
     ///     E key
     /// </summary>
+    [Description("E")]
     KeyE = 0x45,
 
     /// <summary>
     ///     F key
     /// </summary>
+    [Description("F")]
     KeyF = 0x46,
 
     /// <summary>
     ///     G key
     /// </summary>
+    [Description("G")]
     KeyG = 0x47,
 
     /// <summary>
     ///     H key
     /// </summary>
+    [Description("H")]
     KeyH = 0x48,
 
     /// <summary>
     ///     I key
     /// </summary>
+    [Description("I")]
     KeyI = 0x49,
 
     /// <summary>
     ///     J key
     /// </summary>
+    [Description("J")]
     KeyJ = 0x4A,
 
     /// <summary>
     ///     K key
     /// </summary>
+    [Description("K")]
     KeyK = 0x4B,
 
     /// <summary>
     ///     L key
     /// </summary>
+    [Description("L")]
     KeyL = 0x4C,
 
     /// <summary>
     ///     M key
     /// </summary>
+    [Description("M")]
     KeyM = 0x4D,
 
     /// <summary>
     ///     N key
     /// </summary>
+    [Description("N")]
     KeyN = 0x4E,
 
     /// <summary>
     ///     O key
     /// </summary>
+    [Description("O")]
     KeyO = 0x4F,
 
     /// <summary>
     ///     P key
     /// </summary>
+    [Description("P")]
     KeyP = 0x50,
 
     /// <summary>
     ///     Q key
     /// </summary>
+    [Description("Q")]
     KeyQ = 0x51,
 
     /// <summary>
     ///     R key
     /// </summary>
+    [Description("R")]
     KeyR = 0x52,
 
     /// <summary>
     ///     S key
     /// </summary>
+    [Description("S")]
     KeyS = 0x53,
 
     /// <summary>
     ///     T key
     /// </summary>
+    [Description("T")]
     KeyT = 0x54,
 
     /// <summary>
     ///     U key
     /// </summary>
+    [Description("U")]
     KeyU = 0x55,
 
     /// <summary>
     ///     V key
     /// </summary>
+    [Description("V")]
     KeyV = 0x56,
 
     /// <summary>
     ///     W key
     /// </summary>
+    [Description("W")]
     KeyW = 0x57,
 
     /// <summary>
     ///     X key
     /// </summary>
+    [Description("X")]
     KeyX = 0x58,
 
     /// <summary>
     ///     Y key
     /// </summary>
+    [Description("Y")]
     KeyY = 0x59,
 
     /// <summary>
     ///     Z key
     /// </summary>
+    [Description("Z")]
     KeyZ = 0x5A,
 
     /// <summary>

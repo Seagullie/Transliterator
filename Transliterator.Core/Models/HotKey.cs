@@ -56,7 +56,7 @@ public class HotKey
         if (Modifiers.HasFlag(ModifierKeys.Win))
             buffer.Append("Win + ");
 
-        buffer.Append(Key);
+        buffer.Append(Key.GetDescriptionOrName());
 
         return buffer.ToString();
     }

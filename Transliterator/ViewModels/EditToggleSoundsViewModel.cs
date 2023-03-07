@@ -1,13 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.IO;
+using Transliterator.Core.Helpers;
+using Transliterator.Services;
 
 namespace Transliterator.ViewModels;
 
 public partial class EditToggleSoundsViewModel : ObservableObject
 {
-    // TODO: Uncomment after migrating other things from old project
-    // private readonly SettingsService settingsService;
+    private readonly SettingsService settingsService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ToggleOffSoundFileName))]
@@ -19,17 +20,16 @@ public partial class EditToggleSoundsViewModel : ObservableObject
 
     public EditToggleSoundsViewModel()
     {
-        // TODO: Uncomment after migrating other things from old project
-
-        //settingsService = SettingsService.GetInstance();
-        //ToggleOnSoundFilePath = settingsService.PathToCustomToggleOnSound;
-        //ToggleOffSoundFilePath = settingsService.PathToCustomToggleOffSound;
+        //settingsService = Singleton<SettingsService>.Instance;
+        // TODO: Use singleton wrapper
+        settingsService = SettingsService.GetInstance();
+        ToggleOnSoundFilePath = settingsService.PathToCustomToggleOnSound;
+        ToggleOffSoundFilePath = settingsService.PathToCustomToggleOffSound;
     }
 
     public string ToggleOffSoundFileName { get => Path.GetFileName(ToggleOffSoundFilePath) ?? "<None>"; }
     public string ToggleOnSoundFileName { get => Path.GetFileName(ToggleOnSoundFilePath) ?? "<None>"; }
 
-    // TODO: Uncomment after migrating other things from old project
     [RelayCommand]
     private void ChangeToggleOffSound()
     {
@@ -45,7 +45,7 @@ public partial class EditToggleSoundsViewModel : ObservableObject
             // Open document
             string pathToFile = dialog.FileName;
             ToggleOffSoundFilePath = pathToFile;
-            //settingsService.PathToCustomToggleOffSound = pathToFile;
+            settingsService.PathToCustomToggleOffSound = pathToFile;
         }
     }
 
@@ -64,7 +64,7 @@ public partial class EditToggleSoundsViewModel : ObservableObject
             // Open document
             string pathToFile = dialog.FileName;
             ToggleOnSoundFilePath = pathToFile;
-            //settingsService.PathToCustomToggleOnSound = pathToFile;
+            settingsService.PathToCustomToggleOnSound = pathToFile;
         }
     }
 
@@ -72,14 +72,13 @@ public partial class EditToggleSoundsViewModel : ObservableObject
     private void DeleteToggleOffSound()
     {
         ToggleOffSoundFilePath = null;
-        //settingsService.PathToCustomToggleOffSound = null;
+        settingsService.PathToCustomToggleOffSound = null;
     }
 
-    // TODO: Uncomment after migrating other things from old project
     [RelayCommand]
     private void DeleteToggleOnSound()
     {
         ToggleOnSoundFilePath = null;
-        //settingsService.PathToCustomToggleOnSound = null;
+        settingsService.PathToCustomToggleOnSound = null;
     }
 }

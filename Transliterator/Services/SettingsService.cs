@@ -18,7 +18,7 @@ public partial class SettingsService
 
     private static SettingsService _instance;
 
-    private SettingsService()
+    public SettingsService()
     {
         Load();
     }
@@ -89,11 +89,11 @@ public partial class SettingsService
 
     private void SynchronizeJSONAndWindowsStartupSettings()
     {
-        bool isHasStartProgEntry = AutostartMethods.HasAutostartEntry();
+        bool hasAutoStartEntry = AutostartMethods.HasAutostartEntry();
 
-        if (IsAutoStartEnabled && !isHasStartProgEntry)
+        if (IsAutoStartEnabled && !hasAutoStartEntry)
             AutostartMethods.WriteAutostartEntry();
-        if (!IsAutoStartEnabled && isHasStartProgEntry)
+        if (!IsAutoStartEnabled && hasAutoStartEntry)
             AutostartMethods.DeleteAutostartEntry();
     }
 }

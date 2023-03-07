@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Transliterator.Core\Transliterator.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

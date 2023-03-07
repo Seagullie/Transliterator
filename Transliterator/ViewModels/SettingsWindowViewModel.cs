@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Threading;
 using System.Threading.Tasks;
-using Transliterator.Models;
+using Transliterator.Core.Models;
 using Transliterator.Services;
 using Transliterator.Views;
 

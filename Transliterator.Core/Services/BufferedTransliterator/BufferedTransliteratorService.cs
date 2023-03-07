@@ -125,9 +125,7 @@ public class BufferedTransliteratorService : BaseTransliterator
     {
         string renderedCharacter = e.Character;
 
-        // shift is used for capitalization and should not be ignored
-        bool isShortcut = e.IsModifier && !e.IsShift;
-        bool isIrrelevant = !TransliterationTable.IsInAlphabet(renderedCharacter) || isShortcut;
+        bool isIrrelevant = !TransliterationTable.IsInAlphabet(renderedCharacter) || e.IsModifier || e.IsShortcut;
 
         if (isIrrelevant)
         {

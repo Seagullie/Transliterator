@@ -50,7 +50,7 @@
         <StackPanel
             Grid.Row="2"
             Grid.Column="2"
-            Width="130"
+            Width="140"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             helpers:MarginSetter.LastItemMargin="5"

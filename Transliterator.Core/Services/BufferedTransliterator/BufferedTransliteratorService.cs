@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Transliterator.Core.Helpers;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Services;
@@ -28,7 +29,7 @@ public class BufferedTransliteratorService : BaseTransliterator
     {
         loggerService = LoggerService.GetInstance();
 
-        _keyboardHook = new();
+        _keyboardHook = Singleton<KeyboardHook>.Instance;
         _keyboardHook.KeyDown += HandleKeyPressed;
 
         buffer.MultiGraphBrokenEvent += (IncompleteMultiGraph) =>

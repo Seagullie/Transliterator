@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Input;
+using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
+using Transliterator.Models;
 using Transliterator.Services;
 using Transliterator.Views;
 using Wpf.Ui.Common;
@@ -22,6 +25,7 @@ namespace Transliterator.ViewModels
         private readonly UnbufferedTransliteratorService unbufferedTransliteratorService;
 
         private readonly SettingsService settingsService;
+        private readonly HotKeyService hotKeyService;
 
         [ObservableProperty]
         private string _applicationTitle = string.Empty;
@@ -52,6 +56,7 @@ namespace Transliterator.ViewModels
         {
             settingsService = SettingsService.GetInstance();
             unbufferedTransliteratorService = UnbufferedTransliteratorService.GetInstance();
+            hotKeyService = Singleton<HotKeyService>.Instance;
 
             if (settingsService.LastSelectedTransliterationTable != string.Empty)
             {
@@ -62,6 +67,8 @@ namespace Transliterator.ViewModels
 
             AppState = "On";
             ToggleAppStateShortcut = settingsService.ToggleHotKey.ToString();
+            HotKey hotKey = settingsService.ToggleHotKey;
+            hotKeyService.RegisterHotKey((uint)KeyInterop.VirtualKeyFromKey(hotKey.Key), (uint)hotKey.Modifiers, () => ToggleAppState());
         }
 
         // TODO: Move to Service

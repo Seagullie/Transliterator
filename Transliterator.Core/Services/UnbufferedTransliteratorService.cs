@@ -42,11 +42,11 @@ namespace Transliterator.Core.Services
         {
             string renderedCharacter = e.Character;
             string bufferAsString = buffer.GetAsString();
-            TransliterationTable table = transliterationTable;
+            TransliterationTable table = TransliterationTable;
 
             // unless that's Isolated Grapheme
             // or current (one that's in buffer) MultiGraph finisher
-            if (transliterationTable.IsIsolatedGrapheme(renderedCharacter) || table.IsMultiGraph(bufferAsString))
+            if (TransliterationTable.IsIsolatedGrapheme(renderedCharacter) || table.IsMultiGraph(bufferAsString))
             {
                 e.Handled = true;
             }

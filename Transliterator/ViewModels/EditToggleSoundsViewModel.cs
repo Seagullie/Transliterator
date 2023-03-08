@@ -8,7 +8,7 @@ namespace Transliterator.ViewModels;
 
 public partial class EditToggleSoundsViewModel : ObservableObject
 {
-    private readonly SettingsService settingsService;
+    private readonly SettingsService _settingsService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ToggleOffSoundFileName))]
@@ -20,11 +20,9 @@ public partial class EditToggleSoundsViewModel : ObservableObject
 
     public EditToggleSoundsViewModel()
     {
-        //settingsService = Singleton<SettingsService>.Instance;
-        // TODO: Use singleton wrapper
-        settingsService = SettingsService.GetInstance();
-        ToggleOnSoundFilePath = settingsService.PathToCustomToggleOnSound;
-        ToggleOffSoundFilePath = settingsService.PathToCustomToggleOffSound;
+        _settingsService = Singleton<SettingsService>.Instance;
+        ToggleOnSoundFilePath = _settingsService.PathToCustomToggleOnSound;
+        ToggleOffSoundFilePath = _settingsService.PathToCustomToggleOffSound;
     }
 
     public string ToggleOffSoundFileName { get => Path.GetFileName(ToggleOffSoundFilePath) ?? "<None>"; }
@@ -45,7 +43,7 @@ public partial class EditToggleSoundsViewModel : ObservableObject
             // Open document
             string pathToFile = dialog.FileName;
             ToggleOffSoundFilePath = pathToFile;
-            settingsService.PathToCustomToggleOffSound = pathToFile;
+            _settingsService.PathToCustomToggleOffSound = pathToFile;
         }
     }
 
@@ -64,7 +62,7 @@ public partial class EditToggleSoundsViewModel : ObservableObject
             // Open document
             string pathToFile = dialog.FileName;
             ToggleOnSoundFilePath = pathToFile;
-            settingsService.PathToCustomToggleOnSound = pathToFile;
+            _settingsService.PathToCustomToggleOnSound = pathToFile;
         }
     }
 
@@ -72,13 +70,13 @@ public partial class EditToggleSoundsViewModel : ObservableObject
     private void DeleteToggleOffSound()
     {
         ToggleOffSoundFilePath = null;
-        settingsService.PathToCustomToggleOffSound = null;
+        _settingsService.PathToCustomToggleOffSound = null;
     }
 
     [RelayCommand]
     private void DeleteToggleOnSound()
     {
         ToggleOnSoundFilePath = null;
-        settingsService.PathToCustomToggleOnSound = null;
+        _settingsService.PathToCustomToggleOnSound = null;
     }
 }

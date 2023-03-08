@@ -50,24 +50,24 @@ namespace Transliterator.ViewModels
         // TODO: Refactor
         public MainViewModel()
         {
+            _settingsService = Singleton<SettingsService>.Instance;
+            _settingsService.SettingsSavedEvent += OnSettingsSaved;
+
             _hotKeyService = Singleton<HotKeyService>.Instance;
 
-            _settingsService = SettingsService.GetInstance();
-            _settingsService.SettingsSavedEvent += OnSettingsSaved;
+            ToggleAppStateShortcut = _settingsService.ToggleHotKey;
+            _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => ToggleAppState());
 
             SetTransliteratorService();
             LoadTransliterationTables();
 
-            AppState = _transliteratorService.TransliterationEnabled;
-
-            ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-            HotKey hotKey = _settingsService.ToggleHotKey;
-            _hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
+            AppState = _transliteratorService.TransliterationEnabled;       
         }
 
         private void OnSettingsSaved(object? sender, EventArgs e)
         {
-            _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
+            if(ToggleAppStateShortcut != null)
+                _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
 
             HotKey hotKey = _settingsService.ToggleHotKey;
             ToggleAppStateShortcut = hotKey;

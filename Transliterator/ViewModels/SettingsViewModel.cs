@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Threading;
 using System.Threading.Tasks;
+using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Services;
 using Transliterator.Views;
@@ -13,7 +14,7 @@ public partial class SettingsViewModel : ObservableObject
     // TODO: Uncomment after migrating more things from old project
     //private readonly Main liveTransliterator;
 
-    private readonly SettingsService settingsService;
+    private readonly SettingsService _settingsService;
 
     [ObservableProperty]
     private bool isAltShiftGlobalShortcutEnabled;
@@ -50,7 +51,7 @@ public partial class SettingsViewModel : ObservableObject
         // TODO: Dependency injection
         // TODO: Uncomment after migrating more things from old project
         //liveTransliterator = Main.GetInstance();
-        settingsService = SettingsService.GetInstance();
+        _settingsService = Singleton<SettingsService>.Instance;
 
         InitializePropertiesFromSettings();
     }
@@ -58,15 +59,15 @@ public partial class SettingsViewModel : ObservableObject
     public void InitializePropertiesFromSettings()
     {
         // TODO: Uncomment after migrating more things from old project
-        settingsService.Load();
-        IsAltShiftGlobalShortcutEnabled = settingsService.IsAltShiftGlobalShortcutEnabled;
-        IsAutoStartEnabled = settingsService.IsAutoStartEnabled;
-        IsBufferInputEnabled = settingsService.IsBufferInputEnabled;
-        IsMinimizedStartEnabled = settingsService.IsMinimizedStartEnabled;
-        IsStateOverlayEnabled = settingsService.IsStateOverlayEnabled;
-        IsToggleSoundOn = settingsService.IsToggleSoundOn;
-        IsTranslitEnabledAtStartup = settingsService.IsTransliteratorEnabledAtStartup;
-        ToggleHotKey = settingsService.ToggleHotKey;
+        _settingsService.Load();
+        IsAltShiftGlobalShortcutEnabled = _settingsService.IsAltShiftGlobalShortcutEnabled;
+        IsAutoStartEnabled = _settingsService.IsAutoStartEnabled;
+        IsBufferInputEnabled = _settingsService.IsBufferInputEnabled;
+        IsMinimizedStartEnabled = _settingsService.IsMinimizedStartEnabled;
+        IsStateOverlayEnabled = _settingsService.IsStateOverlayEnabled;
+        IsToggleSoundOn = _settingsService.IsToggleSoundOn;
+        IsTranslitEnabledAtStartup = _settingsService.IsTransliteratorEnabledAtStartup;
+        ToggleHotKey = _settingsService.ToggleHotKey;
     }
 
     [RelayCommand]
@@ -91,15 +92,15 @@ public partial class SettingsViewModel : ObservableObject
     {
         // TODO: Uncomment after migrating more things from old project
 
-        settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
-        settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
-        settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
-        settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
-        settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
-        settingsService.IsToggleSoundOn = IsToggleSoundOn;
-        settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
-        settingsService.ToggleHotKey = ToggleHotKey;
-        settingsService.Save();
+        _settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
+        _settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
+        _settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
+        _settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
+        _settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
+        _settingsService.IsToggleSoundOn = IsToggleSoundOn;
+        _settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
+        _settingsService.ToggleHotKey = ToggleHotKey;
+        _settingsService.Save();
     }
 
     // TODO: not trigger on window init

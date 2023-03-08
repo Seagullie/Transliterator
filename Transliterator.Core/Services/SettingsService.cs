@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.IO;
 using Transliterator.Core.Models;
 
 namespace Transliterator.Services;
@@ -15,8 +13,6 @@ public partial class SettingsService
         Formatting = Formatting.Indented,
         ObjectCreationHandling = ObjectCreationHandling.Replace
     };
-
-    private static SettingsService _instance;
 
     public SettingsService()
     {
@@ -44,15 +40,6 @@ public partial class SettingsService
     public string PathToCustomToggleOnSound { get; set; } = "";
 
     public HotKey ToggleHotKey { get; set; } = HotKey.None;
-
-    public static SettingsService GetInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new SettingsService();
-        }
-        return _instance;
-    }
 
     public void Load()
     {

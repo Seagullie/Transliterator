@@ -1,6 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Transliterator.Services;
+using System.Collections.Generic;
+using System;
+using Transliterator.Core.Helpers;
+using Transliterator.Core.Models;
+using Transliterator.Core.Services;
 
 namespace Transliterator.ViewModels;
 
@@ -15,13 +19,15 @@ public partial class SnippetTranslitViewModel : ObservableObject
     [ObservableProperty]
     private string _userInput;
 
-    private BaseTransliterator baseTransliterator;
+    private ITransliteratorService _transliteratorService;
 
     public SnippetTranslitViewModel()
     {
-        baseTransliterator = new();
+        _transliteratorService = Singleton<BufferedTransliteratorService>.Instance;
+        _transliteratorService.TransliterationEnabled = false;
         // TODO: remove hardcoding
-        baseTransliterator.SetTableModel("Resources/TranslitTables/tableLAT-UKR.json");
+        Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, "Resources/TranslitTables/tableLAT-UKR.json");
+        _transliteratorService.TransliterationTable = new TransliterationTable(replacementMap);
     }
 
     // For some reason, this handler is called only when "Transliterate" button is clicked
@@ -31,7 +37,7 @@ public partial class SnippetTranslitViewModel : ObservableObject
         if (ShouldTransliterateOnTheFly)
         {
             string textToTransliterate = value;
-            string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
+            string transliterationResults = _transliteratorService.Transliterate(textToTransliterate);
             TransliterationResults = transliterationResults;
         }
     }
@@ -40,7 +46,7 @@ public partial class SnippetTranslitViewModel : ObservableObject
     private void TransliterateSnippet()
     {
         string textToTransliterate = UserInput;
-        string transliterationResults = baseTransliterator.Transliterate(textToTransliterate);
+        string transliterationResults = _transliteratorService.Transliterate(textToTransliterate);
         TransliterationResults = transliterationResults;
     }
 }

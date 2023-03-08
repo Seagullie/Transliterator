@@ -1,12 +1,12 @@
-﻿using System.Reflection;
-using Transliterator.Core.Helpers;
+﻿using System.Text.RegularExpressions;
+using Transliterator.Core.Helpers.Exceptions;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
-using Transliterator.Services;
+using Transliterator.Helpers;
 
 namespace Transliterator.Core.Services;
 
-public class BufferedTransliteratorService : BaseTransliterator, ITransliteratorService
+public class BufferedTransliteratorService : ITransliteratorService
 {
     // At any given time, buffer can be in these 5 states:
     // 1. empty
@@ -20,15 +20,11 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
 
     private readonly KeyboardHook _keyboardHook;
 
-    // TODO: Sync with settings
-    private bool _state = true;
-
     private LoggerService loggerService;
 
     public BufferedTransliteratorService()
     {
         loggerService = LoggerService.GetInstance();
-        settingsService = SettingsService.GetInstance();
 
         //_keyboardHook = Singleton<KeyboardHook>.Instance;
         _keyboardHook = new KeyboardHook();
@@ -39,19 +35,22 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
             Transliterate(IncompleteMultiGraph);
             return true;
         };
+    }
 
-        if (settingsService.LastSelectedTransliterationTable != string.Empty)
-        {
-            TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
-        }
+    public BufferedTransliteratorService(TransliterationTable transliterationTable) : this()
+    {
+        TransliterationTable = transliterationTable;
     }
 
     public event EventHandler? StateChangedEvent;
 
-    public bool TransliterationEnabled { get => _state; set => SetTransliterationState(value); }
+
+    private bool transliterationEnabled = true;
+    public bool TransliterationEnabled { get => transliterationEnabled; set => SetTransliterationState(value); }
 
     // Do we really need this simple check? It's not like setting same translit table is expensive or causes any issues
-    public TransliterationTable TransliterationTable
+    private TransliterationTable? transliterationTable;
+    public TransliterationTable? TransliterationTable
     {
         get => transliterationTable;
         set
@@ -71,8 +70,6 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
 
     // TODO: Come up with better way to share the event object
     private KeyboardHookEventArgs? currentlyHandledKeyboardHookEvent = null;
-
-    private readonly SettingsService settingsService;
 
     protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
@@ -183,9 +180,35 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
         return text;
     }
 
-    public new virtual string Transliterate(string text)
+    public virtual string Transliterate(string text)
     {
-        var transliteratedText = base.Transliterate(text);
+        if (transliterationTable == null)
+        {
+            throw new TableNotSetException(".transliterationTableModel is not initialized");
+        }
+
+        // table keys and inputlText should have same case
+        string inputText = text.ToLower();
+        string transliteratedText = text;
+
+        // loop over all possible user inputs and replace them with corresponding transliterations.
+        // Replacement map is sorted, thus combinations will be transliterated first
+        // This is because individual characters that make up a combination may also be present as separate replacements in the transliterationTableModel.replacementTable. By transliterating combinations first, the separate characters that make up the combination will not be replaced individually and will instead be treated as a single unit.
+        // © ChatGPT
+
+        foreach (string key in transliterationTable.Keys)
+        {
+            // skip keys not present in the text
+            if (!inputText.Contains(key))
+            {
+                continue;
+            }
+
+            transliteratedText = ReplaceKeepCase(key, transliterationTable.ReplacementMap[key], transliteratedText);
+            // remove already transliterated keys from inputText. This is needed to prevent some bugs
+            inputText = inputText.Replace(key, "");
+        }
+
         buffer.Clear();
 
         EnterTransliterationResults(transliteratedText);
@@ -193,7 +216,7 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
     }
 
     // we could also copy case from previously entered character
-    public override string GetCaseForNonalphabeticString(string replacement)
+    public string GetCaseForNonalphabeticString(string replacement)
     {
         if (currentlyHandledKeyboardHookEvent != null && currentlyHandledKeyboardHookEvent.IsCapsLockActive)
         {
@@ -205,19 +228,9 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
 
     private void SetTransliterationState(bool value)
     {
-        _state = value;
-        if (!_state) buffer.Clear();
+        transliterationEnabled = value;
+        if (!transliterationEnabled) buffer.Clear();
         StateChangedEvent?.Invoke(this, EventArgs.Empty);
-    }
-
-    // TODO: Move to Own Service?
-    public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
-    {
-        string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{pathToTransliterationTables}\\{fileName}.json"));
-        dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
-        Dictionary<string, string> TableAsDictionary = deserializedTableObj;
-
-        return TableAsDictionary;
     }
 
     // this method is for testing purposes only
@@ -230,5 +243,33 @@ public class BufferedTransliteratorService : BaseTransliterator, ITransliterator
     public void DisposeOfKeyDownEventHandler()
     {
         _keyboardHook.KeyDown -= HandleKeyPressed;
+    }
+
+    public string ReplaceKeepCase(string word, string replacement, string text)
+    {
+        Func<Match, string> onMatch = match =>
+        {
+            string matchString = match.Value;
+
+            // nonalphabetic characters don't have uppercase
+            // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
+            if (!Utilities.HasUpperCase(matchString))
+            {
+                return GetCaseForNonalphabeticString(replacement);
+            }
+
+            if (Utilities.IsLowerCase(matchString)) return replacement.ToLower();
+            if (char.IsUpper(matchString[0])) return replacement.ToUpper();
+            // ^TODO: handle case when the replacement consists of several letters
+
+            // if last character is uppercase, replacement should be uppercase as well:
+            if (char.IsUpper(matchString[matchString.Length - 1])) return replacement.ToUpper();
+            // not sure if C# has a method for converting to titlecase
+            if (Utilities.IsUpperCase(matchString)) return replacement.ToUpper();
+
+            return replacement;
+        };
+
+        return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
     }
 }

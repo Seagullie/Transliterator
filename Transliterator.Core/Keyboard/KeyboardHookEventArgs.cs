@@ -8,6 +8,10 @@ namespace Transliterator.Core.Keyboard;
 
 public class KeyboardHookEventArgs
 {
+    /// <summary>
+    /// Character is a result of applying any modifiers to base keystroke.
+    /// For example, "1" (base keystroke) + "shift" (modifier) = "!" (output  character)
+    /// </summary>
     public string Character { get; set; } = "";
 
     /// <summary>

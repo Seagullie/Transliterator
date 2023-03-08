@@ -1,9 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using Transliterator.Core.Enums;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Helpers.Exceptions;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
-using Transliterator.Helpers;
+using Transliterator.Core.Services.BufferedTransliterator;
 
 namespace Transliterator.Core.Services;
 
@@ -15,9 +15,7 @@ public class BufferedTransliteratorService : ITransliteratorService
     // 3. contains a single character that is a beginning of MultiGraph
     // 4. contains several characters that are part of a MultiGraph
     // 5. contains a full MultiGraph
-    protected BufferedTransliterator.Buffer buffer = new();
-
-    private static BufferedTransliteratorService _instance;
+    protected MultiGraphBuffer buffer = new();
 
     private readonly LoggerService _loggerService;
     private readonly KeyboardHook _keyboardHook;
@@ -28,15 +26,9 @@ public class BufferedTransliteratorService : ITransliteratorService
         _keyboardHook = Singleton<KeyboardHook>.Instance;
         _keyboardHook.KeyDown += HandleKeyPressed;
 
-        buffer.MultiGraphBrokenEvent += (IncompleteMultiGraph) =>
-        {
-            Transliterate(IncompleteMultiGraph);
-            return true;
-        };
+        buffer.MultiGraphBrokenEvent += Transliterate;
     }
 
-    // Do we really need this simple check? It's not like setting same translit table is expensive or causes any issues
-    private TransliterationTable? transliterationTable;
     public BufferedTransliteratorService(TransliterationTable transliterationTable) : this()
     {
         TransliterationTable = transliterationTable;
@@ -59,23 +51,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         }
     }
 
-    public TransliterationTable? TransliterationTable
-    {
-        get => transliterationTable;
-        set
-        {
-            if (value != transliterationTable)
-            {
-                transliterationTable = value;
-            }
-        }
-    }
-
-    public static BufferedTransliteratorService GetInstance()
-    {
-        _instance ??= new BufferedTransliteratorService();
-        return _instance;
-    }
+    public TransliterationTable? TransliterationTable { get; set; }
 
     // this method is for testing purposes only
     public void DisposeOfKeyDownEventHandler()
@@ -90,71 +66,26 @@ public class BufferedTransliteratorService : ITransliteratorService
         return text;
     }
 
-    // we could also copy case from previously entered character
-    public string GetCaseForNonalphabeticString(string replacement)
+    /// <summary>
+    /// Keep buffer in sync with keyboard input by erasing last character on backspace
+    /// </summary>
+    public bool HandleBackspace(KeyboardHookEventArgs e)
     {
-        if (KeyboardHook.IsCapsLockActive)
-        {
-            return replacement.ToUpper();
-        }
-
-        return replacement;
-    }
-
-    // keep buffer in sync with keyboard input by erasing last character on backspace
-    public bool HandleBackspace(object? sender, KeyboardHookEventArgs e)
-    {
-        if (e.Character != "\b")
-        {
+        if (e.Key != VirtualKeyCode.Back)
             return false;
-        }
 
         if (buffer.Count == 0)
-        {
             return true;
-        }
-        // ctrl + backspace erases entire word and needs additional handling. Here word = any sequence of characters such as abcdefg123, but not punctuation or other special symbols
-        if (e.IsLeftControl || e.IsRightControl)
-        {
-            // erase untill apostrophe is met
-            while (buffer.Count() > 0 && buffer.Last() != "'")
-            {
-                buffer.RemoveAt(buffer.Count() - 1);
-            }
-        }
+
+        // TODO: Check if everything is okay
+        // ctrl + backspace erases entire word and needs additional handling.
+        // Here word = any sequence of characters such as abcdefg123, but not punctuation or other special symbols
+        if (e.IsControl)
+            buffer.Clear();
         else
-        {
             buffer.RemoveAt(buffer.Count() - 1);
-        }
 
         return true;
-    }
-
-    public string ReplaceKeepCase(string word, string replacement, string text)
-    {
-        Func<Match, string> onMatch = match =>
-        {
-            string matchString = match.Value;
-
-            // nonalphabetic characters don't have uppercase
-            // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
-            if (!Utilities.HasUpperCase(matchString))
-            {
-                return GetCaseForNonalphabeticString(replacement);
-            }
-
-            if (Utilities.IsLowerCase(matchString)) return replacement.ToLower();
-            if (char.IsUpper(matchString[0])) return replacement.ToUpper();
-            // ^TODO: handle case when the replacement consists of several letters
-            // if last character is uppercase, replacement should be uppercase as well:
-            if (char.IsUpper(matchString[matchString.Length - 1])) return replacement.ToUpper();
-            // not sure if C# has a method for converting to titlecase
-            if (Utilities.IsUpperCase(matchString)) return replacement.ToUpper();
-
-            return replacement;
-        };
-
-        return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
     }
 
     // TODO: Rename
@@ -162,26 +93,22 @@ public class BufferedTransliteratorService : ITransliteratorService
     // things that are needed for transliteration:
     // table keys, backspace
     // "virtual" for testing purposes
-    public virtual bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
+    public virtual bool SkipIrrelevant(KeyboardHookEventArgs e)
     {
-        string renderedCharacter = e.Character;
-
-        bool isIrrelevant = !TransliterationTable.IsInAlphabet(renderedCharacter) || e.IsModifier || e.IsShortcut;
+        bool isIrrelevant = !TransliterationTable.IsInAlphabet(e.Character) || e.IsModifier || e.IsShortcut;
 
         if (isIrrelevant)
         {
-            _loggerService.LogMessage(this, $"[Transliterator]: This key was skipped as irrelevant: {renderedCharacter}");
+            _loggerService.LogMessage(this, $"[Transliterator]: This key was skipped as irrelevant: {e.Character}");
 
-            // transliterate whatever is left in buffer
-            // but only if key is not a modifier. Otherwise combos get broken by simply pressing shift, for example
-            if (e.IsModifier) return true;
+            // Transliterate whatever is left in buffer, but only if key is not a modifier.
+            // Otherwise combos get broken by simply pressing shift, for example
+            if (e.IsModifier) 
+                return true;
 
-            // TODO: Refactor
-            if (buffer.Count != 0)
+            if (buffer.Count > 0)
             {
-                // this should trigger broken MG event and transliterate whatever is left in buffer
-                AddToBuffer(renderedCharacter);
-                // remove irrelevant character from buffer afterwards
+                Transliterate(buffer.GetAsString());
                 buffer.Clear();
             }
             return true;
@@ -190,43 +117,19 @@ public class BufferedTransliteratorService : ITransliteratorService
         return false;
     }
 
-    public virtual string Transliterate(string text)
+    public virtual void Transliterate(string text)
     {
-        if (transliterationTable == null)
-        {
-            throw new TableNotSetException(".transliterationTableModel is not initialized");
-        }
+        if (TransliterationTable == null)
+            throw new TableNotSetException("TransliterationTable is not initialized");
 
-        // table keys and inputlText should have same case
-        string inputText = text.ToLower();
-        string transliteratedText = text;
-
-        // loop over all possible user inputs and replace them with corresponding transliterations.
-        // Replacement map is sorted, thus combinations will be transliterated first
-        // This is because individual characters that make up a combination may also be present as separate replacements in the transliterationTableModel.replacementTable. By transliterating combinations first, the separate characters that make up the combination will not be replaced individually and will instead be treated as a single unit.
-        // © ChatGPT
-        foreach (string key in transliterationTable.Keys)
-        {
-            // skip keys not present in the text
-            if (!inputText.Contains(key))
-            {
-                continue;
-            }
-
-            transliteratedText = ReplaceKeepCase(key, transliterationTable.ReplacementMap[key], transliteratedText);
-            // remove already transliterated keys from inputText. This is needed to prevent some bugs
-            inputText = inputText.Replace(key, "");
-        }
+        // Table keys and input text should have same case
+        var outputText = TransliterationTable.ReplacementMap[text.ToLower()];
+        if (text.HasUppercase())
+            outputText = outputText.ToUpper();
 
         buffer.Clear();
 
-        EnterTransliterationResults(transliteratedText);
-        return transliteratedText;
-    }
-
-    protected virtual void AddToBuffer(string renderedCharacter)
-    {
-        buffer.Add(renderedCharacter, TransliterationTable);
+        EnterTransliterationResults(outputText);
     }
 
     // this method is for testing purposes only
@@ -237,29 +140,20 @@ public class BufferedTransliteratorService : ITransliteratorService
 
     protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
-        if (!TransliterationEnabled || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
+        if (!TransliterationEnabled || HandleBackspace(e) || SkipIrrelevant(e)) 
+            return;
 
-        // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
-        string renderedCharacter = e.Character;
-        AddToBuffer(renderedCharacter);
+        buffer.Add(e.Character, TransliterationTable);
 
-        // has to be called after .AddToBuffer()
+        // Must be called after buffer.Add()
         SuppressKeypress(e);
 
-        if (!ShouldDeferTransliteration())
-        {
-            Transliterate(buffer.GetAsString());
-        }
+        var bufferAsString = buffer.GetAsString();
+        if (!TransliterationTable.IsStartOfMultiGraph(bufferAsString))
+            Transliterate(bufferAsString);
     }
 
-    // check if should wait for complete MultiGraph
-    protected virtual bool ShouldDeferTransliteration()
-    {
-        bool defer = TransliterationTable.IsStartOfMultiGraph(buffer.GetAsString());
-        return defer;
-    }
-
-    // prevent the kbevent from reaching other applications
+    // prevent the KeyboardEvent from reaching other applications
     protected virtual void SuppressKeypress(KeyboardHookEventArgs e)
     {
         e.Handled = true;

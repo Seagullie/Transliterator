@@ -9,7 +9,5 @@ namespace Transliterator.Core.Services
         public bool TransliterationEnabled { get; set; }
 
         public TransliterationTable? TransliterationTable { get; set; }
-
-        public string Transliterate(string text);
     }
 }

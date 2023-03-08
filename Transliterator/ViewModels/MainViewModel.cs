@@ -178,9 +178,9 @@ namespace Transliterator.ViewModels
                 _transliteratorService.TransliterationEnabled = false;
 
             if (_settingsService.IsBufferInputEnabled)
-                _transliteratorService = BufferedTransliteratorService.GetInstance();
+                _transliteratorService = Singleton<BufferedTransliteratorService>.Instance;
             else
-                _transliteratorService = UnbufferedTransliteratorService.GetInstance();
+                _transliteratorService = Singleton<UnbufferedTransliteratorService>.Instance;
 
             if (SelectedTransliterationTable != null)
                 _transliteratorService.TransliterationTable = SelectedTransliterationTable;

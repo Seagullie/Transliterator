@@ -8,17 +8,10 @@ namespace Transliterator.Core.Services
     // (except for Isolated Graphemes. Those can be transliterated right away so there is no need to pass and instantly erase a character)
     public class UnbufferedTransliteratorService : BufferedTransliteratorService
     {
-        private static UnbufferedTransliteratorService _instance;
-
-        public static new UnbufferedTransliteratorService GetInstance()
-        {
-            _instance ??= new UnbufferedTransliteratorService();
-
-            return _instance;
-        }
-
-        // send backspace characters to erase user input
-        public virtual void Erase(int times)
+        /// <summary>
+        /// Send backspace characters to erase user input
+        /// </summary>
+        internal virtual void Erase(int times)
         {
             VirtualKeyCode[] backspaceKeyArray = Enumerable.Repeat(VirtualKeyCode.Back, times).ToArray();
             KeyboardInputGenerator.KeyPresses(backspaceKeyArray);
@@ -53,7 +46,7 @@ namespace Transliterator.Core.Services
             }
         }
 
-        public override string Transliterate(string text)
+        public override void Transliterate(string text)
         {
             TransliterationTable table = TransliterationTable;
 
@@ -71,8 +64,7 @@ namespace Transliterator.Core.Services
 
             // -- Erase Block --
 
-            string transilteratedText = base.Transliterate(text);
-            return transilteratedText;
+            base.Transliterate(text);
         }
     }
 }

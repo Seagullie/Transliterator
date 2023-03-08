@@ -19,15 +19,13 @@ public partial class SnippetTranslitViewModel : ObservableObject
     [ObservableProperty]
     private string _userInput;
 
-    private ITransliteratorService _transliteratorService;
+    private TransliterationTable transliterationTable;
 
     public SnippetTranslitViewModel()
     {
-        _transliteratorService = Singleton<BufferedTransliteratorService>.Instance;
-        _transliteratorService.TransliterationEnabled = false;
         // TODO: remove hardcoding
         Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, "Resources/TranslitTables/tableLAT-UKR.json");
-        _transliteratorService.TransliterationTable = new TransliterationTable(replacementMap);
+        transliterationTable = new TransliterationTable(replacementMap);
     }
 
     // For some reason, this handler is called only when "Transliterate" button is clicked
@@ -37,7 +35,7 @@ public partial class SnippetTranslitViewModel : ObservableObject
         if (ShouldTransliterateOnTheFly)
         {
             string textToTransliterate = value;
-            string transliterationResults = _transliteratorService.Transliterate(textToTransliterate);
+            string transliterationResults = transliterationTable.Transliterate(textToTransliterate);
             TransliterationResults = transliterationResults;
         }
     }
@@ -46,7 +44,7 @@ public partial class SnippetTranslitViewModel : ObservableObject
     private void TransliterateSnippet()
     {
         string textToTransliterate = UserInput;
-        string transliterationResults = _transliteratorService.Transliterate(textToTransliterate);
+        string transliterationResults = transliterationTable.Transliterate(textToTransliterate);
         TransliterationResults = transliterationResults;
     }
 }

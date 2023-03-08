@@ -12,7 +12,7 @@ public partial class MainWindow
         DataContext = ViewModel;
     }
 
-    public MainWindowViewModel ViewModel { get; private set; }
+    public MainViewModel ViewModel { get; private set; }
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {

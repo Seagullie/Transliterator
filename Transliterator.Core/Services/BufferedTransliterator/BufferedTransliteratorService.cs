@@ -28,6 +28,7 @@ public class BufferedTransliteratorService : BaseTransliterator
     public BufferedTransliteratorService()
     {
         loggerService = LoggerService.GetInstance();
+        settingsService = SettingsService.GetInstance();
 
         //_keyboardHook = Singleton<KeyboardHook>.Instance;
         _keyboardHook = new KeyboardHook();
@@ -38,6 +39,11 @@ public class BufferedTransliteratorService : BaseTransliterator
             Transliterate(IncompleteMultiGraph);
             return true;
         };
+
+        if (settingsService.LastSelectedTransliterationTable != string.Empty)
+        {
+            TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
+        }
     }
 
     public event EventHandler? StateChangedEvent;
@@ -65,6 +71,8 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     // TODO: Come up with better way to share the event object
     private KeyboardHookEventArgs? currentlyHandledKeyboardHookEvent = null;
+
+    private readonly SettingsService settingsService;
 
     protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
@@ -200,6 +208,16 @@ public class BufferedTransliteratorService : BaseTransliterator
         _state = value;
         if (!_state) buffer.Clear();
         StateChangedEvent?.Invoke(this, EventArgs.Empty);
+    }
+
+    // TODO: Move to Own Service?
+    public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
+    {
+        string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{pathToTransliterationTables}\\{fileName}.json"));
+        dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
+        Dictionary<string, string> TableAsDictionary = deserializedTableObj;
+
+        return TableAsDictionary;
     }
 
     // this method is for testing purposes only

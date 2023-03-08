@@ -9,6 +9,7 @@ namespace Transliterator.Services;
 public class BaseTransliterator
 {
     public TransliterationTable transliterationTable;
+    public static readonly string pathToTransliterationTables = "Resources/TranslitTables";
 
     public BaseTransliterator()
     {
@@ -50,8 +51,10 @@ public class BaseTransliterator
         return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
     }
 
-    public void SetTableModel(string relativePathToJsonFile)
+    public void SetTableModel(string tableFileName)
     {
+        string relativePathToJsonFile = Path.Combine(pathToTransliterationTables, tableFileName);
+
         Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, relativePathToJsonFile);
         transliterationTable = new TransliterationTable(replacementMap);
     }

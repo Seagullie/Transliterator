@@ -14,14 +14,11 @@ using Wpf.Ui.Controls;
 
 namespace Transliterator.ViewModels
 {
-    public partial class MainWindowViewModel : ObservableObject
+    public partial class MainViewModel : ObservableObject
     {
-        private const string transliterationTablesPath = "Resources/TranslitTables";
-
-        // TODO: Refactor into TransliteratorTypeController or something like this
-        private readonly BufferedTransliteratorService transliteratorService;
-
-        //private readonly UnbufferedTransliteratorService unbufferedTransliteratorService;
+        // stores either buffered or unbuffered translit
+        // (unbuffered version inherits from buffered one and thus can be assigned to this field with more general type)
+        private BufferedTransliteratorService transliteratorService;
 
         private readonly SettingsService settingsService;
         private readonly HotKeyService hotKeyService;
@@ -51,7 +48,8 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private List<string> _transliterationTables;
 
-        public MainWindowViewModel()
+        // TODO: Refactor
+        public MainViewModel()
         {
             hotKeyService = Singleton<HotKeyService>.Instance;
 
@@ -64,31 +62,16 @@ namespace Transliterator.ViewModels
                 ToggleAppStateShortcut = hotKey;
 
                 hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
-            };      
+                SetTransliteratorService();
+            };
 
-            transliteratorService = BufferedTransliteratorService.GetInstance();
-
-            if (settingsService.LastSelectedTransliterationTable != string.Empty)
-            {
-                transliteratorService.transliterationTable = new TransliterationTable(ReadReplacementMapFromJson(settingsService.LastSelectedTransliterationTable));
-            }
-
+            SetTransliteratorService();
             LoadTransliterationTables();
 
             AppState = "On";
             ToggleAppStateShortcut = settingsService.ToggleHotKey;
             HotKey hotKey = settingsService.ToggleHotKey;
             hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
-        }
-
-        // TODO: Move to Service
-        public Dictionary<string, string> ReadReplacementMapFromJson(string fileName)
-        {
-            string TableAsString = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{transliterationTablesPath}\\{fileName}.json"));
-            dynamic deserializedTableObj = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(TableAsString);
-            Dictionary<string, string> TableAsDictionary = deserializedTableObj;
-
-            return TableAsDictionary;
         }
 
         [RelayCommand]
@@ -131,7 +114,7 @@ namespace Transliterator.ViewModels
 
         private void LoadTransliterationTables()
         {
-            TransliterationTables = FileService.GetFileNamesWithoutExtension(transliterationTablesPath);
+            TransliterationTables = FileService.GetFileNamesWithoutExtension(BufferedTransliteratorService.pathToTransliterationTables);
 
             if (TransliterationTables.Contains(settingsService.LastSelectedTransliterationTable))
                 SelectedTransliterationTable = settingsService.LastSelectedTransliterationTable;
@@ -145,7 +128,8 @@ namespace Transliterator.ViewModels
         {
             if (!string.IsNullOrEmpty(value))
             {
-                transliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
+                //transliteratorService.TransliterationTable = new TransliterationTable(ReadReplacementMapFromJson(value));
+                transliteratorService.SetTableModel($"{value}.json");
             }
         }
 
@@ -154,7 +138,11 @@ namespace Transliterator.ViewModels
         {
             transliteratorService.State = !transliteratorService.State;
             AppState = transliteratorService.State ? "On" : "Off";
-            PlayToggleSound();
+
+            if (settingsService.IsToggleSoundOn)
+            {
+                PlayToggleSound();
+            }
         }
 
         private void PlayToggleSound()
@@ -174,6 +162,34 @@ namespace Transliterator.ViewModels
         {
             settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable;
             settingsService.Save();
+        }
+
+        public void SetTransliteratorService()
+        {
+            bool? isCurrentTranslitServiceEnabled = transliteratorService?.State;
+
+            // disable current transliterator service as it won't be used anymore
+            if (transliteratorService != null)
+            {
+                transliteratorService.State = false;
+            }
+
+            if (settingsService.IsBufferInputEnabled)
+            {
+                transliteratorService = BufferedTransliteratorService.GetInstance();
+            }
+            else
+            {
+                transliteratorService = UnbufferedTransliteratorService.GetInstance();
+            }
+
+            // carry over state from previous transliterator service
+            transliteratorService.State = isCurrentTranslitServiceEnabled ?? settingsService.IsTransliteratorEnabledAtStartup;
+            // TODO: Annotate
+            if (SelectedTransliterationTable != null)
+            {
+                transliteratorService.SetTableModel(SelectedTransliterationTable + ".json");
+            }
         }
     }
 }

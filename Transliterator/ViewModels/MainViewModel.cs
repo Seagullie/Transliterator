@@ -17,64 +17,62 @@ namespace Transliterator.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        // stores either buffered or unbuffered translit
+        // Stores either buffered or unbuffered transliteration service
         // (unbuffered version inherits from buffered one and thus can be assigned to this field with more general type)
-        private ITransliteratorService transliteratorService;
-
-        private readonly SettingsService settingsService;
-        private readonly HotKeyService hotKeyService;
-
-        [ObservableProperty]
-        private string _applicationTitle = string.Empty;
+        private ITransliteratorService _transliteratorService;
+        private readonly SettingsService _settingsService;
+        private readonly HotKeyService _hotKeyService;
 
         [ObservableProperty]
-        private bool _appState;
+        private string? applicationTitle;
 
         [ObservableProperty]
-        private ObservableCollection<object> _navigationFooter = new();
+        private bool appState;
 
         [ObservableProperty]
-        private ObservableCollection<object> _navigationItems = new();
+        private ObservableCollection<object> navigationFooter = new();
 
         [ObservableProperty]
-        private HotKey _toggleAppStateShortcut;
+        private ObservableCollection<object> navigationItems = new();
 
         [ObservableProperty]
-        private ObservableCollection<MenuItem> _trayMenuItems = new();
+        private HotKey? toggleAppStateShortcut;
 
         [ObservableProperty]
-        private TransliterationTable _selectedTransliterationTable;
+        private ObservableCollection<MenuItem> trayMenuItems = new();
 
         [ObservableProperty]
-        private ObservableCollection<TransliterationTable> _transliterationTables = new();
+        private TransliterationTable? selectedTransliterationTable;
+
+        [ObservableProperty]
+        private ObservableCollection<TransliterationTable>? transliterationTables;
 
         // TODO: Refactor
         public MainViewModel()
         {
-            hotKeyService = Singleton<HotKeyService>.Instance;
+            _hotKeyService = Singleton<HotKeyService>.Instance;
 
-            settingsService = SettingsService.GetInstance();
-            settingsService.SettingsSavedEvent += OnSettingsSaved;
+            _settingsService = SettingsService.GetInstance();
+            _settingsService.SettingsSavedEvent += OnSettingsSaved;
 
             SetTransliteratorService();
             LoadTransliterationTables();
 
-            transliteratorService.TransliterationEnabled = settingsService.IsTransliteratorEnabledAtStartup;
-            AppState = transliteratorService.TransliterationEnabled;
+            AppState = _transliteratorService.TransliterationEnabled;
 
-            ToggleAppStateShortcut = settingsService.ToggleHotKey;
-            HotKey hotKey = settingsService.ToggleHotKey;
-            hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
+            ToggleAppStateShortcut = _settingsService.ToggleHotKey;
+            HotKey hotKey = _settingsService.ToggleHotKey;
+            _hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
         }
 
         private void OnSettingsSaved(object? sender, EventArgs e)
         {
-            hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
+            _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
 
-            HotKey hotKey = settingsService.ToggleHotKey;
+            HotKey hotKey = _settingsService.ToggleHotKey;
             ToggleAppStateShortcut = hotKey;
 
-            hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
+            _hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
             SetTransliteratorService();
         }
 
@@ -118,33 +116,35 @@ namespace Transliterator.ViewModels
 
         private void LoadTransliterationTables()
         {
-            var tableList = FileService.GetFileNamesWithoutExtension(ITransliteratorService.StandardTransliterationTablesPath);
-            
+            var tableNames = FileService.GetFileNamesWithoutExtension(ITransliteratorService.StandardTransliterationTablesPath);
 
-            foreach (var table in tableList)
+            TransliterationTables = new();
+
+            foreach (var tableName in tableNames)
             {
-                string relativePathToJsonFile = Path.Combine(ITransliteratorService.StandardTransliterationTablesPath, table + ".json");
+                string relativePathToJsonFile = Path.Combine(ITransliteratorService.StandardTransliterationTablesPath, tableName + ".json");
 
                 Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, relativePathToJsonFile);
-                TransliterationTables.Add(new TransliterationTable(replacementMap, table));
+
+                TransliterationTables.Add(new TransliterationTable(replacementMap, tableName));
             }
 
-            SelectedTransliterationTable = TransliterationTables.First(table => table.Name == settingsService.LastSelectedTransliterationTable)
-                                                ?? TransliterationTables.FirstOrDefault();
+            SelectedTransliterationTable = TransliterationTables.First(table => table.Name == _settingsService.LastSelectedTransliterationTable) ?? TransliterationTables.FirstOrDefault();
         }
 
-        partial void OnSelectedTransliterationTableChanged(TransliterationTable value)
+        partial void OnSelectedTransliterationTableChanged(TransliterationTable? value)
         {
-            transliteratorService.TransliterationTable = value;
+            if (value != null)
+                _transliteratorService.TransliterationTable = value;
         }
 
         [RelayCommand]
         private void ToggleAppState()
         {
-            transliteratorService.TransliterationEnabled = !transliteratorService.TransliterationEnabled;
-            AppState = transliteratorService.TransliterationEnabled;
+            _transliteratorService.TransliterationEnabled = !_transliteratorService.TransliterationEnabled;
+            AppState = _transliteratorService.TransliterationEnabled;
 
-            if (settingsService.IsToggleSoundOn)
+            if (_settingsService.IsToggleSoundOn)
             {
                 PlayToggleSound();
             }
@@ -152,45 +152,40 @@ namespace Transliterator.ViewModels
 
         private void PlayToggleSound()
         {
-            string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(transliteratorService.TransliterationEnabled == true ? "cont" : "pause")}.wav");
+            string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(_transliteratorService.TransliterationEnabled == true ? "cont" : "pause")}.wav");
 
-            if (transliteratorService.TransliterationEnabled == true && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOnSound))
-                pathToSoundToPlay = settingsService.PathToCustomToggleOnSound;
+            if (_transliteratorService.TransliterationEnabled == true && !string.IsNullOrEmpty(_settingsService.PathToCustomToggleOnSound))
+                pathToSoundToPlay = _settingsService.PathToCustomToggleOnSound;
 
-            if (transliteratorService.TransliterationEnabled == false && !string.IsNullOrEmpty(settingsService.PathToCustomToggleOffSound))
-                pathToSoundToPlay = settingsService.PathToCustomToggleOffSound;
+            if (_transliteratorService.TransliterationEnabled == false && !string.IsNullOrEmpty(_settingsService.PathToCustomToggleOffSound))
+                pathToSoundToPlay = _settingsService.PathToCustomToggleOffSound;
 
             SoundPlayerService.Play(pathToSoundToPlay);
         }
 
         public void SaveSettings()
         {
-            settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable.ToString();
-            settingsService.Save();
+            _settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable?.ToString() ?? ""; ;
+            _settingsService.Save();
         }
 
         public void SetTransliteratorService()
         {
-            bool? isCurrentTranslitServiceEnabled = transliteratorService?.TransliterationEnabled;
+            bool isCurrentTransliterationServiceEnabled = _transliteratorService?.TransliterationEnabled ?? _settingsService.IsTransliteratorEnabledAtStartup;
 
             // disable current transliterator service as it won't be used anymore
-            if (transliteratorService != null)
-            {
-                transliteratorService.TransliterationEnabled = false;
-            }
+            if (_transliteratorService != null)
+                _transliteratorService.TransliterationEnabled = false;
 
-            if (settingsService.IsBufferInputEnabled)
-            {
-                transliteratorService = BufferedTransliteratorService.GetInstance();
-            }
+            if (_settingsService.IsBufferInputEnabled)
+                _transliteratorService = BufferedTransliteratorService.GetInstance();
             else
-            {
-                transliteratorService = UnbufferedTransliteratorService.GetInstance();
-            }
+                _transliteratorService = UnbufferedTransliteratorService.GetInstance();
 
-            // carry over state from previous transliterator service
-            transliteratorService.TransliterationEnabled = isCurrentTranslitServiceEnabled ?? settingsService.IsTransliteratorEnabledAtStartup;
-            transliteratorService.TransliterationTable = SelectedTransliterationTable;
+            if (SelectedTransliterationTable != null)
+                _transliteratorService.TransliterationTable = SelectedTransliterationTable;
+
+            _transliteratorService.TransliterationEnabled = isCurrentTransliterationServiceEnabled;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Transliterator.Core.Services.Tests
         public UnbufferedTransliteratorServiceTestClass() : base()
         {
             // state may depend on settings or whatever, so better set it to true here
-            State = true;
+            TransliterationEnabled = true;
             AllowUnicode();
         }
 

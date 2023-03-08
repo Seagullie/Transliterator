@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Xml.Linq;
 using Transliterator.Core.Services;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Transliterator.Core.Models;
 
@@ -17,6 +16,8 @@ public partial class TransliterationTable
         ReplacementMap = replacementMap;
         UpdateKeys();
     }
+
+    public string Name { get; set; }
 
     // Alphabet is a set of all letters that can be transliterated.
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
@@ -42,8 +43,7 @@ public partial class TransliterationTable
     public List<string> MultiGraphGraphemes { get; private set; } = new();
 
     public List<string> Keys { get; private set; } = new();
-    public string Name { get; set; }
-
+    
     public Dictionary<string, string> ReplacementMap { get; private set; } = new();
 
     private void UpdateAlphabet()
@@ -81,6 +81,18 @@ public partial class TransliterationTable
         UpdateAlphabet();
     }
 
+    public override string ToString()
+    {
+        if (string.IsNullOrEmpty(Name))
+        {
+            return base.ToString();
+        }
+        return Name;
+    }
+}
+
+public partial class TransliterationTable
+{
     public bool IsInAlphabet(string key)
     {
         return Alphabet.Contains(key.ToLower());

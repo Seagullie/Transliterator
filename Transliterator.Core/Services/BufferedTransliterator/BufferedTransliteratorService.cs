@@ -6,7 +6,7 @@ using Transliterator.Services;
 
 namespace Transliterator.Core.Services;
 
-public class BufferedTransliteratorService : BaseTransliterator
+public class BufferedTransliteratorService : BaseTransliterator, ITransliteratorService
 {
     // At any given time, buffer can be in these 5 states:
     // 1. empty
@@ -48,7 +48,7 @@ public class BufferedTransliteratorService : BaseTransliterator
 
     public event EventHandler? StateChangedEvent;
 
-    public bool State { get => _state; set => SetState(value); }
+    public bool TransliterationEnabled { get => _state; set => SetTransliterationState(value); }
 
     // Do we really need this simple check? It's not like setting same translit table is expensive or causes any issues
     public TransliterationTable TransliterationTable
@@ -78,7 +78,7 @@ public class BufferedTransliteratorService : BaseTransliterator
     {
         currentlyHandledKeyboardHookEvent = e;
 
-        if (!State || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
+        if (!TransliterationEnabled || HandleBackspace(sender, e) || SkipIrrelevant(sender, e)) return;
 
         // rendered character is a result of applying any modifers to base keystroke. E.g, "1" (base keystroke) + "shift" (modifier) = "!" (rendered character)
         string renderedCharacter = e.Character;
@@ -203,7 +203,7 @@ public class BufferedTransliteratorService : BaseTransliterator
         return replacement;
     }
 
-    private void SetState(bool value)
+    private void SetTransliterationState(bool value)
     {
         _state = value;
         if (!_state) buffer.Clear();

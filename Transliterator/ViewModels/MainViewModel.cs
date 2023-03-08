@@ -27,9 +27,8 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private string _applicationTitle = string.Empty;
 
-        // TODO: Rewrite to bool
         [ObservableProperty]
-        private string _appState;
+        private bool _appState;
 
         [ObservableProperty]
         private ObservableCollection<object> _navigationFooter = new();
@@ -55,25 +54,28 @@ namespace Transliterator.ViewModels
             hotKeyService = Singleton<HotKeyService>.Instance;
 
             settingsService = SettingsService.GetInstance();
-            settingsService.SettingsSavedEvent += (o, e) =>
-            {
-                hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
-
-                HotKey hotKey = settingsService.ToggleHotKey;
-                ToggleAppStateShortcut = hotKey;
-
-                hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
-                SetTransliteratorService();
-            };
+            settingsService.SettingsSavedEvent += OnSettingsSaved;
 
             SetTransliteratorService();
             LoadTransliterationTables();
 
             transliteratorService.TransliterationEnabled = settingsService.IsTransliteratorEnabledAtStartup;
-            AppState = transliteratorService.TransliterationEnabled ? "On" : "Off";
+            AppState = transliteratorService.TransliterationEnabled;
+
             ToggleAppStateShortcut = settingsService.ToggleHotKey;
             HotKey hotKey = settingsService.ToggleHotKey;
             hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
+        }
+
+        private void OnSettingsSaved(object? sender, EventArgs e)
+        {
+            hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
+
+            HotKey hotKey = settingsService.ToggleHotKey;
+            ToggleAppStateShortcut = hotKey;
+
+            hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
+            SetTransliteratorService();
         }
 
         [RelayCommand]
@@ -140,7 +142,7 @@ namespace Transliterator.ViewModels
         private void ToggleAppState()
         {
             transliteratorService.TransliterationEnabled = !transliteratorService.TransliterationEnabled;
-            AppState = transliteratorService.TransliterationEnabled ? "On" : "Off";
+            AppState = transliteratorService.TransliterationEnabled;
 
             if (settingsService.IsToggleSoundOn)
             {

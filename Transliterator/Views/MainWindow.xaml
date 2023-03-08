@@ -29,9 +29,7 @@
     <!--  TODO: Move boilerplate window stlyles to separate resource  -->
 
     <Window.Resources>
-
-        <helpers:StateToColorConverter x:Key="StateToColorConverter" />
-        <helpers:StringToBoolConverter x:Key="StringToBoolConverter" />
+        <helpers:BoolToStateStringConverter x:Key="BoolToStateStringConverter" />
     </Window.Resources>
 
     <Grid Margin="40,0,40,15" HorizontalAlignment="Stretch">
@@ -103,7 +101,7 @@
                 VerticalAlignment="Center"
                 Command="{Binding ToggleAppStateCommand}"
                 Content="Toggle"
-                IsChecked="{Binding AppState, Converter={StaticResource StringToBoolConverter}}" />
+                IsChecked="{Binding AppState}" />
 
             <ui:TextBox
                 MinWidth="120"
@@ -128,10 +126,10 @@
             Padding="0"
             HorizontalAlignment="Center"
             VerticalContentAlignment="Center"
-            Content="{Binding AppState}"
+            Content="{Binding AppState, Converter={StaticResource BoolToStateStringConverter}}"
             FontSize="18"
             FontWeight="DemiBold"
-            IsEnabled="{Binding AppState, Converter={StaticResource StringToBoolConverter}}" />
+            IsEnabled="{Binding AppState}" />
         <StackPanel
             Grid.Row="2"
             Grid.Column="1"

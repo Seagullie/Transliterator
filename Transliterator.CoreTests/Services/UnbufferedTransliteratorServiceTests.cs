@@ -46,7 +46,7 @@ namespace Transliterator.Core.Services.Tests
 
             // act
             // make sure each char in test string is an isolated grapheme
-            foreach (char chr in testString) Assert.IsTrue(_transliteratorService.transliterationTable.IsIsolatedGrapheme(chr.ToString()), $"{chr} belongs to a combo");
+            foreach (char chr in testString) Assert.IsTrue(_transliteratorService.TransliterationTable.IsIsolatedGrapheme(chr.ToString()), $"{chr} belongs to a combo");
 
             KeyboardInputGenerator.TextEntry(testString);
 

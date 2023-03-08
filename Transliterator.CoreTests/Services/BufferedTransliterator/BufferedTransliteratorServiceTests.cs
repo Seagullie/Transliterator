@@ -59,7 +59,7 @@ namespace Transliterator.Core.Services.Tests
             // act
             KeyboardInputGenerator.TextEntry(combo);
             // make sure last char in test string does not belong to a combo
-            Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfMultiGraph(nonComboChar.ToString()), $"{nonComboChar} belongs to a combo");
+            Assert.IsFalse(_transliteratorService.TransliterationTable.IsPartOfMultiGraph(nonComboChar.ToString()), $"{nonComboChar} belongs to a combo");
 
             // assert
             string expected = "як";
@@ -104,7 +104,7 @@ namespace Transliterator.Core.Services.Tests
 
             // act
             // make sure each char in test string does not belong to a combo
-            foreach (char chr in testString) Assert.IsFalse(_transliteratorService.transliterationTable.IsPartOfMultiGraph(chr.ToString()), $"{chr} belongs to a combo");
+            foreach (char chr in testString) Assert.IsFalse(_transliteratorService.TransliterationTable.IsPartOfMultiGraph(chr.ToString()), $"{chr} belongs to a combo");
 
             KeyboardInputGenerator.TextEntry(testString);
 

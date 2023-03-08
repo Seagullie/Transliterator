@@ -42,6 +42,8 @@ internal sealed class KeyboardHook : IDisposable
 
     public bool SkipUnicodeKeys { get; set; } = true;
 
+    public static bool IsCapsLockActive { get => _capsLock; }
+
     public KeyboardHook()
     {
         SyncLockState();
@@ -193,7 +195,7 @@ internal sealed class KeyboardHook : IDisposable
             // Skip the unicode input
             if (SkipUnicodeKeys && eventArgs.Key == VirtualKeyCode.Packet)
             {
-                Debug.WriteLine($"{eventArgs.Key} ignored ({eventArgs.Character})", $"[KeyboardHook {GetHashCode()}]");
+                Debug.WriteLine($"{eventArgs.Key} ignored (injected) ({eventArgs.Character}) ({(eventArgs.IsKeyDown ? "down" : "up")})", $"[KeyboardHook {GetHashCode()}]");
 
                 return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
             }

@@ -6,9 +6,9 @@ namespace Transliterator.Core.Services
     {
         public const string StandardTransliterationTablesPath = "Resources/TranslitTables";
 
-        public TransliterationTable? TransliterationTable { get; set; }
-
         public bool TransliterationEnabled { get; set; }
+
+        public TransliterationTable? TransliterationTable { get; set; }
 
         public string Transliterate(string text);
     }

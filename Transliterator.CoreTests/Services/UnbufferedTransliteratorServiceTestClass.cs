@@ -29,7 +29,7 @@ namespace Transliterator.Core.Services.Tests
         }
 
         // mock erase
-        public override void Erase(int times)
+        internal override void Erase(int times)
         {
             if (times < 1)
             {

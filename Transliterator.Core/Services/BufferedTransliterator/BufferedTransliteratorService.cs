@@ -29,15 +29,11 @@ public class BufferedTransliteratorService : ITransliteratorService
         buffer.MultiGraphBrokenEvent += Transliterate;
     }
 
-    public BufferedTransliteratorService(TransliterationTable transliterationTable) : this()
-    {
-        TransliterationTable = transliterationTable;
-    }
-
     public event EventHandler? StateChangedEvent;
 
     private bool transliterationEnabled = true;
-    public bool TransliterationEnabled 
+
+    public bool TransliterationEnabled
     {
         get => transliterationEnabled;
         set
@@ -103,7 +99,7 @@ public class BufferedTransliteratorService : ITransliteratorService
 
             // Transliterate whatever is left in buffer, but only if key is not a modifier.
             // Otherwise combos get broken by simply pressing shift, for example
-            if (e.IsModifier) 
+            if (e.IsModifier)
                 return true;
 
             if (buffer.Count > 0)
@@ -156,7 +152,7 @@ public class BufferedTransliteratorService : ITransliteratorService
 
     protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
-        if (!TransliterationEnabled || HandleBackspace(e) || SkipIrrelevant(e)) 
+        if (!TransliterationEnabled || HandleBackspace(e) || SkipIrrelevant(e))
             return;
 
         buffer.Add(e.Character, TransliterationTable);

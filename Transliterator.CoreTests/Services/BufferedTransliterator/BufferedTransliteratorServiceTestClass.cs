@@ -33,8 +33,10 @@ namespace Transliterator.Core.Services.Tests
         public override bool SkipIrrelevant(KeyboardHookEventArgs e)
         {
             bool skipped = base.SkipIrrelevant(e);
+
             if (skipped)
             {
+                e.Handled = true;
                 transliterationResults += e.Character;
             }
 

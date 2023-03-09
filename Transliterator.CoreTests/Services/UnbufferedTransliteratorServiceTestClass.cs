@@ -29,7 +29,7 @@ namespace Transliterator.Core.Services.Tests
         }
 
         // mock erase
-        internal override void Erase(int times)
+        public override void Erase(int times)
         {
             if (times < 1)
             {
@@ -63,14 +63,13 @@ namespace Transliterator.Core.Services.Tests
         //    transliterationResults += renderedCharacter;
         //}
 
-        // decorated SuppressKeypress
         //protected override void SuppressKeypress(KeyboardHookEventArgs e)
         //{
         //    base.SuppressKeypress(e);
         //    // if character was skipped to the system as part of a combo, log it for full input picture
         //    if (!e.Handled)
         //    {
-        //        transliterationResults += e.Character;
+        //        IO += e.Character;
         //    }
         //}
 

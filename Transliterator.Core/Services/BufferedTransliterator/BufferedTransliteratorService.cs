@@ -104,8 +104,7 @@ public class BufferedTransliteratorService : ITransliteratorService
 
             if (buffer.Count > 0)
             {
-                // May broke event
-                buffer.Add(e.Character, TransliterationTable);
+                buffer.BrokeMultiGraph();
                 buffer.Clear();
             }
             return true;
@@ -125,11 +124,15 @@ public class BufferedTransliteratorService : ITransliteratorService
             foreach (var c in text )
             {
                 string cAsString = c.ToString();
-                var tex = TransliterationTable.ReplacementMap[cAsString.ToLower()];
+
+                var outputCharacter = TransliterationTable.ReplacementMap[cAsString.ToLower()];
+
                 if (char.IsUpper(c))
-                    tex = tex.ToUpper();
-                EnterTransliterationResults(tex);
+                    outputCharacter = outputCharacter.ToUpper();
+
+                EnterTransliterationResults(outputCharacter);
             }
+
             buffer.Clear();
             return;
         }

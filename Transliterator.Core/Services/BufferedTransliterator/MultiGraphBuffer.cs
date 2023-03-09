@@ -20,12 +20,17 @@ public class MultiGraphBuffer : List<string>
 
         if (tableModel.EndsWithBrokenMultiGraph(GetAsString() + item) && !tableModel.IsPartOfMultiGraph(GetAsString() + item))
         {
-            MultiGraphBrokenEventIsBeingHandled = true;
-            MultiGraphBrokenEvent?.Invoke(GetAsString());
-            MultiGraphBrokenEventIsBeingHandled = false;
+            BrokeMultiGraph();
         }
 
         base.Add(item);
+    }
+
+    public void BrokeMultiGraph()
+    {
+        MultiGraphBrokenEventIsBeingHandled = true;
+        MultiGraphBrokenEvent?.Invoke(GetAsString());
+        MultiGraphBrokenEventIsBeingHandled = false;
     }
 
     public string GetAsString()

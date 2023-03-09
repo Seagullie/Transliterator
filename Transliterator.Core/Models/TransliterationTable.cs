@@ -1,39 +1,28 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using Transliterator.Core.Keyboard;
-using Transliterator.Core.Services;
 using Transliterator.Helpers;
 
 namespace Transliterator.Core.Models;
 
-public partial class TransliterationTable
+public partial class TransliterationTable : Dictionary<string, string>
 {
-    private LoggerService loggerService;
-
     // TODO: Store table name as field in JSON file
-    public TransliterationTable(Dictionary<string, string> replacementMap, string name = "")
+    public TransliterationTable(Dictionary<string, string> replacementMap, string name = "") : base(replacementMap)
     {
-        loggerService = LoggerService.GetInstance();
-
         Name = name;
-        ReplacementMap = replacementMap;
-        UpdateKeys();
+        UpdateGraphemes();
     }
 
     public string Name { get; set; }
 
     // Alphabet is a set of all letters that can be transliterated.
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
-    public List<string> Alphabet { get; private set; } = new();
+    public string Alphabet { get; private set; } = string.Empty;
 
     // Multigraph = more than one letter. Examples of MultiGraphs: ch, sh, zh,
     // while s, d, f are not MultiGraphs, but graphemes
     public List<string> MultiGraphs { get; private set; } = new();
-
-    public List<string> DiGraphs { get; private set; } = new();
-    public List<string> TriGraphs { get; private set; } = new();
-
-    // tetra and more are going to be bad user experience
-    public List<string> TetraGraphs { get; private set; } = new();
 
     // Grapheme = a single letter
     public List<string> Graphemes { get; private set; } = new();
@@ -50,7 +39,7 @@ public partial class TransliterationTable
 
     private void UpdateAlphabet()
     {
-        Alphabet.Clear();
+        var newAlphabet = new StringBuilder();
 
         foreach (string key in Keys)
         {
@@ -58,24 +47,22 @@ public partial class TransliterationTable
             {
                 foreach (char subkey in key)
                 {
-                    Alphabet.Add(subkey.ToString());
+                    newAlphabet.Append(subkey);
                 }
             }
             else
             {
-                Alphabet.Add(key);
+                newAlphabet.Append(key);
             }
         }
+
+        Alphabet = newAlphabet.ToString();
     }
 
-    private void UpdateKeys()
+    private void UpdateGraphemes()
     {
-        Keys = ReplacementMap.Keys.OrderByDescending(key => key.Length).ToList();
         MultiGraphs = Keys.Where(key => key.Length > 1).ToList();
         Graphemes = Keys.Where(key => key.Length == 1).ToList();
-        DiGraphs = Keys.Where(key => key.Length == 2).ToList();
-        TriGraphs = Keys.Where(key => key.Length == 3).ToList();
-        TetraGraphs = Keys.Where(key => key.Length == 4).ToList();
 
         IsolatedGraphemes = Keys.Where(key => key.Length == 1 && !IsPartOfMultiGraph(key)).ToList();
         MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key)).ToList();
@@ -83,21 +70,24 @@ public partial class TransliterationTable
         UpdateAlphabet();
     }
 
-    public override string ToString()
+    public new void Add(string key, string value)
+    {
+        base.Add(key, value);
+        UpdateGraphemes();
+    }
+
+    public new void Remove(string key)
+    {
+        base.Remove(key);
+        UpdateGraphemes();
+    }
+
+    public override string? ToString()
     {
         if (string.IsNullOrEmpty(Name))
-        {
             return base.ToString();
-        }
-        return Name;
-    }
-}
 
-public partial class TransliterationTable
-{
-    public bool IsInAlphabet(string key)
-    {
-        return Alphabet.Contains(key.ToLower());
+        return Name;
     }
 
     // Removes last character of text param and checks whether the remainder ends with unfinished MultiGraph
@@ -109,14 +99,7 @@ public partial class TransliterationTable
         }
 
         string textWithoutLastCharacter = text[..^1];
-
         return IsStartOfMultiGraph(textWithoutLastCharacter);
-    }
-
-    public bool EndsWithMultiGraphInit(string text)
-    {
-        char lastChar = text[^1];
-        return IsStartOfMultiGraph(lastChar.ToString());
     }
 
     public bool IsAddingUpToMultiGraph(string prefix, string characterFinisher)
@@ -169,14 +152,6 @@ public partial class TransliterationTable
         return false;
     }
 
-    public bool IsGrapheme(string text)
-    {
-        text = text.ToLower();
-
-        bool isInGraphemeList = Graphemes.Contains(text);
-        return isInGraphemeList;
-    }
-
     public bool IsIsolatedGrapheme(string text)
     {
         text = text.ToLower();
@@ -192,7 +167,10 @@ public partial class TransliterationTable
         bool isInGraphemeList = MultiGraphGraphemes.Contains(text);
         return isInGraphemeList;
     }
+}
 
+public partial class TransliterationTable
+{
     public string Transliterate(string text)
     {
         // Table keys and input text should have same case
@@ -207,7 +185,7 @@ public partial class TransliterationTable
             // skip keys not present in the text
             if (inputText.Contains(key))
             {
-                text = ReplaceKeepCase(key, ReplacementMap[key], text);
+                text = ReplaceKeepCase(key, this[key], text);
                 // remove already transliterated keys from inputText. This is needed to prevent some bugs
                 inputText = inputText.Replace(key, "");
             }

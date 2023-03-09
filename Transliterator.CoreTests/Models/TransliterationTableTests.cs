@@ -36,7 +36,7 @@ namespace Transliterator.Core.Models.Tests
             string character = "H";
 
             // act
-            bool isInAlphabet = transliterationTable.IsInAlphabet(character);
+            bool isInAlphabet = transliterationTable.Alphabet.Contains(character);
 
             // assert
 

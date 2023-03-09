@@ -88,7 +88,7 @@ public class BufferedTransliteratorService : ITransliteratorService
     /// </summary>
     public virtual bool SkipIrrelevant(KeyboardHookEventArgs e)
     {
-        bool isIrrelevant = !TransliterationTable.IsInAlphabet(e.Character) || e.IsModifier || e.IsShortcut;
+        bool isIrrelevant = !TransliterationTable.Alphabet.Contains(e.Character.ToLower()) || e.IsModifier || e.IsShortcut;
 
         if (isIrrelevant)
         {
@@ -115,14 +115,14 @@ public class BufferedTransliteratorService : ITransliteratorService
         if (TransliterationTable == null)
             throw new TableNotSetException("TransliterationTable is not initialized");
 
-        // When MultiGraphBrokenEvent іs invoked, buffered characters may not form an MultiGraph
-        // and thus have to be transliterated one by one
+        // When MultiGraphBrokenEvent invoked, buffered characters may not form an MultiGraph
         if (text.Length > 1 && !TransliterationTable.Keys.Contains(text.ToLower()))
         {
             foreach (char c in text)
             {
                 string cAsString = c.ToString();
-                string outputCharacter = TransliterationTable.ReplacementMap[cAsString.ToLower()];
+
+                var outputCharacter = TransliterationTable[cAsString.ToLower()];
 
                 if (char.IsUpper(c))
                     outputCharacter = outputCharacter.ToUpper();
@@ -134,8 +134,8 @@ public class BufferedTransliteratorService : ITransliteratorService
             return;
         }
 
-        // Table keys and input text should both be in lowercase
-        var outputText = TransliterationTable.ReplacementMap[text.ToLower()];
+        // Table keys and input text should have same case
+        var outputText = TransliterationTable[text.ToLower()];
         if (text.HasUppercase())
             outputText = outputText.ToUpper();
 

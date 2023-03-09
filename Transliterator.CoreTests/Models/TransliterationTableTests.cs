@@ -50,7 +50,7 @@ namespace Transliterator.Core.Models.Tests
             string text = "sCk";
 
             // act
-            bool isBrokenCombo = transliterationTable.EndsWithBrokenMultiGraph(text);
+            bool isBrokenCombo = transliterationTable.IsBrokenMultiGraph(text);
 
             // assert
             Assert.IsTrue(isBrokenCombo);

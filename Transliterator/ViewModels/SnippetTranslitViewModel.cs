@@ -28,8 +28,6 @@ public partial class SnippetTranslitViewModel : ObservableObject
         transliterationTable = new TransliterationTable(replacementMap);
     }
 
-    // For some reason, this handler is called only when "Transliterate" button is clicked
-    // TODO: Fix bug
     partial void OnUserInputChanged(string value)
     {
         if (ShouldTransliterateOnTheFly)

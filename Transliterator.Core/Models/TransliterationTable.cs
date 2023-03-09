@@ -45,7 +45,7 @@ public partial class TransliterationTable
     public List<string> MultiGraphGraphemes { get; private set; } = new();
 
     public List<string> Keys { get; private set; } = new();
-    
+
     public Dictionary<string, string> ReplacementMap { get; private set; } = new();
 
     private void UpdateAlphabet()
@@ -100,9 +100,8 @@ public partial class TransliterationTable
         return Alphabet.Contains(key.ToLower());
     }
 
-    // TODO: Annotate
     // Removes last character of text param and checks whether the remainder ends with unfinished MultiGraph
-    public bool EndsWithBrokenMultiGraph(string text)
+    public bool IsBrokenMultiGraph(string text)
     {
         if (text.Length < 2 || IsMultiGraph(text) || MultiGraphs.Count == 0)
         {
@@ -111,21 +110,7 @@ public partial class TransliterationTable
 
         string textWithoutLastCharacter = text[..^1];
 
-        // Clamping combo length to text length:
-        int longestMultiGraphLen = Math.Clamp(MultiGraphs[0].Length, 0, textWithoutLastCharacter.Length);
-
-        for (int i = 1; i < longestMultiGraphLen + 1; i++)
-        {
-            // Now check all the substrings on whether those are MultiGraph inits or not by slicing more and more each time
-            string substr = textWithoutLastCharacter.Substring(textWithoutLastCharacter.Length - i);
-            if (EndsWithMultiGraphInit(substr))
-            {
-                loggerService.LogMessage(this, $"[Table]: Broken combo detected: {text}");
-                return true;
-            }
-        }
-
-        return false;
+        return IsStartOfMultiGraph(textWithoutLastCharacter);
     }
 
     public bool EndsWithMultiGraphInit(string text)

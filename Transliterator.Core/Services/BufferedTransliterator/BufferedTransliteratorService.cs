@@ -9,12 +9,6 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : ITransliteratorService
 {
-    // At any given time, buffer can be in these 5 states:
-    // 1. empty
-    // 2. contains a single character that is an isolated grapheme
-    // 3. contains a single character that is a beginning of MultiGraph
-    // 4. contains several characters that are part of a MultiGraph
-    // 5. contains a full MultiGraph
     protected MultiGraphBuffer buffer = new();
 
     private readonly LoggerService _loggerService;
@@ -62,6 +56,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         return text;
     }
 
+    // TODO: Write tests for erasing scenarios
     /// <summary>
     /// Keep buffer in sync with keyboard input by erasing last character on backspace
     /// </summary>
@@ -75,7 +70,6 @@ public class BufferedTransliteratorService : ITransliteratorService
 
         // TODO: Check if everything is okay
         // ctrl + backspace erases entire word and needs additional handling.
-        // Here word = any sequence of characters such as abcdefg123, but not punctuation or other special symbols
         if (e.IsControl)
             buffer.Clear();
         else
@@ -85,10 +79,13 @@ public class BufferedTransliteratorService : ITransliteratorService
     }
 
     // TODO: Rename
-    // Irrelevant = everything that is not needed for transliteration
-    // things that are needed for transliteration:
-    // table keys, backspace
     // "virtual" for testing purposes
+
+    /// <summary>
+    /// Irrelevant = everything that is not needed for transliteration.<br/>
+    /// Things that are needed for transliteration: <br/>
+    /// table keys
+    /// </summary>
     public virtual bool SkipIrrelevant(KeyboardHookEventArgs e)
     {
         bool isIrrelevant = !TransliterationTable.IsInAlphabet(e.Character) || e.IsModifier || e.IsShortcut;
@@ -104,7 +101,7 @@ public class BufferedTransliteratorService : ITransliteratorService
 
             if (buffer.Count > 0)
             {
-                buffer.BrokeMultiGraph();
+                buffer.InvokeBrokenMultiGraphEvent();
                 buffer.Clear();
             }
             return true;
@@ -118,14 +115,14 @@ public class BufferedTransliteratorService : ITransliteratorService
         if (TransliterationTable == null)
             throw new TableNotSetException("TransliterationTable is not initialized");
 
-        // When MultiGraphBrokenEvent invoked, buffered characters may not form an MultiGraph
-        if (text.Length > 1 && !TransliterationTable.Keys.Contains(text))
+        // When MultiGraphBrokenEvent іs invoked, buffered characters may not form an MultiGraph
+        // and thus have to be transliterated one by one
+        if (text.Length > 1 && !TransliterationTable.Keys.Contains(text.ToLower()))
         {
-            foreach (var c in text )
+            foreach (char c in text)
             {
                 string cAsString = c.ToString();
-
-                var outputCharacter = TransliterationTable.ReplacementMap[cAsString.ToLower()];
+                string outputCharacter = TransliterationTable.ReplacementMap[cAsString.ToLower()];
 
                 if (char.IsUpper(c))
                     outputCharacter = outputCharacter.ToUpper();
@@ -137,7 +134,7 @@ public class BufferedTransliteratorService : ITransliteratorService
             return;
         }
 
-        // Table keys and input text should have same case
+        // Table keys and input text should both be in lowercase
         var outputText = TransliterationTable.ReplacementMap[text.ToLower()];
         if (text.HasUppercase())
             outputText = outputText.ToUpper();

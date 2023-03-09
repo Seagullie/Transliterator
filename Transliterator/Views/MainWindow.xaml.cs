@@ -16,7 +16,6 @@ public partial class MainWindow
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        // TODO: Uncomment after migrating other things referenced by the methods
         ViewModel.SaveSettings();
     }
 

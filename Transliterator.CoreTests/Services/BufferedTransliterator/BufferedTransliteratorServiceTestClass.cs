@@ -30,9 +30,9 @@ namespace Transliterator.Core.Services.Tests
         }
 
         // decorates base SkipIrrelevant
-        public override bool SkipIrrelevant(object? sender, KeyboardHookEventArgs e)
+        public override bool SkipIrrelevant(KeyboardHookEventArgs e)
         {
-            bool skipped = base.SkipIrrelevant(sender, e);
+            bool skipped = base.SkipIrrelevant(e);
             if (skipped)
             {
                 transliterationResults += e.Character;

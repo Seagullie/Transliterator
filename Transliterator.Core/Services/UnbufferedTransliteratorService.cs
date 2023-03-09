@@ -11,7 +11,7 @@ namespace Transliterator.Core.Services
         /// <summary>
         /// Send backspace characters to erase user input
         /// </summary>
-        internal virtual void Erase(int times)
+        public virtual void Erase(int times)
         {
             VirtualKeyCode[] backspaceKeyArray = Enumerable.Repeat(VirtualKeyCode.Back, times).ToArray();
             KeyboardInputGenerator.KeyPresses(backspaceKeyArray);
@@ -27,20 +27,18 @@ namespace Transliterator.Core.Services
         // if they finish a multigraph, then they are suppressed and entire multigraph is transliterated
         protected override void SuppressKeypress(KeyboardHookEventArgs e)
         {
-            string renderedCharacter = e.Character;
             string bufferAsString = buffer.GetAsString();
-            TransliterationTable table = TransliterationTable;
 
             // unless that's Isolated Grapheme
             // or current (one that's in buffer) MultiGraph finisher
-            if (TransliterationTable.IsIsolatedGrapheme(renderedCharacter) || table.IsMultiGraph(bufferAsString))
+            if (TransliterationTable.IsIsolatedGrapheme(e.Character) || TransliterationTable.IsMultiGraph(bufferAsString))
             {
                 e.Handled = true;
             }
 
             // or MultiGraph grapheme outside MultiGraph
             // those can be transliterated instantly. Unless they initiate a MultiGraph
-            else if (!table.IsStartOfMultiGraph(bufferAsString) && table.IsMultiGraphGrapheme(renderedCharacter))
+            else if (!TransliterationTable.IsStartOfMultiGraph(bufferAsString) && TransliterationTable.IsMultiGraphGrapheme(e.Character))
             {
                 e.Handled = true;
             }
@@ -48,22 +46,16 @@ namespace Transliterator.Core.Services
 
         public override void Transliterate(string text)
         {
-            TransliterationTable table = TransliterationTable;
+            if (buffer.MultiGraphBrokenEventIsBeingHandled)
+            {
+                Erase(text.Length);
+            }
 
-            // TODO: Refactor erase block into its own function
-            // -- Erase Block --
-
-            // Main use case for erase is when there is a need to delete graphemes leading up to MultiGraph
-
-            int nOfCharsToErase = text.Length;
-            if (table.IsMultiGraph(text)) nOfCharsToErase -= 1;
-
-            // TODO: Annotate
-            else if (table.IsGrapheme(text) && !buffer.MultiGraphBrokenEventIsBeingHandled) nOfCharsToErase = 0;
-            Erase(nOfCharsToErase);
-
-            // -- Erase Block --
-
+            else if(text.Length > 1)
+            {
+                Erase(text.Length - 1);
+            }
+            
             base.Transliterate(text);
         }
     }

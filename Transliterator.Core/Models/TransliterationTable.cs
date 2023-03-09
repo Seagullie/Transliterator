@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using Transliterator.Core.Helpers.Exceptions;
+﻿using System.Text.RegularExpressions;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Services;
 using Transliterator.Helpers;

@@ -108,7 +108,8 @@ public class BufferedTransliteratorService : ITransliteratorService
 
             if (buffer.Count > 0)
             {
-                Transliterate(buffer.GetAsString());
+                // May broke event
+                buffer.Add(e.Character, TransliterationTable);
                 buffer.Clear();
             }
             return true;
@@ -121,6 +122,21 @@ public class BufferedTransliteratorService : ITransliteratorService
     {
         if (TransliterationTable == null)
             throw new TableNotSetException("TransliterationTable is not initialized");
+
+        // When MultiGraphBrokenEvent invoked, buffered characters may not form an MultiGraph
+        if (text.Length > 1 && !TransliterationTable.Keys.Contains(text))
+        {
+            foreach (var c in text )
+            {
+                string cAsString = c.ToString();
+                var tex = TransliterationTable.ReplacementMap[cAsString.ToLower()];
+                if (char.IsUpper(c))
+                    tex = tex.ToUpper();
+                EnterTransliterationResults(tex);
+            }
+            buffer.Clear();
+            return;
+        }
 
         // Table keys and input text should have same case
         var outputText = TransliterationTable.ReplacementMap[text.ToLower()];

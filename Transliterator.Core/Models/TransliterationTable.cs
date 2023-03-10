@@ -1,19 +1,15 @@
 ﻿using System.Text;
-using System.Text.RegularExpressions;
-using Transliterator.Core.Helpers;
-using Transliterator.Core.Keyboard;
-using Transliterator.Helpers;
 
 namespace Transliterator.Core.Models;
 
-// partial for properties
-public partial class TransliterationTable : Dictionary<string, string>
+public class TransliterationTable : Dictionary<string, string>
 {
     // TODO: Store table name as field in JSON file
     public TransliterationTable(Dictionary<string, string> replacementMap, string name = "") : base(replacementMap)
     {
         Name = name;
         UpdateGraphemes();
+        UpdateAlphabet();
     }
 
     public string Name { get; set; }
@@ -34,10 +30,6 @@ public partial class TransliterationTable : Dictionary<string, string>
 
     // MultiGraphGraphemes = a single letter that appears in a MultiGraph
     public List<string> MultiGraphGraphemes { get; private set; } = new();
-
-    public List<string> Keys { get; private set; } = new();
-
-    public Dictionary<string, string> ReplacementMap { get; private set; } = new();
 
     private void UpdateAlphabet()
     {
@@ -168,92 +160,5 @@ public partial class TransliterationTable : Dictionary<string, string>
 
         bool isInGraphemeList = MultiGraphGraphemes.Contains(text);
         return isInGraphemeList;
-    }
-}
-
-// partial for transliteration methods
-// not sure if transliteration should happen here or in it's own service
-public partial class TransliterationTable
-{
-    public string Transliterate(string text)
-    {
-        // Table keys and input text should have same case
-        string inputText = text.ToLower();
-
-        if (ContainsKey(inputText))
-        {
-            TryGetValue(inputText, out string? outputText);
-
-            if (text.HasUppercase())
-                outputText = outputText?.ToUpper();
-
-            return outputText ?? string.Empty;
-        }
-
-
-        foreach (KeyValuePair<string, string> graphemes in this)
-        {
-            if (inputText.Contains(graphemes.Key))
-            {
-                text = ReplaceKeepCase(graphemes.Key, graphemes.Value, text);
-
-                // Remove already transliterated keys from inputText.
-                // This is needed to prevent some bugs
-                inputText = inputText.Replace(graphemes.Key, "");
-            }
-        }
-
-        return text ?? "";
-    }
-
-    public string ReplaceKeepCase(string replaceTarget, string replacement, string input)
-    {
-        string onMatch(Match match)
-        {
-            string matchString = match.Value;
-            string replacementWithTargetStringCasePreserved = CarryOverCase(matchString, replacement);
-            return replacementWithTargetStringCasePreserved;
-        }
-
-        return Regex.Replace(input, Regex.Escape(replaceTarget), new MatchEvaluator((Func<Match, string>)onMatch), RegexOptions.IgnoreCase);
-    }
-
-    // carries over case from source string to final string
-    // here's the mapping rules:
-    // no case --> depends on capslock (for example, punctuation usually doesn't have case)
-    // first character uppercase -> uppercase
-    // last character uppercase -> uppercase
-    // uppercase -> uppercase
-    // lowercase -> lowercase
-    public string CarryOverCase(string sourceString, string finalString)
-    {
-        // nonalphabetic characters don't have uppercase
-        // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
-        if (!Utilities.HasUpperCase(sourceString))
-        {
-            return GetCaseForNonalphabeticString(finalString);
-        }
-
-        char firstSrcChar = sourceString[0];
-        char lastSrcChar = sourceString[^1];
-
-        if (Utilities.IsLowerCase(sourceString)) return finalString.ToLower();
-        if (char.IsUpper(firstSrcChar)) return finalString.ToUpper();
-        if (char.IsUpper(lastSrcChar)) return finalString.ToUpper();
-
-        if (Utilities.IsUpperCase(sourceString)) return finalString.ToUpper();
-
-        return finalString;
-    }
-
-    // we could also copy case from previously entered character
-    public string GetCaseForNonalphabeticString(string replacement)
-    {
-        if (KeyboardHook.IsCapsLockActive)
-        {
-            return replacement.ToUpper();
-        }
-
-        return replacement;
     }
 }

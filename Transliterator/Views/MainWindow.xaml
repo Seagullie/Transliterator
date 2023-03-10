@@ -73,6 +73,7 @@
             helpers:MarginSetter.Margin="5">
             <ComboBox
                 HorizontalAlignment="Stretch"
+                DisplayMemberPath="Name"
                 ItemsSource="{Binding TransliterationTables}"
                 SelectedItem="{Binding SelectedTransliterationTable}" />
             <Button

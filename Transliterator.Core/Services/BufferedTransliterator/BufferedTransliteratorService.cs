@@ -115,29 +115,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         if (TransliterationTable == null)
             throw new TableNotSetException("TransliterationTable is not initialized");
 
-        // When MultiGraphBrokenEvent invoked, buffered characters may not form an MultiGraph
-        if (text.Length > 1 && !TransliterationTable.Keys.Contains(text.ToLower()))
-        {
-            foreach (char c in text)
-            {
-                string cAsString = c.ToString();
-
-                var outputCharacter = TransliterationTable[cAsString.ToLower()];
-
-                if (char.IsUpper(c))
-                    outputCharacter = outputCharacter.ToUpper();
-
-                EnterTransliterationResults(outputCharacter);
-            }
-
-            buffer.Clear();
-            return;
-        }
-
-        // Table keys and input text should have same case
-        var outputText = TransliterationTable[text.ToLower()];
-        if (text.HasUppercase())
-            outputText = outputText.ToUpper();
+        var outputText = TransliterationTable.Transliterate(text);
 
         buffer.Clear();
 

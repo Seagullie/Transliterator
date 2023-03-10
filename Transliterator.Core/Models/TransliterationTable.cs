@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Transliterator.Core.Helpers;
 using Transliterator.Core.Keyboard;
 using Transliterator.Helpers;
 
@@ -194,21 +195,30 @@ public partial class TransliterationTable
         // Table keys and input text should have same case
         string inputText = text.ToLower();
 
-        // loop over all possible user inputs and replace them with corresponding transliterations.
-        // Replacement map is sorted, thus combinations will be transliterated first
-        // This is because individual characters that make up a combination may also be present as separate replacements in the transliterationTableModel.replacementTable. By transliterating combinations first, the separate characters that make up the combination will not be replaced individually and will instead be treated as a single unit.
-        // © ChatGPT
-        foreach (string key in Keys)
+        if (ContainsKey(inputText))
         {
-            // skip keys not present in the text
-            if (inputText.Contains(key))
+            TryGetValue(inputText, out string? outputText);
+
+            if (text.HasUppercase())
+                outputText = outputText?.ToUpper();
+
+            return outputText ?? string.Empty;
+        }
+
+
+        foreach (KeyValuePair<string, string> graphemes in this)
+        {
+            if (inputText.Contains(graphemes.Key))
             {
-                text = ReplaceKeepCase(key, this[key], text);
-                // remove already transliterated keys from inputText. This is needed to prevent some bugs
-                inputText = inputText.Replace(key, "");
+                text = ReplaceKeepCase(graphemes.Key, graphemes.Value, text);
+
+                // Remove already transliterated keys from inputText.
+                // This is needed to prevent some bugs
+                inputText = inputText.Replace(graphemes.Key, "");
             }
         }
-        return text;
+
+        return text ?? "";
     }
 
     public string ReplaceKeepCase(string word, string replacement, string text)

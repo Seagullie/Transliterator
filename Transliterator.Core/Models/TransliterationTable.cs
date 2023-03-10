@@ -5,6 +5,7 @@ using Transliterator.Helpers;
 
 namespace Transliterator.Core.Models;
 
+// partial for properties
 public partial class TransliterationTable : Dictionary<string, string>
 {
     // TODO: Store table name as field in JSON file
@@ -66,19 +67,19 @@ public partial class TransliterationTable : Dictionary<string, string>
 
         IsolatedGraphemes = Keys.Where(key => key.Length == 1 && !IsPartOfMultiGraph(key)).ToList();
         MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key)).ToList();
-
-        UpdateAlphabet();
     }
 
     public new void Add(string key, string value)
     {
         base.Add(key, value);
+        UpdateAlphabet();
         UpdateGraphemes();
     }
 
     public new void Remove(string key)
     {
         base.Remove(key);
+        UpdateAlphabet();
         UpdateGraphemes();
     }
 
@@ -169,6 +170,8 @@ public partial class TransliterationTable : Dictionary<string, string>
     }
 }
 
+// partial for transliteration methods
+// not sure if transliteration should happen here or in it's own service
 public partial class TransliterationTable
 {
     public string Transliterate(string text)
@@ -193,31 +196,44 @@ public partial class TransliterationTable
         return text;
     }
 
-    public string ReplaceKeepCase(string word, string replacement, string text)
+    public string ReplaceKeepCase(string replaceTarget, string replacement, string input)
     {
-        Func<Match, string> onMatch = match =>
+        string onMatch(Match match)
         {
             string matchString = match.Value;
+            string replacementWithTargetStringCasePreserved = CarryOverCase(matchString, replacement);
+            return replacementWithTargetStringCasePreserved;
+        }
 
-            // nonalphabetic characters don't have uppercase
-            // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
-            if (!Utilities.HasUpperCase(matchString))
-            {
-                return GetCaseForNonalphabeticString(replacement);
-            }
+        return Regex.Replace(input, Regex.Escape(replaceTarget), new MatchEvaluator((Func<Match, string>)onMatch), RegexOptions.IgnoreCase);
+    }
 
-            if (Utilities.IsLowerCase(matchString)) return replacement.ToLower();
-            if (char.IsUpper(matchString[0])) return replacement.ToUpper();
-            // ^TODO: handle case when the replacement consists of several letters
-            // if last character is uppercase, replacement should be uppercase as well:
-            if (char.IsUpper(matchString[matchString.Length - 1])) return replacement.ToUpper();
-            // not sure if C# has a method for converting to titlecase
-            if (Utilities.IsUpperCase(matchString)) return replacement.ToUpper();
+    // carries over case from source string to final string
+    // here's the mapping rules:
+    // no case --> depends on capslock (for example, punctuation usually doesn't have case)
+    // first character uppercase -> uppercase
+    // last character uppercase -> uppercase
+    // uppercase -> uppercase
+    // lowercase -> lowercase
+    public string CarryOverCase(string sourceString, string finalString)
+    {
+        // nonalphabetic characters don't have uppercase
+        // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
+        if (!Utilities.HasUpperCase(sourceString))
+        {
+            return GetCaseForNonalphabeticString(finalString);
+        }
 
-            return replacement;
-        };
+        char firstSrcChar = sourceString[0];
+        char lastSrcChar = sourceString[^1];
 
-        return Regex.Replace(text, Regex.Escape(word), new MatchEvaluator(onMatch), RegexOptions.IgnoreCase);
+        if (Utilities.IsLowerCase(sourceString)) return finalString.ToLower();
+        if (char.IsUpper(firstSrcChar)) return finalString.ToUpper();
+        if (char.IsUpper(lastSrcChar)) return finalString.ToUpper();
+
+        if (Utilities.IsUpperCase(sourceString)) return finalString.ToUpper();
+
+        return finalString;
     }
 
     // we could also copy case from previously entered character

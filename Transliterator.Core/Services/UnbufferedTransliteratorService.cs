@@ -8,7 +8,6 @@ namespace Transliterator.Core.Services
     // (except for Isolated Graphemes. Those can be transliterated right away so there is no need to pass and instantly erase a character)
     public class UnbufferedTransliteratorService : BufferedTransliteratorService
     {
-
         /// <summary>
         /// Send backspace characters to erase user input
         /// </summary>
@@ -45,18 +44,18 @@ namespace Transliterator.Core.Services
             }
         }
 
+        // TODO: Annotate
         public override void Transliterate(string text)
         {
             if (buffer.MultiGraphBrokenEventIsBeingHandled)
             {
                 Erase(text.Length);
             }
-
-            else if(text.Length > 1)
+            else if (text.Length > 1)
             {
                 Erase(text.Length - 1);
             }
-            
+
             base.Transliterate(text);
         }
     }

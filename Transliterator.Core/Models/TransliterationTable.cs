@@ -2,10 +2,11 @@
 
 namespace Transliterator.Core.Models;
 
-public class TransliterationTable : Dictionary<string, string>
+public class TransliterationTable : SortedDictionary<string, string>
 {
     // TODO: Store table name as field in JSON file
-    public TransliterationTable(Dictionary<string, string> replacementMap, string name = "") : base(replacementMap)
+    public TransliterationTable(Dictionary<string, string> replacementMap, string name = "") 
+        : base(replacementMap, new StringLengthComparer())
     {
         Name = name;
         UpdateGraphemes();
@@ -160,5 +161,20 @@ public class TransliterationTable : Dictionary<string, string>
 
         bool isInGraphemeList = MultiGraphGraphemes.Contains(text);
         return isInGraphemeList;
+    }
+
+    private class StringLengthComparer : IComparer<string>
+    {
+        public int Compare(string? x, string? y)
+        {
+            if(x == null || y == null)
+                return string.Compare(x, y);
+
+            int result = y.Length.CompareTo(x.Length);
+            if (result == 0)
+                result = string.Compare(x, y);
+
+            return result;
+        }
     }
 }

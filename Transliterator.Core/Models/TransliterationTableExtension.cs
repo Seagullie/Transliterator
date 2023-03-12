@@ -21,9 +21,8 @@ public static class TransliterationTableExtension
         }
 
         StringBuilder output = new StringBuilder(input.ToLower());
-        var orderedKeys = table.Keys.OrderByDescending(x => x.Length);
 
-        foreach (string key in orderedKeys)
+        foreach (string key in table.Keys)
         {
             int startIndex = 0;
 

@@ -1,81 +1,84 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Transliterator.Core.Keyboard.Tests
+namespace Transliterator.Core.Keyboard.Tests;
+
+[TestClass]
+public class KeyboardInputGeneratorTests
 {
-    [TestClass()]
-    public class KeyboardInputGeneratorTests
+    private readonly IKeyboardInputGenerator _generator;
+    private KeyboardHook _hook;
+    private string _output = "";
+
+    // TODO: Add ClassInitialize attribute
+    public KeyboardInputGeneratorTests()
     {
-        private KeyboardHook _hook;
-        private string _output = "";
+        _generator = new KeyboardInputGenerator();
+        _hook = new KeyboardHook();
+        _hook.SkipUnicodeKeys = false;
+        _hook.KeyDown += (sender, args) => { _output += args.Character; };
+    }
 
-        public KeyboardInputGeneratorTests()
-        {
-            _hook = new KeyboardHook();
-            _hook.SkipUnicodeKeys = false;
-            _hook.KeyDown += (sender, args) => { _output += args.Character; };
-        }
+    // TODO: Add ClassCleanup attribute
+    ~KeyboardInputGeneratorTests()
+    {
+        _hook.Dispose();
+    }
 
-        ~KeyboardInputGeneratorTests()
-        {
-            _hook.Dispose();
-        }
+    [TestCleanup]
+    public void Cleanup()
+    {
+        _output = "";
+    }
 
-        [TestInitialize()]
-        public void Cleanup()
-        {
-            _output = "";
-        }
+    [TestMethod]
+    public void InjectText()
+    {
+        // Arrange
+        string testString = "abcd";
 
-        [TestMethod()]
-        public void InjectText()
-        {
-            // Arrange
-            string testString = "abcd";
+        // Act
+        _generator.TextEntry(testString);
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        // Assert
+        Assert.AreEqual(testString, _output);
+    }
 
-            // Assert
-            Assert.AreEqual(testString, _output);
-        }
+    [TestMethod]
+    public void InjectEmojis()
+    {
+        // Arrange
+        string testString = "😀🤣😇";
 
-        [TestMethod()]
-        public void InjectEmojis()
-        {
-            // Arrange
-            string testString = "😀🤣😇";
+        // Act
+        _generator.TextEntry(testString);
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        // Assert
+        Assert.AreEqual(testString, _output);
+    }
 
-            // Assert
-            Assert.AreEqual(testString, _output);
-        }
+    [TestMethod]
+    public void InjectOsuEmojis()
+    {
+        // Arrange
+        string testString = "😃😛😥😊😎😭👎😏😈👍😑✋😀😠👼😬😡😆😖😍😮😯";
 
-        [TestMethod()]
-        public void InjectOsuEmojis()
-        {
-            // Arrange
-            string testString = "😃😛😥😊😎😭👎😏😈👍😑✋😀😠👼😬😡😆😖😍😮😯";
+        // Act
+        _generator.TextEntry(testString);
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        // Assert
+        Assert.AreEqual(testString, _output);
+    }
 
-            // Assert
-            Assert.AreEqual(testString, _output);
-        }
+    [TestMethod]
+    public void InjectUnicode()
+    {
+        // Arrange
+        string testString = "♂☢–⛤";
 
-        [TestMethod()]
-        public void InjectUnicode()
-        {
-            // Arrange
-            string testString = "♂☢–⛤";
+        // Act
+        _generator.TextEntry(testString);
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
-
-            // Assert
-            Assert.AreEqual(testString, _output);
-        }
+        // Assert
+        Assert.AreEqual(testString, _output);
     }
 }

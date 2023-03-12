@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Transliterator.Core.Helpers;
 using Transliterator.Core.Helpers.Events;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Services;
@@ -118,6 +119,7 @@ public partial class DebugWindow
     private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
     {
         textBox1.Focus();
-        KeyboardInputGenerator.TextEntry("simulated");
+
+        Singleton<KeyboardInputGenerator>.Instance.TextEntry("simulated");
     }
 }

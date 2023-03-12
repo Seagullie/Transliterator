@@ -11,10 +11,10 @@ namespace Transliterator.Core.Services
         /// <summary>
         /// Send backspace characters to erase user input
         /// </summary>
-        public virtual void Erase(int times)
+        private void Erase(int times)
         {
             VirtualKeyCode[] backspaceKeyArray = Enumerable.Repeat(VirtualKeyCode.Back, times).ToArray();
-            KeyboardInputGenerator.KeyPresses(backspaceKeyArray);
+            _keyboardInputGenerator.KeyPresses(backspaceKeyArray);
         }
 
         // should not prevent the kbevent from reaching other applications as this version of transliterator does not buffer user input
@@ -45,7 +45,7 @@ namespace Transliterator.Core.Services
         }
 
         // TODO: Annotate
-        public override void Transliterate(string text)
+        protected override void Transliterate(string text)
         {
             if (buffer.MultiGraphBrokenEventIsBeingHandled)
             {

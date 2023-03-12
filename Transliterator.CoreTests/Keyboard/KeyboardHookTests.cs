@@ -1,119 +1,131 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transliterator.Core.Enums;
 
-namespace Transliterator.Core.Keyboard.Tests
+namespace Transliterator.Core.Keyboard.Tests;
+
+[TestClass]
+public class KeyboardHookTests
 {
-    [TestClass()]
-    public class KeyboardHookTests
+    private KeyboardHook _hook;
+    private KeyboardInputGenerator _inputGenerator;
+
+    public KeyboardHookTests()
     {
-        private KeyboardHook _hook;
+        ClassInitialize();
+    }
 
-        [TestInitialize()]
-        public void Setup()
-        {
-            _hook = new KeyboardHook();
-        }
+    // TODO: Fix ClassInitialize attribute
+    //[ClassInitialize]
+    public void ClassInitialize()
+    {
+        _inputGenerator = new KeyboardInputGenerator();
+    }
 
-        [TestCleanup()]
-        public void Teardown()
-        {
-            _hook.Dispose();
-        }
+    [TestInitialize]
+    public void Setup()
+    {
+        _hook = new KeyboardHook();
+    }
 
-        [TestMethod()]
-        public void TestKeyDownEvent()
-        {
-            // Arrange
-            bool eventFired = false;
-            _hook.KeyDown += (sender, args) => { eventFired = true; };
+    [TestCleanup]
+    public void Teardown()
+    {
+        _hook.Dispose();
+    }
 
-            // Act
-            KeyboardInputGenerator.KeyDown(VirtualKeyCode.KeyA);
+    [TestMethod]
+    public void TestKeyDownEvent()
+    {
+        // Arrange
+        bool eventFired = false;
+        _hook.KeyDown += (sender, args) => { eventFired = true; };
 
-            // Assert
-            Assert.IsTrue(eventFired, "KeyDown event was not fired");
-        }
+        // Act
+        _inputGenerator.KeyDown(VirtualKeyCode.KeyA);
 
-        [TestMethod()]
-        public void TestUnicodeKeyDownEvent()
-        {
-            // Arrange
-            bool eventFired = false;
-            _hook.KeyDown += (sender, args) => { eventFired = true; };
+        // Assert
+        Assert.IsTrue(eventFired, "KeyDown event was not fired");
+    }
 
-            // Act
-            KeyboardInputGenerator.TextEntry("A");
+    [TestMethod]
+    public void TestUnicodeKeyDownEvent()
+    {
+        // Arrange
+        bool eventFired = false;
+        _hook.KeyDown += (sender, args) => { eventFired = true; };
 
-            // Assert
-            Assert.IsFalse(eventFired, "Unicode key should not trigger KeyDown event");
-        }
+        // Act
+        _inputGenerator.TextEntry("A");
 
-        [TestMethod()]
-        public void ListenToGeneratedKeys()
-        {
-            // Arrange
-            string testString = "abcd";
-            string outputString = "";
+        // Assert
+        Assert.IsFalse(eventFired, "Unicode key should not trigger KeyDown event");
+    }
 
-            _hook.SkipUnicodeKeys = false;
-            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
+    [TestMethod]
+    public void ListenToGeneratedKeys()
+    {
+        // Arrange
+        string testString = "abcd";
+        string outputString = "";
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        _hook.SkipUnicodeKeys = false;
+        _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            // Assert
-            Assert.AreEqual(testString, outputString);
-        }
+        // Act
+        _inputGenerator.TextEntry(testString);
 
-        [TestMethod()]
-        public void ListenToGeneratedDifferentCaseKeys()
-        {
-            // Arrange
-            string testString = "aBcD";
-            string outputString = "";
+        // Assert
+        Assert.AreEqual(testString, outputString);
+    }
 
-            _hook.SkipUnicodeKeys = false;
-            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
+    [TestMethod]
+    public void ListenToGeneratedDifferentCaseKeys()
+    {
+        // Arrange
+        string testString = "aBcD";
+        string outputString = "";
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        _hook.SkipUnicodeKeys = false;
+        _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            // Assert
-            Assert.AreEqual(testString, outputString);
-        }
+        // Act
+        _inputGenerator.TextEntry(testString);
 
-        [TestMethod()]
-        public void ListenToGeneratedCyrillicKeys()
-        {
-            // Arrange
-            string testString = "абвгд";
-            string outputString = "";
+        // Assert
+        Assert.AreEqual(testString, outputString);
+    }
 
-            _hook.SkipUnicodeKeys = false;
-            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
+    [TestMethod]
+    public void ListenToGeneratedCyrillicKeys()
+    {
+        // Arrange
+        string testString = "абвгд";
+        string outputString = "";
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        _hook.SkipUnicodeKeys = false;
+        _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            // Assert
-            Assert.AreEqual(testString, outputString);
-        }
+        // Act
+        _inputGenerator.TextEntry(testString);
 
-        [TestMethod()]
-        public void ListenToGeneratedPunctuation()
-        {
-            // Arrange
-            string testString = ";!_#";
-            string outputString = "";
+        // Assert
+        Assert.AreEqual(testString, outputString);
+    }
 
-            _hook.SkipUnicodeKeys = false;
-            _hook.KeyDown += (sender, args) => { outputString += args.Character; };
+    [TestMethod]
+    public void ListenToGeneratedPunctuation()
+    {
+        // Arrange
+        string testString = ";!_#";
+        string outputString = "";
 
-            // Act
-            KeyboardInputGenerator.TextEntry(testString);
+        _hook.SkipUnicodeKeys = false;
+        _hook.KeyDown += (sender, args) => { outputString += args.Character; };
 
-            // Assert
-            Assert.AreEqual(testString, outputString);
-        }
+        // Act
+        _inputGenerator.TextEntry(testString);
+
+        // Assert
+        Assert.AreEqual(testString, outputString);
     }
 }

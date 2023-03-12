@@ -9,7 +9,7 @@ using Transliterator.Core.Structs;
 
 namespace Transliterator.Core.Keyboard;
 
-internal sealed class KeyboardHook : IDisposable
+internal sealed class KeyboardHook : IKeyboardHook, IDisposable
 {
     private const int WmKeyDown = 256;
     private const int WmSysKeyDown = 260;
@@ -40,7 +40,7 @@ internal sealed class KeyboardHook : IDisposable
 
     private NativeMethods.LowLevelKeyboardProc _proc;
 
-    public bool SkipUnicodeKeys { get; set; } = true;
+    internal bool SkipUnicodeKeys { get; set; } = true;
 
     public static bool IsCapsLockActive { get => _capsLock; }
 
@@ -58,11 +58,6 @@ internal sealed class KeyboardHook : IDisposable
         {
             return NativeMethods.SetWindowsHookEx(HookTypes.WH_KEYBOARD_LL, proc, NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
         }
-    }
-
-    public void ShutdownSystemHook()
-    {
-        NativeMethods.UnhookWindowsHookEx(_hookId);
     }
 
     ~KeyboardHook()

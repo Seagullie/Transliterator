@@ -11,15 +11,28 @@ public class BufferedTransliteratorService : ITransliteratorService
 {
     protected MultiGraphBuffer buffer = new();
 
-    private readonly LoggerService _loggerService;
-    private readonly KeyboardHook _keyboardHook;
+    protected readonly LoggerService _loggerService;
+    protected readonly IKeyboardHook _keyboardHook;
+    protected readonly IKeyboardInputGenerator _keyboardInputGenerator;
 
     public BufferedTransliteratorService()
     {
         _loggerService = LoggerService.GetInstance();
         _keyboardHook = Singleton<KeyboardHook>.Instance;
+        _keyboardInputGenerator = Singleton<KeyboardInputGenerator>.Instance;
         _keyboardHook.KeyDown += HandleKeyPressed;
 
+        buffer.MultiGraphBrokenEvent += Transliterate;
+    }
+
+    // Constructor for testing purposes
+    internal BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator)
+    {
+        _loggerService = LoggerService.GetInstance();
+        _keyboardHook = keyboardHook;
+        _keyboardInputGenerator = keyboardInputGenerator;
+
+        _keyboardHook.KeyDown += HandleKeyPressed;
         buffer.MultiGraphBrokenEvent += Transliterate;
     }
 
@@ -43,24 +56,11 @@ public class BufferedTransliteratorService : ITransliteratorService
 
     public TransliterationTable? TransliterationTable { get; set; }
 
-    // this method is for testing purposes only
-    public void DisposeOfKeyDownEventHandler()
-    {
-        _keyboardHook.KeyDown -= HandleKeyPressed;
-    }
-
-    // "virtual" for testing purposes
-    public virtual string EnterTransliterationResults(string text)
-    {
-        KeyboardInputGenerator.TextEntry(text);
-        return text;
-    }
-
     // TODO: Write tests for erasing scenarios
     /// <summary>
     /// Keep buffer in sync with keyboard input by erasing last character on backspace
     /// </summary>
-    public bool HandleBackspace(KeyboardHookEventArgs e)
+    private bool HandleBackspace(KeyboardHookEventArgs e)
     {
         if (e.Key != VirtualKeyCode.Back)
             return false;
@@ -78,15 +78,12 @@ public class BufferedTransliteratorService : ITransliteratorService
         return true;
     }
 
-    // TODO: Rename
-    // "virtual" for testing purposes
-
     /// <summary>
     /// Irrelevant = everything that is not needed for transliteration.<br/>
     /// Things that are needed for transliteration: <br/>
     /// table keys
     /// </summary>
-    public virtual bool SkipIrrelevant(KeyboardHookEventArgs e)
+    private bool SkipIrrelevant(KeyboardHookEventArgs e)
     {
         bool isIrrelevant = !TransliterationTable.Alphabet.Contains(e.Character.ToLower()) || e.IsModifier || e.IsShortcut;
 
@@ -110,7 +107,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         return false;
     }
 
-    public virtual void Transliterate(string text)
+    protected virtual void Transliterate(string text)
     {
         if (TransliterationTable == null)
             throw new TableNotSetException("TransliterationTable is not initialized");
@@ -119,16 +116,10 @@ public class BufferedTransliteratorService : ITransliteratorService
 
         buffer.Clear();
 
-        EnterTransliterationResults(outputText);
+        _keyboardInputGenerator.TextEntry(outputText);
     }
 
-    // this method is for testing purposes only
-    protected void AllowUnicode()
-    {
-        _keyboardHook.SkipUnicodeKeys = false;
-    }
-
-    protected virtual void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
+    protected void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
         if (!TransliterationEnabled || HandleBackspace(e) || SkipIrrelevant(e))
             return;
@@ -143,7 +134,9 @@ public class BufferedTransliteratorService : ITransliteratorService
             Transliterate(bufferAsString);
     }
 
-    // prevent the KeyboardEvent from reaching other applications
+    /// <summary>
+    /// Prevent the KeyboardEvent from reaching other applications
+    /// </summary>
     protected virtual void SuppressKeypress(KeyboardHookEventArgs e)
     {
         e.Handled = true;

@@ -26,8 +26,6 @@ public static class AutostartMethods
         return File.Exists(lnkPath);
     }
 
-    // TODO: Handle case when this assembly is used in a different project.
-    // In such case the function has to generate shortcut for top level aka calling assembly.
     public static void WriteAutostartEntry()
     {
         Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); // Windows Script Host Shell Object
@@ -37,7 +35,7 @@ public static class AutostartMethods
             var lnk = shell.CreateShortcut(lnkPath);
             try
             {
-                lnk.TargetPath = Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe");
+                lnk.TargetPath = Assembly.GetEntryAssembly().Location.Replace(".dll", ".exe");
                 lnk.Save();
             }
             finally

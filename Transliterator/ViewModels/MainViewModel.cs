@@ -18,8 +18,8 @@ namespace Transliterator.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         // Stores either buffered or unbuffered transliteration service
-        // (unbuffered version inherits from buffered one and thus can be assigned to this field with more general type)
         private ITransliteratorService _transliteratorService;
+
         private readonly SettingsService _settingsService;
         private readonly HotKeyService _hotKeyService;
 
@@ -47,7 +47,6 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private ObservableCollection<TransliterationTable>? transliterationTables;
 
-        // TODO: Refactor
         public MainViewModel()
         {
             _settingsService = Singleton<SettingsService>.Instance;
@@ -60,13 +59,14 @@ namespace Transliterator.ViewModels
 
             SetTransliteratorService();
             LoadTransliterationTables();
+            AddTrayMenuItems();
 
-            AppState = _transliteratorService.TransliterationEnabled;       
+            AppState = _transliteratorService.TransliterationEnabled;
         }
 
         private void OnSettingsSaved(object? sender, EventArgs e)
         {
-            if(ToggleAppStateShortcut != null)
+            if (ToggleAppStateShortcut != null)
                 _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
 
             HotKey hotKey = _settingsService.ToggleHotKey;
@@ -100,15 +100,26 @@ namespace Transliterator.ViewModels
             snippetTranslitWindow.Show();
         }
 
-        private void InitializeViewModel()
+        private void AddTrayMenuItems()
         {
-            ApplicationTitle = "Transliterator";
+            //ApplicationTitle = "Transliterator";
 
+            // doesn't work. As of now, these items are added directly in XAML
             TrayMenuItems = new ObservableCollection<MenuItem>
             {
                 new MenuItem
                 {
-                    Header = "Home",
+                    Header = "Open",
+                    Tag = "tray_home",
+                },
+                new MenuItem
+                {
+                    Header = "Settings",
+                    Tag = "tray_home"
+                },
+                new MenuItem
+                {
+                    Header = "Close",
                     Tag = "tray_home"
                 }
             };
@@ -129,7 +140,7 @@ namespace Transliterator.ViewModels
                 TransliterationTables.Add(new TransliterationTable(replacementMap, tableName));
             }
 
-            SelectedTransliterationTable = TransliterationTables.First(table => table.Name == _settingsService.LastSelectedTransliterationTable) ?? TransliterationTables.FirstOrDefault();
+            SelectedTransliterationTable = TransliterationTables.FirstOrDefault(table => table.Name == _settingsService.LastSelectedTransliterationTable);
         }
 
         partial void OnSelectedTransliterationTableChanged(TransliterationTable? value)

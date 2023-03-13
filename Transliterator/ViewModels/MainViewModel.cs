@@ -174,7 +174,7 @@ namespace Transliterator.ViewModels
                 Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
 
             if (currentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
-                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
+                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light, Wpf.Ui.Appearance.BackgroundType.Tabbed);
         }
 
         private void PlayToggleSound()

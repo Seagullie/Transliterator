@@ -8,7 +8,7 @@ namespace Transliterator.ViewModels;
 
 public partial class EditToggleSoundsViewModel : ObservableObject
 {
-    private readonly SettingsService _settingsService;
+    private readonly TransliteratorSettingsService _settingsService;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ToggleOffSoundFileName))]
@@ -20,7 +20,7 @@ public partial class EditToggleSoundsViewModel : ObservableObject
 
     public EditToggleSoundsViewModel()
     {
-        _settingsService = Singleton<SettingsService>.Instance;
+        _settingsService = Singleton<TransliteratorSettingsService>.Instance;
         ToggleOnSoundFilePath = _settingsService.PathToCustomToggleOnSound;
         ToggleOffSoundFilePath = _settingsService.PathToCustomToggleOffSound;
     }

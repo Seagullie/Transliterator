@@ -1,87 +1,77 @@
 ﻿using Newtonsoft.Json;
-using Transliterator.Core.Enums;
-using Transliterator.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Transliterator.Services;
 
-namespace Transliterator.Services;
-
-public partial class SettingsService
+namespace Transliterator.Core.Services
 {
-    private const string configurationFilePath = "Settings.json";
-
-    private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+    public class SettingsService
     {
-        DefaultValueHandling = DefaultValueHandling.Include,
-        Formatting = Formatting.Indented,
-        ObjectCreationHandling = ObjectCreationHandling.Replace
-    };
+        public bool IsAutoStartEnabled { get; set; }
 
-    public SettingsService()
-    {
-        Load();
-    }
-
-    public event EventHandler? SettingsLoadedEvent;
-
-    public event EventHandler? SettingsResetEvent;
-
-    public event EventHandler? SettingsSavedEvent;
-
-    public bool IsAltShiftGlobalShortcutEnabled { get; set; } = true;
-    public bool IsAutoStartEnabled { get; set; }
-    public bool IsBufferInputEnabled { get; set; }
-    public bool IsMinimizedStartEnabled { get; set; }
-    public bool IsStateOverlayEnabled { get; set; } = true;
-    public bool IsToggleSoundOn { get; set; } = true;
-    public bool IsTransliteratorEnabledAtStartup { get; set; } = true;
-
-    // TODO: Add theming settings
-
-    public string LastSelectedTransliterationTable { get; set; } = "";
-    public string PathToCustomToggleOffSound { get; set; } = "";
-    public string PathToCustomToggleOnSound { get; set; } = "";
-
-    public HotKey ToggleHotKey { get; set; } = new(VirtualKeyCode.KeyT, ModifierKeys.Alt);
-
-    public void Load()
-    {
-        if (File.Exists(configurationFilePath))
+        private const string configurationFilePath = "Settings.json";
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
-            var settings = File.ReadAllText(configurationFilePath);
-            JsonConvert.PopulateObject(settings, this, JsonSerializerSettings);
-        }
-        else
+            DefaultValueHandling = DefaultValueHandling.Include,
+            Formatting = Formatting.Indented,
+            ObjectCreationHandling = ObjectCreationHandling.Replace
+        };
+
+        public event EventHandler? SettingsLoadedEvent;
+
+        public event EventHandler? SettingsResetEvent;
+
+        public event EventHandler? SettingsSavedEvent;
+
+        public SettingsService()
         {
-            Save();
+            Load();
         }
 
-        SynchronizeJSONAndWindowsStartupSettings();
+        public void Load()
+        {
+            if (File.Exists(configurationFilePath))
+            {
+                var settings = File.ReadAllText(configurationFilePath);
+                JsonConvert.PopulateObject(settings, this, JsonSerializerSettings);
+            }
+            else
+            {
+                Save();
+            }
 
-        SettingsLoadedEvent?.Invoke(this, EventArgs.Empty);
-    }
+            SynchronizeJSONAndWindowsStartupSettings();
 
-    // TODO: Write the implementation
-    public void Reset()
-    {
-        SettingsResetEvent?.Invoke(this, EventArgs.Empty);
-    }
+            SettingsLoadedEvent?.Invoke(this, EventArgs.Empty);
+        }
 
-    public void Save()
-    {
-        string settings = JsonConvert.SerializeObject(this, JsonSerializerSettings);
-        File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + configurationFilePath, settings);
+        // TODO: Write the implementation
+        public void Reset()
+        {
+            SettingsResetEvent?.Invoke(this, EventArgs.Empty);
+        }
 
-        SynchronizeJSONAndWindowsStartupSettings();
+        public void Save()
+        {
+            string settings = JsonConvert.SerializeObject(this, JsonSerializerSettings);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + configurationFilePath, settings);
 
-        SettingsSavedEvent?.Invoke(this, EventArgs.Empty);
-    }
+            SynchronizeJSONAndWindowsStartupSettings();
 
-    private void SynchronizeJSONAndWindowsStartupSettings()
-    {
-        bool hasAutoStartEntry = AutostartMethods.HasAutostartEntry();
+            SettingsSavedEvent?.Invoke(this, EventArgs.Empty);
+        }
 
-        if (IsAutoStartEnabled && !hasAutoStartEntry)
-            AutostartMethods.WriteAutostartEntry();
-        if (!IsAutoStartEnabled && hasAutoStartEntry)
-            AutostartMethods.DeleteAutostartEntry();
+        private void SynchronizeJSONAndWindowsStartupSettings()
+        {
+            bool hasAutoStartEntry = AutostartMethods.HasAutostartEntry();
+
+            if (IsAutoStartEnabled && !hasAutoStartEntry)
+                AutostartMethods.WriteAutostartEntry();
+            if (!IsAutoStartEnabled && hasAutoStartEntry)
+                AutostartMethods.DeleteAutostartEntry();
+        }
     }
 }

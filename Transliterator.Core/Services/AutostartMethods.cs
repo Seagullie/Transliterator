@@ -10,6 +10,8 @@ namespace Transliterator.Services;
 
 public static class AutostartMethods
 {
+    public bool IsAutoStartEnabled { get; set; }
+
     // TODO: Remove hardcode for link name
     private static string lnkPath = Environment.GetFolderPath(Environment.SpecialFolder.Startup) + $"\\Transliterator.lnk";
 

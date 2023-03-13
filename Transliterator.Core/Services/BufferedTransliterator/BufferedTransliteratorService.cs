@@ -121,7 +121,7 @@ public class BufferedTransliteratorService : ITransliteratorService
 
     protected void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
     {
-        if (!TransliterationEnabled || HandleBackspace(e) || SkipIrrelevant(e))
+        if (!TransliterationEnabled || TransliterationTable == null || HandleBackspace(e) || SkipIrrelevant(e))
             return;
 
         buffer.Add(e.Character, TransliterationTable);

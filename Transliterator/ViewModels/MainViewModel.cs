@@ -140,7 +140,11 @@ namespace Transliterator.ViewModels
                 TransliterationTables.Add(new TransliterationTable(replacementMap, tableName));
             }
 
-            SelectedTransliterationTable = TransliterationTables.FirstOrDefault(table => table.Name == _settingsService.LastSelectedTransliterationTable);
+            if (TransliterationTables.Count != 0)
+            {
+                TransliterationTable lastSelectedOrFirstTransliterationTable = TransliterationTables.FirstOrDefault(table => table.Name == _settingsService.LastSelectedTransliterationTable, TransliterationTables[0]);
+                SelectedTransliterationTable = lastSelectedOrFirstTransliterationTable;
+            }
         }
 
         partial void OnSelectedTransliterationTableChanged(TransliterationTable? value)

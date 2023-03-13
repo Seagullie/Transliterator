@@ -11,9 +11,6 @@ namespace Transliterator.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    // TODO: Uncomment after migrating more things from old project
-    //private readonly Main liveTransliterator;
-
     private readonly TransliteratorSettingsService _settingsService;
 
     [ObservableProperty]

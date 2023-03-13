@@ -11,7 +11,7 @@
     Title="Transliterator"
     Width="800"
     Height="450"
-    d:DataContext="{d:DesignInstance viewmodels:MainWindowViewModel,
+    d:DataContext="{d:DesignInstance viewmodels:MainViewModel,
                                      IsDesignTimeCreatable=True}"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     Closing="Window_Closing"
@@ -44,6 +44,59 @@
             <RowDefinition Height="2*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
+        <!--  Additional hidden titlebar just for the sake of having icon in the tray  -->
+        <ui:TitleBar
+            Title=""
+            ShowClose="False"
+            ShowMaximize="False"
+            ShowMinimize="False">
+
+            <ui:TitleBar.Tray>
+                <ui:NotifyIcon
+                    FocusOnLeftClick="False"
+                    Focusable="False"
+                    MenuOnRightClick="True"
+                    TooltipText="Transliterator">
+                    <!--  TODO: Figure out how to bind the click handlers to view model  -->
+                    <ui:NotifyIcon.Menu>
+                        <ContextMenu>
+
+                            <MenuItem
+                                Click="ToggleTransliterator"
+                                Header="Toggle"
+                                StaysOpenOnClick="True">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="CameraSwitch20" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <Separator />
+
+                            <MenuItem Click="OpenSnippetPanel" Header="Snippet Panel">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="Translate20" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <MenuItem Click="OpenSettings" Header="Settings">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="Settings24" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+
+                            <Separator />
+
+                            <MenuItem Click="Close" Header="Close">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="ArrowExit20" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ui:NotifyIcon.Menu>
+                </ui:NotifyIcon>
+            </ui:TitleBar.Tray>
+        </ui:TitleBar>
 
         <StackPanel
             Grid.Row="2"

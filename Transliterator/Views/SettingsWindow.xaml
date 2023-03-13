@@ -35,14 +35,11 @@
     <!--  TODO: Refactor sectioning via margins into sectioning via grid rows  -->
     <!--  TODO: Add separators between sections (maybe)  -->
 
-    <!--  [Outdated] Here margin is 25, while in main window it's 15. 25 looks better here, though. Idk  -->
     <StackPanel
         x:Name="ContentPanel"
         Margin="40,5,40,5"
         HorizontalAlignment="Stretch"
         Orientation="Vertical">
-
-        <!--  Refactor Tooltips  -->
 
         <StackPanel x:Name="GeneralSettingsPanel">
             <Label

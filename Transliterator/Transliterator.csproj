@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\**" />
+    <EmbeddedResource Remove="Models\**" />
+    <None Remove="Models\**" />
+    <Page Remove="Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="translit-icon-sharp-corners.ico" />
   </ItemGroup>
 
@@ -21,10 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Transliterator.Core\Transliterator.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

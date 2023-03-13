@@ -2,6 +2,7 @@
 using System;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Models;
+using Wpf.Ui.Appearance;
 
 namespace Transliterator.Services;
 
@@ -16,9 +17,7 @@ public partial class SettingsService : SettingsBase
     public bool IsStateOverlayEnabled { get; set; } = true;
     public bool IsToggleSoundOn { get; set; } = true;
     public bool IsTransliteratorEnabledAtStartup { get; set; } = true;
-
-    // TODO: Add theming settings
-
+    public ThemeType SelectedTheme { get; set; } = ThemeType.Dark;
     public string LastSelectedTransliterationTable { get; set; } = "";
     public string PathToCustomToggleOffSound { get; set; } = "";
     public string PathToCustomToggleOnSound { get; set; } = "";

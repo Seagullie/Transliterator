@@ -10,6 +10,7 @@ using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 using Transliterator.Services;
 using Transliterator.Views;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 
@@ -60,6 +61,8 @@ namespace Transliterator.ViewModels
             SetTransliteratorService();
             LoadTransliterationTables();
             AddTrayMenuItems();
+
+            Wpf.Ui.Appearance.Theme.Apply(_settingsService.SelectedTheme);
 
             AppState = _transliteratorService.TransliterationEnabled;
         }
@@ -168,13 +171,13 @@ namespace Transliterator.ViewModels
         [RelayCommand]
         private void ToggleTheme()
         {
-            var currentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
+            var currentTheme = Theme.GetAppTheme();
 
-            if (currentTheme == Wpf.Ui.Appearance.ThemeType.Light)
-                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
+            if (currentTheme == ThemeType.Light || currentTheme == ThemeType.HighContrast)
+                Theme.Apply(ThemeType.Dark);
 
-            if (currentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
-                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light, Wpf.Ui.Appearance.BackgroundType.Tabbed);
+            if (currentTheme == ThemeType.Dark || currentTheme == ThemeType.Unknown)
+                Theme.Apply(ThemeType.Light, BackgroundType.Tabbed);
         }
 
         private void PlayToggleSound()
@@ -192,7 +195,8 @@ namespace Transliterator.ViewModels
 
         public void SaveSettings()
         {
-            _settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable?.ToString() ?? ""; ;
+            _settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable?.ToString() ?? "";
+            _settingsService.SelectedTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
             _settingsService.Save();
         }
 

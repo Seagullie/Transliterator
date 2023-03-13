@@ -62,16 +62,16 @@ public class BufferedTransliteratorServiceTest
     public void TestMultiGraphBreakByIsolatedGrapheme()
     {
         // Arrange
-        string combo = "jak";
-        char nonComboChar = combo[^1];
+        string brokenMG = "scm";
+        char isolatedGrapheme = brokenMG[^1];
 
         // Act
-        fakeKeyboardHook.TextEntry(combo);
-        // Make sure last char in test string does not belong to a combo
-        Assert.IsFalse(transliterationTable.IsPartOfMultiGraph(nonComboChar.ToString()), $"{nonComboChar} belongs to a combo");
+        fakeKeyboardHook.TextEntry(brokenMG);
+        // Make sure last char in test string is isolated grapheme
+        Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(isolatedGrapheme.ToString()), $"{isolatedGrapheme} is not an isolated grapheme");
 
         // Assert
-        string expected = "як";
+        string expected = "сцм";
         Assert.AreEqual(expected, fakeKeyboardInputGenerator.Result);
     }
 

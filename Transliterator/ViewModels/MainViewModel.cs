@@ -165,6 +165,18 @@ namespace Transliterator.ViewModels
             }
         }
 
+        [RelayCommand]
+        private void ToggleTheme()
+        {
+            var currentTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
+
+            if (currentTheme == Wpf.Ui.Appearance.ThemeType.Light)
+                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
+
+            if (currentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
+                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
+        }
+
         private void PlayToggleSound()
         {
             string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(_transliteratorService.TransliterationEnabled == true ? "cont" : "pause")}.wav");

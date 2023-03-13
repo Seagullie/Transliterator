@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Transliterator.Core.Enums;
 using Transliterator.Core.Models;
 
 namespace Transliterator.Services;
@@ -31,7 +32,7 @@ public partial class SettingsService
     public bool IsMinimizedStartEnabled { get; set; }
     public bool IsStateOverlayEnabled { get; set; } = true;
     public bool IsToggleSoundOn { get; set; } = true;
-    public bool IsTransliteratorEnabledAtStartup { get; set; }
+    public bool IsTransliteratorEnabledAtStartup { get; set; } = true;
 
     // TODO: Add theming settings
 
@@ -39,7 +40,7 @@ public partial class SettingsService
     public string PathToCustomToggleOffSound { get; set; } = "";
     public string PathToCustomToggleOnSound { get; set; } = "";
 
-    public HotKey ToggleHotKey { get; set; } = HotKey.None;
+    public HotKey ToggleHotKey { get; set; } = new(VirtualKeyCode.KeyT, ModifierKeys.Alt);
 
     public void Load()
     {

@@ -20,7 +20,7 @@ namespace Transliterator.ViewModels
         // Stores either buffered or unbuffered transliteration service
         private ITransliteratorService _transliteratorService;
 
-        private readonly TransliteratorSettingsService _settingsService;
+        private readonly SettingsService _settingsService;
         private readonly HotKeyService _hotKeyService;
 
         [ObservableProperty]
@@ -49,8 +49,8 @@ namespace Transliterator.ViewModels
 
         public MainViewModel()
         {
-            _settingsService = Singleton<TransliteratorSettingsService>.Instance;
-            _settingsService.SettingsSavedEvent += OnSettingsSaved;
+            _settingsService = Singleton<SettingsService>.Instance;
+            _settingsService.SettingsSaved += OnSettingsSaved;
 
             _hotKeyService = Singleton<HotKeyService>.Instance;
 

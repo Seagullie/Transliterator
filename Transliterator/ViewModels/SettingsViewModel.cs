@@ -11,7 +11,7 @@ namespace Transliterator.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    private readonly TransliteratorSettingsService _settingsService;
+    private readonly SettingsService _settingsService;
 
     [ObservableProperty]
     private bool isAltShiftGlobalShortcutEnabled;
@@ -48,7 +48,7 @@ public partial class SettingsViewModel : ObservableObject
         // TODO: Dependency injection
         // TODO: Uncomment after migrating more things from old project
         //liveTransliterator = Main.GetInstance();
-        _settingsService = Singleton<TransliteratorSettingsService>.Instance;
+        _settingsService = Singleton<SettingsService>.Instance;
 
         InitializePropertiesFromSettings();
     }

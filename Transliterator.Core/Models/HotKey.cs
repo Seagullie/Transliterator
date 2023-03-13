@@ -19,7 +19,7 @@ public class HotKey
     {
     }
 
-    private HotKey()
+    public HotKey()
     {
         Key = VirtualKeyCode.None;
         Modifiers = ModifierKeys.None;

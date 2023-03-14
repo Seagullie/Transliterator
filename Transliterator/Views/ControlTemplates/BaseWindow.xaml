@@ -20,7 +20,7 @@
                     Grid.Row="0"
                     VerticalAlignment="Center"
                     ShowMaximize="False"
-                    ShowMinimize="False" />
+                    ShowMinimize="True" />
 
                 <ContentPresenter
                     Grid.Row="1"

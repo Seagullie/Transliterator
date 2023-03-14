@@ -65,6 +65,6 @@ public static class VirtualKeyCodeExtensions
             return '\0';
         }
 
-        return string.IsNullOrEmpty(result.ToString()) ? '\0' : result.ToString()[0];
+        return string.IsNullOrEmpty(result.ToString()) ? '\0' : char.Parse(result.ToString());
     }
 }

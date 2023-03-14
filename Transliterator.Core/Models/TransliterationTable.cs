@@ -48,7 +48,7 @@ public class TransliterationTable : SortedDictionary<string, string>
             }
             else
             {
-                newAlphabet.Add(key[0]);
+                newAlphabet.Add(char.Parse(key));
             }
         }
 
@@ -60,13 +60,13 @@ public class TransliterationTable : SortedDictionary<string, string>
         MultiGraphs = Keys.Where(key => key.Length > 1).ToHashSet();
 
         Graphemes = Keys.Where(s => s.Length == 1)
-                        .Select(s => s[0]).ToHashSet();
+                        .Select(char.Parse).ToHashSet();
 
         IsolatedGraphemes = Keys.Where(s => s.Length == 1 && !IsPartOfMultiGraph(s))
-                                .Select(s => s[0]).ToHashSet();
+                                .Select(s => char.Parse(s)).ToHashSet();
 
-        MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key[0]))
-                                  .Select(s => s[0]).ToHashSet();
+        MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(char.Parse(key)))
+                                  .Select(s => char.Parse(s)).ToHashSet();
 
         GraphemesWithoutCase = Keys.Where(key => key.ToUpper() == key.ToLower()).ToHashSet();
     }

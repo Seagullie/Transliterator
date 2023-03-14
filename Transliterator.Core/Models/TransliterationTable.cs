@@ -1,4 +1,6 @@
-﻿namespace Transliterator.Core.Models;
+﻿using System.Reflection.PortableExecutable;
+
+namespace Transliterator.Core.Models;
 
 public class TransliterationTable : SortedDictionary<string, string>
 {
@@ -174,6 +176,12 @@ public class TransliterationTable : SortedDictionary<string, string>
     public bool IsGraphemeWithoutCase(string text)
     {
         return GraphemesWithoutCase.Contains(text);
+    }
+
+    public bool IsInAlphabet(char character)
+    {
+        bool isInAlphabet = Alphabet.Contains(char.ToLower(character));
+        return isInAlphabet;
     }
 
     private class StringLengthComparer : IComparer<string>

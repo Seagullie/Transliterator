@@ -68,7 +68,7 @@ public class BufferedTransliteratorServiceTest
         // Act
         fakeKeyboardHook.TextEntry(brokenMG);
         // Make sure last char in test string is isolated grapheme
-        Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(isolatedGrapheme.ToString()), $"{isolatedGrapheme} is not an isolated grapheme");
+        Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(isolatedGrapheme), $"{isolatedGrapheme} is not an isolated grapheme");
 
         // Assert
         string expected = "сцм";

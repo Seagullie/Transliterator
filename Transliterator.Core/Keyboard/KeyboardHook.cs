@@ -94,13 +94,13 @@ internal sealed class KeyboardHook : IKeyboardHook, IDisposable
         var keyboardLowLevelHookStruct = (KeyboardLowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardLowLevelHookStruct));
         bool isModifier = keyboardLowLevelHookStruct.VirtualKeyCode.IsModifier();
 
-        string character;
+        char character;
 
         // TODO: Annotate
         if (keyboardLowLevelHookStruct.VirtualKeyCode == VirtualKeyCode.Packet)
         {
             uint scanCode = keyboardLowLevelHookStruct.ScanCode;
-            character = Convert.ToChar(scanCode).ToString();
+            character = Convert.ToChar(scanCode);
         }
         else
         {
@@ -160,7 +160,7 @@ internal sealed class KeyboardHook : IKeyboardHook, IDisposable
 
         var keyEventArgs = new KeyboardHookEventArgs
         {
-            Character = _capsLock || _leftShift || _rightShift ? character.ToUpper() : character,
+            Character = _capsLock || _leftShift || _rightShift ? char.ToUpper(character) : character,
             Flags = keyboardLowLevelHookStruct.Flags,
             IsCapsLockActive = _capsLock,
             IsKeyDown = isKeyDown,

@@ -42,14 +42,14 @@ public static class VirtualKeyCodeExtensions
         return isModifier;
     }
 
-    public static string ToUnicode(this VirtualKeyCode virtualKeyCode)
+    public static char ToUnicode(this VirtualKeyCode virtualKeyCode)
     {
         byte[] keyboardState = new byte[255];
         bool keyboardStateStatus = NativeMethods.GetKeyboardState(keyboardState);
 
         if (!keyboardStateStatus)
         {
-            return "";
+            return ' ';
         }
 
         uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
@@ -62,9 +62,9 @@ public static class VirtualKeyCodeExtensions
         int charCount = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, result.Capacity, 0, inputLocaleIdentifier);
         if (charCount == -1)
         {
-            return "";
+            return ' ';
         }
 
-        return result.ToString();
+        return string.IsNullOrEmpty(result.ToString()) ? ' ' : result.ToString()[0];
     }
 }

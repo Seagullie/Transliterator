@@ -27,7 +27,7 @@ public class TransliterationTableTests
     public void IsInAlphabetTest()
     {
         // Arrange
-        string character = "h";
+        char character = 'h';
 
         // Act
         bool isInAlphabet = transliterationTable.Alphabet.Contains(character);
@@ -40,7 +40,7 @@ public class TransliterationTableTests
     public void IsNotInAlphabetTest()
     {
         // Arrange
-        string character = "";
+        char character = ' ';
 
         // Act
         bool isInAlphabet = transliterationTable.Alphabet.Contains(character);
@@ -151,11 +151,11 @@ public class TransliterationTableTests
         // Act & assert
         foreach (char ch in oneToOneReplacementChars)
         {
-            Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(ch.ToString()), $"{ch} is not one-to-one replacement char");
+            Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(ch), $"{ch} is not one-to-one replacement char");
         }
         foreach (char ch in notOneToOneReplacementChars)
         {
-            Assert.IsFalse(transliterationTable.IsIsolatedGrapheme(ch.ToString()), $"{ch} is one-to-one replacement char");
+            Assert.IsFalse(transliterationTable.IsIsolatedGrapheme(ch), $"{ch} is one-to-one replacement char");
         }
     }
 }

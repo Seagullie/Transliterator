@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Transliterator.Core.Models;
+﻿namespace Transliterator.Core.Models;
 
 public class TransliterationTable : SortedDictionary<string, string>
 {
@@ -17,27 +15,27 @@ public class TransliterationTable : SortedDictionary<string, string>
 
     // Alphabet is a set of all letters that can be transliterated.
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
-    public HashSet<string> Alphabet { get; private set; } = new();
+    public HashSet<char> Alphabet { get; private set; } = new();
 
     // Multigraph = more than one letter. Examples of MultiGraphs: ch, sh, zh,
     // while s, d, f are not MultiGraphs, but graphemes
-    public List<string> MultiGraphs { get; private set; } = new();
+    public HashSet<string> MultiGraphs { get; private set; } = new();
 
     // Grapheme = a single letter
-    public List<string> Graphemes { get; private set; } = new();
+    public HashSet<char> Graphemes { get; private set; } = new();
 
     // Isolated Grapheme = a single letter that doesn't appear in any MultiGraph
-    public List<string> IsolatedGraphemes { get; private set; } = new();
+    public HashSet<char> IsolatedGraphemes { get; private set; } = new();
 
     // MultiGraphGraphemes = a single letter that appears in a MultiGraph
-    public List<string> MultiGraphGraphemes { get; private set; } = new();
+    public HashSet<char> MultiGraphGraphemes { get; private set; } = new();
 
     // punctuation, for example, does not have a case
-    public List<string> GraphemesWithoutCase { get; private set; } = new();
+    public HashSet<string> GraphemesWithoutCase { get; private set; } = new();
 
     private void UpdateAlphabet()
     {
-        var newAlphabet = new HashSet<string>();
+        var newAlphabet = new HashSet<char>();
 
         foreach (string key in Keys)
         {
@@ -45,12 +43,12 @@ public class TransliterationTable : SortedDictionary<string, string>
             {
                 foreach (char subkey in key)
                 {
-                    newAlphabet.Add(subkey.ToString());
+                    newAlphabet.Add(subkey);
                 }
             }
             else
             {
-                newAlphabet.Add(key);
+                newAlphabet.Add(key[0]);
             }
         }
 
@@ -59,12 +57,18 @@ public class TransliterationTable : SortedDictionary<string, string>
 
     private void UpdateGraphemes()
     {
-        MultiGraphs = Keys.Where(key => key.Length > 1).ToList();
-        Graphemes = Keys.Where(key => key.Length == 1).ToList();
+        MultiGraphs = Keys.Where(key => key.Length > 1).ToHashSet();
 
-        IsolatedGraphemes = Keys.Where(key => key.Length == 1 && !IsPartOfMultiGraph(key)).ToList();
-        MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key)).ToList();
-        GraphemesWithoutCase = Keys.Where(key => key.ToUpper() == key.ToLower()).ToList();
+        Graphemes = Keys.Where(s => s.Length == 1)
+                        .Select(s => s[0]).ToHashSet();
+
+        IsolatedGraphemes = Keys.Where(s => s.Length == 1 && !IsPartOfMultiGraph(s))
+                                .Select(s => s[0]).ToHashSet();
+
+        MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key[0]))
+                                  .Select(s => s[0]).ToHashSet();
+
+        GraphemesWithoutCase = Keys.Where(key => key.ToUpper() == key.ToLower()).ToHashSet();
     }
 
     public new void Add(string key, string value)
@@ -151,19 +155,19 @@ public class TransliterationTable : SortedDictionary<string, string>
         return false;
     }
 
-    public bool IsIsolatedGrapheme(string text)
+    public bool IsIsolatedGrapheme(char character)
     {
-        text = text.ToLower();
+        character = char.ToLower(character);
 
-        bool isInIsolatedGraphemeList = IsolatedGraphemes.Contains(text);
+        bool isInIsolatedGraphemeList = IsolatedGraphemes.Contains(character);
         return isInIsolatedGraphemeList;
     }
 
-    public bool IsMultiGraphGrapheme(string text)
+    public bool IsMultiGraphGrapheme(char character)
     {
-        text = text.ToLower();
+        character = char.ToLower(character);
 
-        bool isInGraphemeList = MultiGraphGraphemes.Contains(text);
+        bool isInGraphemeList = MultiGraphGraphemes.Contains(character);
         return isInGraphemeList;
     }
 

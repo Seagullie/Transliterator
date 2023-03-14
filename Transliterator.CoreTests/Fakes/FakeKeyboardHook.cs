@@ -14,7 +14,7 @@ namespace Transliterator.CoreTests.Fakes
             {
                 var e = new KeyboardHookEventArgs()
                 {
-                    Character = character.ToString()
+                    Character = character
                 };
 
                 KeyDown?.Invoke(this, e);

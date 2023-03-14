@@ -51,7 +51,7 @@ public class UnbufferedTransliteratorServiceTest
 
         // Make sure each char in test string is an isolated grapheme
         foreach (char chr in testString) 
-            Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(chr.ToString()), $"{chr} belongs to a combo");
+            Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(chr), $"{chr} belongs to a combo");
 
         // Act
         fakeKeyboardHook.TextEntry(testString);

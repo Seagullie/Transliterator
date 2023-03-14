@@ -87,9 +87,9 @@ public class BufferedTransliteratorService : ITransliteratorService
     {
         bool isModifierOrShortcut = e.IsModifier || e.IsShortcut;
         // TODO: Annotate
-        bool isNoCaseCharAndShiftIsDown = KeyboardHook.IsShiftDown && TransliterationTable.IsGraphemeWithoutCase(e.Character);
+        bool isNoCaseCharAndShiftIsDown = KeyboardHook.IsShiftDown && TransliterationTable.IsGraphemeWithoutCase(e.Character.ToString());
 
-        bool isIrrelevant = !TransliterationTable.Alphabet.Contains(e.Character.ToLower()) || isModifierOrShortcut || isNoCaseCharAndShiftIsDown;
+        bool isIrrelevant = !TransliterationTable.Alphabet.Contains(char.ToLower(e.Character)) || isModifierOrShortcut || isNoCaseCharAndShiftIsDown;
 
         if (isIrrelevant)
         {
@@ -128,7 +128,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         if (!TransliterationEnabled || TransliterationTable == null || HandleBackspace(e) || SkipIrrelevant(e))
             return;
 
-        buffer.Add(e.Character, TransliterationTable);
+        buffer.Add(e.Character.ToString(), TransliterationTable);
 
         // Must be called after buffer.Add()
         SuppressKeypress(e);

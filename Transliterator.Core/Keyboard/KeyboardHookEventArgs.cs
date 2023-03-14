@@ -12,7 +12,7 @@ public class KeyboardHookEventArgs
     /// Character is a result of applying any modifiers to base keystroke.
     /// For example, "1" (base keystroke) + "shift" (modifier) = "!" (output  character)
     /// </summary>
-    public string Character { get; set; } = "";
+    public char Character { get; set; }
 
     /// <summary>
     /// Returns the DateTimeOffset for this event
@@ -149,7 +149,7 @@ public class KeyboardHookEventArgs
     /// </summary>
     public uint TimeStamp { get; internal set; }
 
-    public static KeyboardHookEventArgs KeyDown(VirtualKeyCode virtualKeyCode, string character = "")
+    public static KeyboardHookEventArgs KeyDown(VirtualKeyCode virtualKeyCode, char character = ' ')
     {
         return new KeyboardHookEventArgs
         {
@@ -160,7 +160,7 @@ public class KeyboardHookEventArgs
         };
     }
 
-    public static KeyboardHookEventArgs KeyUp(VirtualKeyCode virtualKeyCode, string character = "")
+    public static KeyboardHookEventArgs KeyUp(VirtualKeyCode virtualKeyCode, char character = ' ')
     {
         return new KeyboardHookEventArgs
         {

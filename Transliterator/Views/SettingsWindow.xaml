@@ -23,6 +23,7 @@
     ResizeMode="NoResize"
     SizeToContent="Height"
     Template="{StaticResource baseWindow}"
+    WindowBackdropType="Mica"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 

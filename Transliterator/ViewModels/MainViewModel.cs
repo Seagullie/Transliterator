@@ -67,7 +67,7 @@ namespace Transliterator.ViewModels
             LoadTransliterationTables();
             AddTrayMenuItems();
 
-            Wpf.Ui.Appearance.Theme.Apply(_settingsService.SelectedTheme);
+            Theme.Apply(_settingsService.SelectedTheme, BackgroundType.Mica);
 
             AppState = _transliteratorService.TransliterationEnabled;
 
@@ -174,10 +174,10 @@ namespace Transliterator.ViewModels
             var currentTheme = Theme.GetAppTheme();
 
             if (currentTheme == ThemeType.Light || currentTheme == ThemeType.HighContrast)
-                Theme.Apply(ThemeType.Dark);
+                Theme.Apply(ThemeType.Dark, BackgroundType.Mica);
 
             if (currentTheme == ThemeType.Dark || currentTheme == ThemeType.Unknown)
-                Theme.Apply(ThemeType.Light, BackgroundType.Tabbed);
+                Theme.Apply(ThemeType.Light, BackgroundType.Mica);
         }
 
         private void PlayToggleSound()

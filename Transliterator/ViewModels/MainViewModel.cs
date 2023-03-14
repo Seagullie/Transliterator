@@ -88,14 +88,6 @@ namespace Transliterator.ViewModels
         }
 
         [RelayCommand]
-        private static void OpenDebugWindow()
-        {
-            // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
-            DebugWindow debugWindow = new();
-            debugWindow.Show();
-        }
-
-        [RelayCommand]
         private static void OpenSettingsWindow()
         {
             // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows

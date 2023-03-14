@@ -112,10 +112,6 @@
                 HorizontalAlignment="Stretch"
                 Command="{Binding OpenSnippetTranslitWindowCommand}"
                 Content="To Snippet Panel" />
-            <Button
-                HorizontalAlignment="Stretch"
-                Command="{Binding OpenDebugWindowCommand}"
-                Content="To Debug Panel" />
         </StackPanel>
 
         <StackPanel

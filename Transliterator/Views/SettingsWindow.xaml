@@ -148,6 +148,20 @@
                 Text="{Binding ShowcaseText}" />
         </DockPanel>
 
+        <!--  ***  -->
+
+        <DockPanel Margin="0,35,0,15">
+
+            <Label
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Content="Other:" />
+            <Button
+                HorizontalAlignment="Right"
+                Command="{Binding OpenDebugWindowCommand}"
+                Content="To Debug Panel" />
+        </DockPanel>
+
         <!--  TODO: Add Cancel/Discard button besides Apply button  -->
         <!--  TODO: Replace or augment Button captions with icons  -->
         <!--  TODO: Color Apply Button differently from Cancel/Discard  -->

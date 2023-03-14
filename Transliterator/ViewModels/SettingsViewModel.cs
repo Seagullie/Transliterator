@@ -75,6 +75,14 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private static void OpenDebugWindow()
+    {
+        // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
+        DebugWindow debugWindow = new();
+        debugWindow.Show();
+    }
+
+    [RelayCommand]
     private static void OpenTranslitTablesWindow()
     {
         // TODO: Rewrite to NavigateToTranslitTablesPage or prevent the creation of multiple windows

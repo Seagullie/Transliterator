@@ -37,6 +37,19 @@ public class TransliterationTableTests
     }
 
     [TestMethod]
+    public void IsNotInAlphabetTest()
+    {
+        // Arrange
+        string character = "";
+
+        // Act
+        bool isInAlphabet = transliterationTable.Alphabet.Contains(character);
+
+        // Assert
+        Assert.IsFalse(isInAlphabet);
+    }
+
+    [TestMethod]
     public void EndsWithBrokenMultiGraphTest()
     {
         // Arrange

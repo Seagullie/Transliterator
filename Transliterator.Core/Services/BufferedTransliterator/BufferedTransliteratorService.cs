@@ -20,7 +20,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         _loggerService = LoggerService.GetInstance();
         _keyboardHook = Singleton<KeyboardHook>.Instance;
         _keyboardInputGenerator = Singleton<KeyboardInputGenerator>.Instance;
-        _keyboardHook.KeyDown += HandleKeyPressed;
+        _keyboardHook.KeyDown += HandleKeyDown;
 
         buffer.MultiGraphBrokenEvent += Transliterate;
     }
@@ -32,7 +32,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         _keyboardHook = keyboardHook;
         _keyboardInputGenerator = keyboardInputGenerator;
 
-        _keyboardHook.KeyDown += HandleKeyPressed;
+        _keyboardHook.KeyDown += HandleKeyDown;
         buffer.MultiGraphBrokenEvent += Transliterate;
     }
 
@@ -123,7 +123,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         _keyboardInputGenerator.TextEntry(outputText);
     }
 
-    protected void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
+    protected void HandleKeyDown(object? sender, KeyboardHookEventArgs e)
     {
         if (!TransliterationEnabled || TransliterationTable == null || HandleBackspace(e) || SkipIrrelevant(e))
             return;

@@ -17,7 +17,7 @@ public class TransliterationTable : SortedDictionary<string, string>
 
     // Alphabet is a set of all letters that can be transliterated.
     // Basically, all keys from the replacement map + any characters within those keys, if a key consist of more than one character
-    public string Alphabet { get; private set; } = string.Empty;
+    public HashSet<string> Alphabet { get; private set; } = new();
 
     // Multigraph = more than one letter. Examples of MultiGraphs: ch, sh, zh,
     // while s, d, f are not MultiGraphs, but graphemes
@@ -32,12 +32,12 @@ public class TransliterationTable : SortedDictionary<string, string>
     // MultiGraphGraphemes = a single letter that appears in a MultiGraph
     public List<string> MultiGraphGraphemes { get; private set; } = new();
 
-    // punctuation, for example
+    // punctuation, for example, does not have a case
     public List<string> GraphemesWithoutCase { get; private set; } = new();
 
     private void UpdateAlphabet()
     {
-        var newAlphabet = new StringBuilder();
+        var newAlphabet = new HashSet<string>();
 
         foreach (string key in Keys)
         {
@@ -45,16 +45,16 @@ public class TransliterationTable : SortedDictionary<string, string>
             {
                 foreach (char subkey in key)
                 {
-                    newAlphabet.Append(subkey);
+                    newAlphabet.Add(subkey.ToString());
                 }
             }
             else
             {
-                newAlphabet.Append(key);
+                newAlphabet.Add(key);
             }
         }
 
-        Alphabet = newAlphabet.ToString();
+        Alphabet = newAlphabet;
     }
 
     private void UpdateGraphemes()

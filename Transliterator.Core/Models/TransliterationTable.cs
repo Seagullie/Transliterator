@@ -5,7 +5,7 @@ namespace Transliterator.Core.Models;
 public class TransliterationTable : SortedDictionary<string, string>
 {
     // TODO: Store table name as field in JSON file
-    public TransliterationTable(Dictionary<string, string> replacementMap, string name = "") 
+    public TransliterationTable(Dictionary<string, string> replacementMap, string name = "")
         : base(replacementMap, new StringLengthComparer())
     {
         Name = name;
@@ -31,6 +31,9 @@ public class TransliterationTable : SortedDictionary<string, string>
 
     // MultiGraphGraphemes = a single letter that appears in a MultiGraph
     public List<string> MultiGraphGraphemes { get; private set; } = new();
+
+    // punctuation, for example
+    public List<string> GraphemesWithoutCase { get; private set; } = new();
 
     private void UpdateAlphabet()
     {
@@ -61,6 +64,7 @@ public class TransliterationTable : SortedDictionary<string, string>
 
         IsolatedGraphemes = Keys.Where(key => key.Length == 1 && !IsPartOfMultiGraph(key)).ToList();
         MultiGraphGraphemes = Keys.Where(key => key.Length == 1 && !IsIsolatedGrapheme(key)).ToList();
+        GraphemesWithoutCase = Keys.Where(key => key.ToUpper() == key.ToLower()).ToList();
     }
 
     public new void Add(string key, string value)
@@ -163,11 +167,16 @@ public class TransliterationTable : SortedDictionary<string, string>
         return isInGraphemeList;
     }
 
+    public bool IsGraphemeWithoutCase(string text)
+    {
+        return GraphemesWithoutCase.Contains(text);
+    }
+
     private class StringLengthComparer : IComparer<string>
     {
         public int Compare(string? x, string? y)
         {
-            if(x == null || y == null)
+            if (x == null || y == null)
                 return string.Compare(x, y);
 
             int result = y.Length.CompareTo(x.Length);

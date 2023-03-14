@@ -178,4 +178,20 @@ public class BufferedTransliteratorServiceTest
         string expected = "Одинадцятитомнийсловникукраїнськоїмови";
         Assert.AreEqual(expected, fakeKeyboardInputGenerator.Result);
     }
+
+    [TestMethod]
+    public void SkipNoCaseCharIfShiftIsDown()
+    {
+        // Arrange
+        string testString = "'";
+
+        // Act
+        FakeKeyboardHook.IsShiftDown = true;
+        fakeKeyboardHook.TextEntry(testString);
+        FakeKeyboardHook.IsShiftDown = false;
+
+        // Assert
+        string expected = string.Empty;
+        Assert.AreEqual(expected, fakeKeyboardInputGenerator.Result);
+    }
 }

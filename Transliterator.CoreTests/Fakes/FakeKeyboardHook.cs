@@ -6,6 +6,8 @@ namespace Transliterator.CoreTests.Fakes
     {
         public event EventHandler<KeyboardHookEventArgs>? KeyDown;
 
+        public static bool IsShiftDown;
+
         public void TextEntry(string text)
         {
             foreach (var character in text)

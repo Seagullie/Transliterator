@@ -68,7 +68,7 @@ public static class TransliterationTableExtension
 
     public static string Transliterate(this TransliterationTable table, string text)
     {
-        // Table keys and input text should have same case
+        // Table keys and input text should both be lowercase
         string inputText = text.ToLower();
 
         if (table.ContainsKey(inputText))
@@ -80,7 +80,6 @@ public static class TransliterationTableExtension
 
             return outputText ?? string.Empty;
         }
-
 
         foreach (KeyValuePair<string, string> graphemes in table)
         {

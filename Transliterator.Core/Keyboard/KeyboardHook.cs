@@ -43,6 +43,7 @@ internal sealed class KeyboardHook : IKeyboardHook, IDisposable
     internal bool SkipUnicodeKeys { get; set; } = true;
 
     public static bool IsCapsLockActive { get => _capsLock; }
+    public static bool IsShiftDown { get => _leftShift || _rightShift; }
 
     public KeyboardHook()
     {

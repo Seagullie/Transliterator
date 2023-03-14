@@ -81,11 +81,15 @@ public class BufferedTransliteratorService : ITransliteratorService
     /// <summary>
     /// Irrelevant = everything that is not needed for transliteration.<br/>
     /// Things that are needed for transliteration: <br/>
-    /// table keys
+    /// table keys, backspace
     /// </summary>
     private bool SkipIrrelevant(KeyboardHookEventArgs e)
     {
-        bool isIrrelevant = !TransliterationTable.Alphabet.Contains(e.Character.ToLower()) || e.IsModifier || e.IsShortcut;
+        bool isModifierOrShortcut = e.IsModifier || e.IsShortcut;
+        // TODO: Annotate
+        bool isNoCaseCharAndShiftIsDown = KeyboardHook.IsShiftDown && TransliterationTable.IsGraphemeWithoutCase(e.Character);
+
+        bool isIrrelevant = !TransliterationTable.Alphabet.Contains(e.Character.ToLower()) || isModifierOrShortcut || isNoCaseCharAndShiftIsDown;
 
         if (isIrrelevant)
         {

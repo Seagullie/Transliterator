@@ -89,7 +89,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         // TODO: Annotate
         bool isNoCaseCharAndShiftIsDown = KeyboardHook.IsShiftDown && TransliterationTable.IsGraphemeWithoutCase(e.Character.ToString());
 
-        bool isIrrelevant = !TransliterationTable.IsInAlphabet(char.Parse(e.Character)) || isModifierOrShortcut || isNoCaseCharAndShiftIsDown;
+        bool isIrrelevant = !TransliterationTable.IsInAlphabet(e.Character) || isModifierOrShortcut || isNoCaseCharAndShiftIsDown;
 
         if (isIrrelevant)
         {

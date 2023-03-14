@@ -49,7 +49,7 @@ public static class VirtualKeyCodeExtensions
 
         if (!keyboardStateStatus)
         {
-            return ' ';
+            return '\0';
         }
 
         uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
@@ -62,9 +62,9 @@ public static class VirtualKeyCodeExtensions
         int charCount = NativeMethods.ToUnicodeEx((uint)virtualKeyCode, scanCode, keyboardState, result, result.Capacity, 0, inputLocaleIdentifier);
         if (charCount == -1)
         {
-            return ' ';
+            return '\0';
         }
 
-        return string.IsNullOrEmpty(result.ToString()) ? ' ' : result.ToString()[0];
+        return string.IsNullOrEmpty(result.ToString()) ? '\0' : result.ToString()[0];
     }
 }

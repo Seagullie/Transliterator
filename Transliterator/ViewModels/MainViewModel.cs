@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
@@ -25,10 +26,14 @@ namespace Transliterator.ViewModels
         private readonly HotKeyService _hotKeyService;
 
         [ObservableProperty]
-        private string? applicationTitle;
+        private string? _applicationTitle;
 
         [ObservableProperty]
-        private bool appState;
+        private bool _appState;
+
+        // TODO: Use converter in XAML instead
+        [ObservableProperty]
+        private WindowState _windowState;
 
         [ObservableProperty]
         private ObservableCollection<object> navigationFooter = new();
@@ -65,6 +70,9 @@ namespace Transliterator.ViewModels
             Wpf.Ui.Appearance.Theme.Apply(_settingsService.SelectedTheme);
 
             AppState = _transliteratorService.TransliterationEnabled;
+
+            bool showMinimized = _settingsService.IsMinimizedStartEnabled;
+            WindowState = showMinimized ? WindowState.Minimized : WindowState.Normal;
         }
 
         private void OnSettingsSaved(object? sender, EventArgs e)

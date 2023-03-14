@@ -23,6 +23,7 @@
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
+    WindowState="{Binding WindowState, Mode=OneTime}"
     mc:Ignorable="d">
 
     <!--  TODO: Fix Windows 11 styling not applied to UI"  -->

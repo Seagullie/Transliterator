@@ -19,6 +19,7 @@
                     Title="{TemplateBinding Title}"
                     Grid.Row="0"
                     VerticalAlignment="Center"
+                    Icon="pack://application:,,,/translit-icon-sharp-corners.ico"
                     ShowMaximize="False"
                     ShowMinimize="True" />
 

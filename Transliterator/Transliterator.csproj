@@ -17,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="translit-icon-sharp-corners.ico" />
+    <Content Include="translit-icon-sharp-corners.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

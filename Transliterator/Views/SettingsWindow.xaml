@@ -38,7 +38,7 @@
 
     <StackPanel
         x:Name="ContentPanel"
-        Margin="40,5,40,5"
+        Margin="40,5,40,15"
         HorizontalAlignment="Stretch"
         Orientation="Vertical">
 
@@ -171,10 +171,11 @@
                 HorizontalAlignment="Left"
                 Command="{Binding OpenTranslitTablesWindowCommand}"
                 Content="Edit Tables" />
-            <Button
+            <ui:Button
                 HorizontalAlignment="Right"
                 Command="{Binding ApplyChangesCommand}"
-                Content="Apply" />
+                Content="Apply"
+                Icon="Checkmark20" />
         </DockPanel>
     </StackPanel>
 </ui:UiWindow>

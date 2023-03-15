@@ -23,13 +23,7 @@
     <None Update="Resources\Audio\toggle_on_custom.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\oneEntryTable.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\TranslitTables\tableAccents.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\TranslitTables\tableAlt.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableKZCYR-KZLAT_2021.json">
@@ -42,9 +36,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableLAT-BUL.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\TranslitTables\tableLAT-CYR__Template - Copy.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableLAT-KZCYR_2021.json">

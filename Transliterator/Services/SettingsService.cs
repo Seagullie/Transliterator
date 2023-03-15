@@ -1,5 +1,6 @@
 ﻿using Cogwheel;
 using System;
+using System.IO;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Models;
 using Wpf.Ui.Appearance;
@@ -8,7 +9,7 @@ namespace Transliterator.Services;
 
 public partial class SettingsService : SettingsBase
 {
-    private const string configurationFilePath = "Settings.json";
+    private static readonly string configurationFilePath = Path.Combine(AppContext.BaseDirectory, "Settings.json");
 
     public bool IsAutoStartEnabled { get; set; }
     public bool IsAltShiftGlobalShortcutEnabled { get; set; } = true;

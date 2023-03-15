@@ -9,6 +9,8 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : ITransliteratorService
 {
+    public static readonly string StandardTransliterationTablesPath = Path.Combine(AppContext.BaseDirectory, "Resources/TranslitTables");
+
     protected MultiGraphBuffer buffer = new();
 
     protected readonly LoggerService _loggerService;

@@ -130,13 +130,14 @@ namespace Transliterator.ViewModels
 
         private void LoadTransliterationTables()
         {
-            var tableNames = FileService.GetFileNamesWithoutExtension(ITransliteratorService.StandardTransliterationTablesPath);
+            string pathToTables = BufferedTransliteratorService.StandardTransliterationTablesPath;
+            var tableNames = FileService.GetFileNamesWithoutExtension(pathToTables);
 
             TransliterationTables = new();
 
             foreach (var tableName in tableNames)
             {
-                string relativePathToJsonFile = Path.Combine(ITransliteratorService.StandardTransliterationTablesPath, tableName + ".json");
+                string relativePathToJsonFile = Path.Combine(pathToTables, tableName + ".json");
 
                 Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, relativePathToJsonFile);
 

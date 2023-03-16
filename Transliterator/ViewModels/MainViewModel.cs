@@ -20,7 +20,7 @@ namespace Transliterator.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         // Stores either buffered or unbuffered transliteration service
-        private ITransliteratorService _transliteratorService;
+        public static ITransliteratorService _transliteratorService;
 
         private readonly SettingsService _settingsService;
         private readonly HotKeyService _hotKeyService;
@@ -35,11 +35,11 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private WindowState _windowState;
 
-        [ObservableProperty]
-        private ObservableCollection<object> navigationFooter = new();
+        //[ObservableProperty]
+        //private ObservableCollection<object> navigationFooter = new();
 
-        [ObservableProperty]
-        private ObservableCollection<object> navigationItems = new();
+        //[ObservableProperty]
+        //private ObservableCollection<object> navigationItems = new();
 
         [ObservableProperty]
         private HotKey? toggleAppStateShortcut;
@@ -101,6 +101,19 @@ namespace Transliterator.ViewModels
             // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
             SnippetTranslitWindow snippetTranslitWindow = new();
             snippetTranslitWindow.Show();
+        }
+
+        [RelayCommand]
+        private void OpenTableViewWindow()
+        {
+            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
+            TableViewWindow tableViewWindow = new();
+            tableViewWindow.ViewModel = new TableViewModel();
+            tableViewWindow.DataContext = tableViewWindow.ViewModel;
+            tableViewWindow.ViewModel.TransliterationTables = TransliterationTables;
+            tableViewWindow.ViewModel.SelectedTransliterationTable = SelectedTransliterationTable;
+
+            tableViewWindow.Show();
         }
 
         private void AddTrayMenuItems()

@@ -1,36 +1,28 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using Transliterator.Core.Models;
+using Transliterator.Core.Services;
 
 namespace Transliterator.ViewModels;
 
 public partial class TableViewModel : ObservableObject
 {
-    // TODO: Uncomment after migrating other things from old project
-    //private readonly TransliteratorService transliteratorService;
+    [ObservableProperty]
+    private ObservableCollection<TransliterationTable>? transliterationTables;
 
     [ObservableProperty]
-    private string selectedTableName;
-
-    [ObservableProperty]
-    private List<string> translitTables;
+    private TransliterationTable? selectedTransliterationTable;
 
     public TableViewModel()
     {
-        // TODO: Uncomment after migrating other things from old project
-
-        //transliteratorService = TransliteratorService.GetInstance();
-
-        //TranslitTables = transliteratorService.TranslitTables;
-        //SelectedTableName = transliteratorService.transliterationTableModel.replacementMapFilename;
-
-        //transliteratorService.TransliterationTableChangedEvent += () => SelectedTableName = transliteratorService.transliterationTableModel.replacementMapFilename;
-
-        // TODO: Subscribe to TransliterationTablesListChangedEvent
     }
 
-    [RelayCommand]
-    private void ToggleAppState()
-    {
-    }
+    //private void OnSelectedTransliterationTableChanged(TransliterationTable? value)
+    //{
+    //}
 }

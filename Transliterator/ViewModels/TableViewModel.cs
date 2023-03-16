@@ -15,8 +15,4 @@ public partial class TableViewModel : ObservableObject
     public TableViewModel()
     {
     }
-
-    //private void OnSelectedTransliterationTableChanged(TransliterationTable? value)
-    //{
-    //}
 }

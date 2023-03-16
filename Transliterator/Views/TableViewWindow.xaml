@@ -15,8 +15,9 @@
     MouseDown="Window_MouseDown"
     Template="{StaticResource baseWindow}"
     WindowBackdropType="Mica"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Grid Margin="40,5,40,15" ScrollViewer.CanContentScroll="True">
+    <Grid Margin="40,5,40,35" ScrollViewer.CanContentScroll="True">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition ScrollViewer.CanContentScroll="True" />
@@ -26,41 +27,53 @@
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
 
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
             <!--  TODO: Add spacing  -->
             <Label
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Content="Choose table to view:" />
+                Margin="0,0,5,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Content="Choose table to view:   " />
             <ComboBox
                 Width="120"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding TransliterationTables, Mode=OneWay}"
                 SelectedItem="{Binding SelectedTransliterationTable, Mode=TwoWay}" />
         </StackPanel>
 
-        <ListView
-            Grid.Row="1"
-            Padding="60"
-            ItemsSource="{Binding SelectedTransliterationTable, Mode=OneWay}">
+
+
+        <ListView Grid.Row="1" ItemsSource="{Binding SelectedTransliterationTable, Mode=OneWay}">
+
             <ListView.ItemTemplate>
                 <DataTemplate>
+
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
                         <TextBox
+                            MinWidth="65"
                             HorizontalAlignment="Center"
-                            FontSize="24"
+                            HorizontalContentAlignment="Center"
+                            FontSize="14"
                             IsReadOnly="True"
                             Text="{Binding Path=Key, Mode=OneWay}" />
+                        <ui:SymbolIcon Grid.Column="1" Symbol="ArrowRight20" />
                         <TextBox
-                            Grid.Column="1"
+                            Grid.Column="2"
+                            MinWidth="65"
                             HorizontalAlignment="Center"
-                            FontSize="24"
+                            HorizontalContentAlignment="Center"
+                            FontSize="14"
                             IsReadOnly="True"
                             Text="{Binding Path=Value, Mode=OneWay}" />
                     </Grid>

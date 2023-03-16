@@ -116,22 +116,26 @@
 
         <StackPanel
             Grid.Column="2"
-            Width="130"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             helpers:MarginSetter.LastItemMargin="5"
-            helpers:MarginSetter.Margin="5">
+            helpers:MarginSetter.Margin="5"
+            Orientation="Horizontal">
             <ComboBox
+                MaxWidth="120"
                 HorizontalAlignment="Stretch"
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding TransliterationTables}"
-                SelectedItem="{Binding SelectedTransliterationTable}" />
+                SelectedItem="{Binding SelectedTransliterationTable}"
+                ToolTip="{Binding SelectedTransliterationTable.Name}" />
             <ui:Button
                 HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
                 Command="{Binding OpenTableViewWindowCommand}"
-                Content="Show Table"
-                Icon="DocumentTable20" />
+                Content=""
+                Icon="NotebookEye20"
+                ToolTip="Show Table" />
         </StackPanel>
 
         <ui:Button

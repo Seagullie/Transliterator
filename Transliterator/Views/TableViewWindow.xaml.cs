@@ -21,7 +21,11 @@ namespace Transliterator.Views
         {
             // Make window draggable
             if (e.ChangedButton == MouseButton.Left)
-                DragMove();
+                try
+                {
+                    DragMove();
+                }
+                catch { }
         }
     }
 }

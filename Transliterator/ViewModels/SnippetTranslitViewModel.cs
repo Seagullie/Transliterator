@@ -42,7 +42,10 @@ public partial class SnippetTranslitViewModel : ObservableObject
     private void TransliterateSnippet()
     {
         string textToTransliterate = UserInput;
-        string transliterationResults = transliterationTable.Transliterate(textToTransliterate);
-        TransliterationResults = transliterationResults;
+        if (!string.IsNullOrEmpty(textToTransliterate))
+        {
+            string transliterationResults = transliterationTable.Transliterate(textToTransliterate);
+            TransliterationResults = transliterationResults;
+        }
     }
 }

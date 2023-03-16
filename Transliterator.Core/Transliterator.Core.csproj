@@ -23,7 +23,7 @@
     <None Update="Resources\Audio\toggle_on_custom.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableAccents.json">
+    <None Update="Resources\TranslitTables\tableDiacriticsAndAccents.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableKZCYR-KZLAT_2021.json">

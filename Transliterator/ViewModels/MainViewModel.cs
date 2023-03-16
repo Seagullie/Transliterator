@@ -20,7 +20,7 @@ namespace Transliterator.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         // Stores either buffered or unbuffered transliteration service
-        public static ITransliteratorService _transliteratorService;
+        private ITransliteratorService _transliteratorService;
 
         private readonly SettingsService _settingsService;
         private readonly HotKeyService _hotKeyService;
@@ -107,11 +107,15 @@ namespace Transliterator.ViewModels
         private void OpenTableViewWindow()
         {
             // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
-            TableViewWindow tableViewWindow = new();
-            tableViewWindow.ViewModel = new TableViewModel();
-            tableViewWindow.DataContext = tableViewWindow.ViewModel;
-            tableViewWindow.ViewModel.TransliterationTables = TransliterationTables;
-            tableViewWindow.ViewModel.SelectedTransliterationTable = SelectedTransliterationTable;
+            var vm = new TableViewModel() {
+                TransliterationTables = TransliterationTables,
+                SelectedTransliterationTable = SelectedTransliterationTable
+            };
+
+            TableViewWindow tableViewWindow = new() {
+                ViewModel = vm,
+                DataContext = vm
+            };
 
             tableViewWindow.Show();
         }

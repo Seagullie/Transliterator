@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Windows.Input;
 using Transliterator.ViewModels;
 
@@ -9,11 +10,11 @@ public partial class EditToggleSoundsWindow
     public EditToggleSoundsWindow()
     {
         InitializeComponent();
-        ViewModel = new();
-        DataContext = ViewModel;
+        DataContext = App.Current.Services.GetService<EditToggleSoundsViewModel>();
     }
 
-    public EditToggleSoundsViewModel ViewModel { get; private set; }
+    public EditToggleSoundsViewModel ViewModel => (EditToggleSoundsViewModel)DataContext;
+
     // TODO: Remove this duct tape
     private void Window_Activated(object sender, EventArgs e)
     {

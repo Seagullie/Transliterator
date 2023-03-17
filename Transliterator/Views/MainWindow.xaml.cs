@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Windows.Input;
 using Transliterator.ViewModels;
 
 namespace Transliterator.Views;
@@ -8,11 +9,10 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
-        ViewModel = new();
-        DataContext = ViewModel;
+        DataContext = App.Current.Services.GetService<MainViewModel>();
     }
 
-    public MainViewModel ViewModel { get; private set; }
+    public MainViewModel ViewModel => (MainViewModel)DataContext;
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {

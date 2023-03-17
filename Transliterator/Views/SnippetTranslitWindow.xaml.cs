@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Windows.Input;
 using Transliterator.ViewModels;
 
 namespace Transliterator.Views;
@@ -8,11 +9,10 @@ public partial class SnippetTranslitWindow
     public SnippetTranslitWindow()
     {
         InitializeComponent();
-        ViewModel = new();
-        DataContext = ViewModel;
+        DataContext = App.Current.Services.GetService<SnippetTranslitViewModel>();
     }
 
-    public SnippetTranslitViewModel ViewModel { get; private set; }
+    public SnippetTranslitViewModel ViewModel => (SnippetTranslitViewModel)DataContext;
 
     private void Window_MouseDown(object sender, MouseButtonEventArgs e)
     {

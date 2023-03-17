@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Windows.Input;
 using Transliterator.ViewModels;
 
@@ -9,11 +10,10 @@ public partial class SettingsWindow
     public SettingsWindow()
     {
         InitializeComponent();
-        ViewModel = new();
-        DataContext = ViewModel;
+        DataContext = App.Current.Services.GetService<SettingsViewModel>();
     }
 
-    public SettingsViewModel ViewModel { get; private set; }
+    public SettingsViewModel ViewModel => (SettingsViewModel)DataContext;
 
     // TODO: Remove this duct tape
     private void Window_Activated(object sender, EventArgs e)

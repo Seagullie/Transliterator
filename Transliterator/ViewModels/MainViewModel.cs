@@ -23,7 +23,12 @@ namespace Transliterator.ViewModels
         private ITransliteratorService _transliteratorService;
 
         private readonly SettingsService _settingsService;
-        private readonly HotKeyService _hotKeyService;
+        private readonly IHotKeyService _hotKeyService;
+
+        private SettingsWindow _settingsWindow;
+        private SnippetTranslitWindow _snippetTranslitWindow;
+        private TableViewWindow _tableViewWindow;
+
 
         [ObservableProperty]
         private string? _applicationTitle;
@@ -53,12 +58,12 @@ namespace Transliterator.ViewModels
         [ObservableProperty]
         private ObservableCollection<TransliterationTable>? transliterationTables;
 
-        public MainViewModel()
+        public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService)
         {
-            _settingsService = Singleton<SettingsService>.Instance;
-            _settingsService.SettingsSaved += OnSettingsSaved;
+            _settingsService = settingsService;
+            _hotKeyService = hotKeyService;
 
-            _hotKeyService = Singleton<HotKeyService>.Instance;
+            _settingsService.SettingsSaved += OnSettingsSaved;   
 
             ToggleAppStateShortcut = _settingsService.ToggleHotKey;
             _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => ToggleAppState());
@@ -69,7 +74,7 @@ namespace Transliterator.ViewModels
 
             Theme.Apply(_settingsService.SelectedTheme, BackgroundType.Mica);
 
-            AppState = _transliteratorService.TransliterationEnabled;
+            AppState = _transliteratorService!.TransliterationEnabled;
 
             bool showMinimized = _settingsService.IsMinimizedStartEnabled;
             WindowState = showMinimized ? WindowState.Minimized : WindowState.Normal;
@@ -88,36 +93,46 @@ namespace Transliterator.ViewModels
         }
 
         [RelayCommand]
-        private static void OpenSettingsWindow()
+        private void OpenSettingsWindow()
         {
-            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
-            SettingsWindow settings = new();
-            settings.Show();
+            // TODO: Rewrite to NavigateToSettingsPage
+
+            if (_settingsWindow == null || !_settingsWindow.IsLoaded)
+                _settingsWindow = new();
+
+            _settingsWindow.Show();
         }
 
         [RelayCommand]
-        private static void OpenSnippetTranslitWindow()
+        private void OpenSnippetTranslitWindow()
         {
-            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
-            SnippetTranslitWindow snippetTranslitWindow = new();
-            snippetTranslitWindow.Show();
+            // TODO: Rewrite to NavigateToSnippetTransliteratePage
+            if (_snippetTranslitWindow == null || !_snippetTranslitWindow.IsLoaded)
+                _snippetTranslitWindow = new();
+
+            _snippetTranslitWindow.Show();
         }
 
         [RelayCommand]
         private void OpenTableViewWindow()
         {
-            // TODO: Rewrite to NavigateToSettingsPage or prevent the creation of multiple windows
-            var vm = new TableViewModel() {
-                TransliterationTables = TransliterationTables,
-                SelectedTransliterationTable = SelectedTransliterationTable
-            };
+            // TODO: Rewrite to NavigateToTableViewPage
+            if (_tableViewWindow == null || !_tableViewWindow.IsLoaded)
+            {
+                var vm = new TableViewModel()
+                {
+                    TransliterationTables = TransliterationTables,
+                    SelectedTransliterationTable = SelectedTransliterationTable
+                };
 
-            TableViewWindow tableViewWindow = new() {
-                ViewModel = vm,
-                DataContext = vm
-            };
+                _tableViewWindow = new()
+                {
+                    ViewModel = vm,
+                    DataContext = vm
+                };
+            }
 
-            tableViewWindow.Show();
+            _tableViewWindow.Show();
         }
 
         private void AddTrayMenuItems()
@@ -214,7 +229,7 @@ namespace Transliterator.ViewModels
         public void SaveSettings()
         {
             _settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable?.ToString() ?? "";
-            _settingsService.SelectedTheme = Wpf.Ui.Appearance.Theme.GetAppTheme();
+            _settingsService.SelectedTheme = Theme.GetAppTheme();
             _settingsService.Save();
         }
 

@@ -4,7 +4,7 @@ using Transliterator.Core.Models;
 
 namespace Transliterator.Core.Services
 {
-    public class HotKeyService
+    public class HotKeyService : IHotKeyService
     {
         private readonly KeyboardHook _keyboardHook;
         private readonly Dictionary<HotKey, List<Action>> _hotKeys = new();

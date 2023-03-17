@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Threading;
 using System.Threading.Tasks;
-using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Services;
 using Transliterator.Views;
@@ -43,12 +42,9 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string toggleTranslitShortcut;
 
-    public SettingsViewModel()
+    public SettingsViewModel(SettingsService settingsService)
     {
-        // TODO: Dependency injection
-        // TODO: Uncomment after migrating more things from old project
-        //liveTransliterator = Main.GetInstance();
-        _settingsService = Singleton<SettingsService>.Instance;
+        _settingsService = settingsService;
 
         InitializePropertiesFromSettings();
     }

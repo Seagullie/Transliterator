@@ -173,6 +173,7 @@
                 Content="Edit Tables" />
             <ui:Button
                 HorizontalAlignment="Right"
+                Appearance="Primary"
                 Command="{Binding ApplyChangesCommand}"
                 Content="Apply"
                 Icon="Checkmark20" />

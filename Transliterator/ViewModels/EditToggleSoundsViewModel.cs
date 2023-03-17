@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.IO;
-using Transliterator.Core.Helpers;
 using Transliterator.Services;
 
 namespace Transliterator.ViewModels;
@@ -18,9 +17,9 @@ public partial class EditToggleSoundsViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ToggleOnSoundFileName))]
     private string toggleOnSoundFilePath;
 
-    public EditToggleSoundsViewModel()
+    public EditToggleSoundsViewModel(SettingsService settingsService)
     {
-        _settingsService = Singleton<SettingsService>.Instance;
+        _settingsService = settingsService;
         ToggleOnSoundFilePath = _settingsService.PathToCustomToggleOnSound;
         ToggleOffSoundFilePath = _settingsService.PathToCustomToggleOffSound;
     }

@@ -14,6 +14,7 @@ using Transliterator.Views;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Mvvm.Interfaces;
 
 namespace Transliterator.ViewModels
 {
@@ -28,7 +29,6 @@ namespace Transliterator.ViewModels
         private SettingsWindow _settingsWindow;
         private SnippetTranslitWindow _snippetTranslitWindow;
         private TableViewWindow _tableViewWindow;
-
 
         [ObservableProperty]
         private string? _applicationTitle;
@@ -63,7 +63,7 @@ namespace Transliterator.ViewModels
             _settingsService = settingsService;
             _hotKeyService = hotKeyService;
 
-            _settingsService.SettingsSaved += OnSettingsSaved;   
+            _settingsService.SettingsSaved += OnSettingsSaved;
 
             ToggleAppStateShortcut = _settingsService.ToggleHotKey;
             _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => ToggleAppState());
@@ -108,7 +108,10 @@ namespace Transliterator.ViewModels
         {
             // TODO: Rewrite to NavigateToSnippetTransliteratePage
             if (_snippetTranslitWindow == null || !_snippetTranslitWindow.IsLoaded)
+            {
                 _snippetTranslitWindow = new();
+                _snippetTranslitWindow.ViewModel.transliterationTable = SelectedTransliterationTable;
+            }
 
             _snippetTranslitWindow.Show();
         }

@@ -23,7 +23,15 @@ public partial class MainWindow
     {
         // Make window draggable
         if (e.ChangedButton == MouseButton.Left)
-            DragMove();
+        {
+            try
+            {
+                DragMove();
+            }
+            catch
+            {
+            }
+        }
     }
 
     private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)

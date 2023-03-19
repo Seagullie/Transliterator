@@ -33,6 +33,7 @@
         <DockPanel Grid.Row="0">
             <ui:TextBox
                 VerticalAlignment="Stretch"
+                PlaceholderText="Type/Paste your text here..."
                 Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
                 TextWrapping="Wrap" />
         </DockPanel>
@@ -54,6 +55,7 @@
             <ui:TextBox
                 VerticalAlignment="Stretch"
                 IsReadOnly="True"
+                PlaceholderText="...and the results will appear here"
                 Text="{Binding TransliterationResults}"
                 TextWrapping="Wrap" />
         </DockPanel>

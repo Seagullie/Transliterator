@@ -18,13 +18,11 @@ public partial class SnippetTransliteratorViewModel : ObservableObject
     [ObservableProperty]
     private string _userInput;
 
+    [ObservableProperty]
     private TransliterationTable transliterationTable;
 
     public SnippetTransliteratorViewModel()
     {
-        // TODO: remove hardcoding
-        Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, "Resources/TranslitTables/tableLAT-UKR.json");
-        transliterationTable = new TransliterationTable(replacementMap);
     }
 
     partial void OnUserInputChanged(string value)

@@ -49,7 +49,7 @@ public partial class App : Application
         // ViewModels
         services.AddTransient<MainViewModel>();
         services.AddTransient<SettingsViewModel>();
-        services.AddTransient<SnippetTranslitViewModel>();
+        services.AddTransient<SnippetTransliteratorViewModel>();
         services.AddTransient<EditToggleSoundsViewModel>();
 
         return services.BuildServiceProvider();

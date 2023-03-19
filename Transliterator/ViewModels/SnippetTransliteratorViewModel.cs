@@ -7,7 +7,7 @@ using Transliterator.Core.Services;
 
 namespace Transliterator.ViewModels;
 
-public partial class SnippetTranslitViewModel : ObservableObject
+public partial class SnippetTransliteratorViewModel : ObservableObject
 {
     [ObservableProperty]
     private bool _shouldTransliterateOnTheFly;
@@ -20,7 +20,7 @@ public partial class SnippetTranslitViewModel : ObservableObject
 
     private TransliterationTable transliterationTable;
 
-    public SnippetTranslitViewModel()
+    public SnippetTransliteratorViewModel()
     {
         // TODO: remove hardcoding
         Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, "Resources/TranslitTables/tableLAT-UKR.json");

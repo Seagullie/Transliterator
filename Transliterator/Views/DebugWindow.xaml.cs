@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Helpers.Events;
@@ -16,13 +15,9 @@ public partial class DebugWindow
 {
     private LoggerService loggerService;
 
-    // TODO: Uncomment after migrating more things from old project
-    //private Main liveTransliterator;
-
     public DebugWindow()
     {
         loggerService = LoggerService.GetInstance();
-        //liveTransliterator = Main.GetInstance();
 
         loggerService.NewLogMessage += ConsoleLog;
 
@@ -99,20 +94,6 @@ public partial class DebugWindow
 
         loggerService.LogMessage(this, "Up And Running");
         loggerService.LogMessage(this, $"BaseDir is: {AppDomain.CurrentDomain.BaseDirectory}");
-    }
-
-    // TODO: Remove the temporary fix
-    private void MainWindow1_Activated(object sender, EventArgs e)
-    {
-        void action() => this.InvalidateMeasure();
-        this.Dispatcher.BeginInvoke((Action)action);
-    }
-
-    // Make window draggable
-    private void MainWindow1_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.ChangedButton == MouseButton.Left)
-            this.DragMove();
     }
 
     // Can't move to view model cause it references a control

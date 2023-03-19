@@ -26,12 +26,11 @@ namespace Transliterator.ViewModels
         private readonly IHotKeyService _hotKeyService;
 
         private SettingsWindow _settingsWindow;
-        private SnippetTranslitWindow _snippetTranslitWindow;
+        private SnippetTransliteratorWindow _snippetTransliteratorWindow;
         private TableViewWindow _tableViewWindow;
 
 
-        [ObservableProperty]
-        private string? _applicationTitle;
+        public string? ApplicationTitle => App.AppName + " (" + SelectedTransliterationTable.Name + ")";
 
         [ObservableProperty]
         private bool _appState;
@@ -53,6 +52,7 @@ namespace Transliterator.ViewModels
         private ObservableCollection<MenuItem> trayMenuItems = new();
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ApplicationTitle))]
         private TransliterationTable? selectedTransliterationTable;
 
         [ObservableProperty]
@@ -104,13 +104,13 @@ namespace Transliterator.ViewModels
         }
 
         [RelayCommand]
-        private void OpenSnippetTranslitWindow()
+        private void OpenSnippetTransliteratorWindow()
         {
             // TODO: Rewrite to NavigateToSnippetTransliteratePage
-            if (_snippetTranslitWindow == null || !_snippetTranslitWindow.IsLoaded)
-                _snippetTranslitWindow = new();
+            if (_snippetTransliteratorWindow == null || !_snippetTransliteratorWindow.IsLoaded)
+                _snippetTransliteratorWindow = new();
 
-            _snippetTranslitWindow.Show();
+            _snippetTransliteratorWindow.Show();
         }
 
         [RelayCommand]
@@ -127,7 +127,6 @@ namespace Transliterator.ViewModels
 
                 _tableViewWindow = new()
                 {
-                    ViewModel = vm,
                     DataContext = vm
                 };
             }

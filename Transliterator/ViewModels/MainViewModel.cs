@@ -100,6 +100,7 @@ public partial class MainViewModel : ObservableObject
             _settingsWindow = new();
 
         _settingsWindow.Show();
+        _settingsWindow.Focus();
     }
 
     [RelayCommand]
@@ -113,6 +114,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         _snippetTransliteratorWindow.Show();
+        _snippetTransliteratorWindow.Focus();
     }
 
     [RelayCommand]
@@ -134,6 +136,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         _tableViewWindow.Show();
+        _tableViewWindow.Focus();
     }
 
     private void AddTrayMenuItems()

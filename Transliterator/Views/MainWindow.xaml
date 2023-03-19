@@ -54,25 +54,28 @@
             ShowMinimize="False">
 
             <ui:TitleBar.Tray>
-                <ui:NotifyIcon
-                    FocusOnLeftClick="False"
-                    Focusable="False"
-                    MenuOnRightClick="True"
-                    TooltipText="Transliterator">
+                <ui:NotifyIcon MenuOnRightClick="True" TooltipText="Transliterator">
+                    <!--  TODO: Figure out how to access the viewmodel from the context menu  -->
                     <!--  TODO: Figure out how to bind the click handlers to view model  -->
                     <ui:NotifyIcon.Menu>
                         <ContextMenu>
 
-                            <MenuItem
+                            <ui:MenuItem
                                 Click="ToggleTransliterator"
-                                Header="Toggle"
+                                Header="{Binding ViewModel.ApplicationTitle, Mode=TwoWay, FallbackValue='Toggle'}"
                                 StaysOpenOnClick="True">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="CameraSwitch20" />
                                 </MenuItem.Icon>
-                            </MenuItem>
+                            </ui:MenuItem>
 
                             <Separator />
+
+                            <MenuItem Click="ShowCurrentTable" Header="Show Table">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="NotebookEye20" />
+                                </MenuItem.Icon>
+                            </MenuItem>
 
                             <MenuItem Click="OpenSnippetPanel" Header="Snippet Panel">
                                 <MenuItem.Icon>
@@ -127,7 +130,8 @@
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding TransliterationTables}"
                 SelectedItem="{Binding SelectedTransliterationTable}"
-                ToolTip="{Binding SelectedTransliterationTable.Name}" />
+                ToolTip="{Binding SelectedTransliterationTable.Name}"
+                ToolTipService.InitialShowDelay="0" />
             <ui:Button
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"

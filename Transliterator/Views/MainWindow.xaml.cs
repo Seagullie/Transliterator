@@ -62,7 +62,11 @@ public partial class MainWindow
 
     private void ToggleTransliterator(object sender, System.Windows.RoutedEventArgs e)
     {
-        // TODO: Implement
         ViewModel.ToggleAppStateCommand.Execute(null);
+    }
+
+    private void ShowCurrentTable(object sender, System.Windows.RoutedEventArgs e)
+    {
+        ViewModel.OpenTableViewWindowCommand.Execute(null);
     }
 }

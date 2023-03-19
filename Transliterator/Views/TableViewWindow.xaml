@@ -7,17 +7,18 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:Transliterator.ViewModels"
     Title="Table View Window"
-    Width="450"
-    Height="800"
+    Width="350"
+    Height="600"
+    MinWidth="350"
     d:DataContext="{d:DesignInstance Type=viewmodels:TableViewModel}"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
-    MouseDown="Window_MouseDown"
-    Template="{StaticResource baseWindow}"
+    Template="{StaticResource BaseWindowTemplate}"
     WindowBackdropType="Mica"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <Grid Margin="40,5,40,35" ScrollViewer.CanContentScroll="True">
+
+    <Grid Margin="20,5,20,15" ScrollViewer.CanContentScroll="True">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition ScrollViewer.CanContentScroll="True" />
@@ -46,13 +47,9 @@
                 SelectedItem="{Binding SelectedTransliterationTable, Mode=TwoWay}" />
         </StackPanel>
 
-
-
         <ListView Grid.Row="1" ItemsSource="{Binding SelectedTransliterationTable, Mode=OneWay}">
-
             <ListView.ItemTemplate>
                 <DataTemplate>
-
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />

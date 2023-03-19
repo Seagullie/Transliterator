@@ -4,29 +4,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="clr-namespace:Transliterator.Helpers"
-    xmlns:local="clr-namespace:Transliterator.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:Transliterator.ViewModels"
-    Title="Transliterator"
+    Title="{Binding ApplicationTitle}"
     Width="800"
     Height="450"
-    d:DataContext="{d:DesignInstance viewmodels:MainViewModel,
-                                     IsDesignTimeCreatable=True}"
+    d:DataContext="{d:DesignInstance viewmodels:MainViewModel}"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     Closing="Window_Closing"
     ExtendsContentIntoTitleBar="True"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    MouseDown="Window_MouseDown"
     ResizeMode="NoResize"
-    Template="{StaticResource baseWindow}"
+    Template="{StaticResource BaseWindowTemplate}"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
-    WindowState="{Binding WindowState, Mode=OneTime}"
+    WindowState="{Binding WindowState, Mode=OneWay}"
     mc:Ignorable="d">
 
-    <!--  TODO: Fix Windows 11 styling not applied to UI"  -->
     <!--  TODO: Move boilerplate window stlyles to separate resource  -->
 
     <Window.Resources>
@@ -96,6 +92,7 @@
                                     <ui:SymbolIcon Symbol="ArrowExit20" />
                                 </MenuItem.Icon>
                             </MenuItem>
+
                         </ContextMenu>
                     </ui:NotifyIcon.Menu>
                 </ui:NotifyIcon>
@@ -112,7 +109,7 @@
             <!--  TODO: Come up with better name for snippet panel  -->
             <ui:Button
                 HorizontalAlignment="Stretch"
-                Command="{Binding OpenSnippetTranslitWindowCommand}"
+                Command="{Binding OpenSnippetTransliteratorWindowCommand}"
                 Content="To Snippet Panel"
                 Icon="Translate20" />
         </StackPanel>
@@ -201,5 +198,6 @@
             <Label Content="Toggle Shortcut: " IsEnabled="False" />
             <Label Content="{Binding ToggleAppStateShortcut}" IsEnabled="False" />
         </StackPanel>
+
     </Grid>
 </ui:UiWindow>

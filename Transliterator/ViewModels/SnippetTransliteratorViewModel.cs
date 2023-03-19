@@ -7,7 +7,7 @@ using Transliterator.Core.Services;
 
 namespace Transliterator.ViewModels;
 
-public partial class SnippetTranslitViewModel : ObservableObject
+public partial class SnippetTransliteratorViewModel : ObservableObject
 {
     [ObservableProperty]
     private bool _shouldTransliterateOnTheFly;
@@ -18,9 +18,10 @@ public partial class SnippetTranslitViewModel : ObservableObject
     [ObservableProperty]
     private string _userInput;
 
-    public TransliterationTable transliterationTable;
+    [ObservableProperty]
+    private TransliterationTable transliterationTable;
 
-    public SnippetTranslitViewModel()
+    public SnippetTransliteratorViewModel()
     {
     }
 

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Transliterator.Core.Models;
@@ -41,6 +42,8 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     private string toggleTranslitShortcut;
+
+    public event EventHandler OnRequestClose;
 
     public SettingsViewModel(SettingsService settingsService)
     {
@@ -91,8 +94,6 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private void ApplyChanges()
     {
-        // TODO: Uncomment after migrating more things from old project
-
         _settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
         _settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
         _settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
@@ -102,6 +103,8 @@ public partial class SettingsViewModel : ObservableObject
         _settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
         _settingsService.ToggleHotKey = ToggleHotKey;
         _settingsService.Save();
+
+        OnRequestClose?.Invoke(this, EventArgs.Empty);
     }
 
     // TODO: not trigger on window init

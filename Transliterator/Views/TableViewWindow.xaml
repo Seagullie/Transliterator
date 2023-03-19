@@ -7,12 +7,13 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:Transliterator.ViewModels"
     Title="Table View Window"
-    Width="350"
+    Width="325"
     Height="600"
-    MinWidth="350"
+    MinWidth="325"
     d:DataContext="{d:DesignInstance Type=viewmodels:TableViewModel}"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
+    ResizeMode="NoResize"
     Template="{StaticResource BaseWindowTemplate}"
     WindowBackdropType="Mica"
     WindowStartupLocation="CenterScreen"
@@ -24,33 +25,59 @@
             <ColumnDefinition ScrollViewer.CanContentScroll="True" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="1*" />
-            <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
 
         <StackPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Orientation="Horizontal">
-            <!--  TODO: Add spacing  -->
-            <Label
-                Margin="0,0,5,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Content="Choose table to view:   " />
-            <ComboBox
-                Width="120"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                DisplayMemberPath="Name"
-                ItemsSource="{Binding TransliterationTables, Mode=OneWay}"
-                SelectedItem="{Binding SelectedTransliterationTable, Mode=TwoWay}" />
+            Grid.Column="0"
+            Height="Auto"
+            MinHeight="0"
+            Margin="0"
+            Orientation="Vertical">
+            <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <!--  TODO: Add spacing  -->
+                <Label
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Choose table to view:" />
+                <ComboBox
+                    Width="120"
+                    Margin="0,0,15,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding TransliterationTables, Mode=OneWay}"
+                    SelectedItem="{Binding SelectedTransliterationTable, Mode=TwoWay}" />
+            </DockPanel>
+            <DockPanel Margin="0,30,0,0">
+                <Label
+                    MinWidth="65"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Content="Input" />
+
+                <Label
+                    MinWidth="65"
+                    Margin="0,0,15,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    Content="Output" />
+            </DockPanel>
         </StackPanel>
 
-        <ListView Grid.Row="1" ItemsSource="{Binding SelectedTransliterationTable, Mode=OneWay}">
+        <ListView
+            Grid.Row="1"
+            Margin="0"
+            Padding="0"
+            ItemsSource="{Binding SelectedTransliterationTable, Mode=OneWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid Margin="0" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
@@ -59,7 +86,8 @@
 
                         <TextBox
                             MinWidth="65"
-                            HorizontalAlignment="Center"
+                            Margin="0"
+                            HorizontalAlignment="Left"
                             HorizontalContentAlignment="Center"
                             FontSize="14"
                             IsReadOnly="True"
@@ -68,7 +96,7 @@
                         <TextBox
                             Grid.Column="2"
                             MinWidth="65"
-                            HorizontalAlignment="Center"
+                            HorizontalAlignment="Right"
                             HorizontalContentAlignment="Center"
                             FontSize="14"
                             IsReadOnly="True"

@@ -75,7 +75,7 @@ public class BufferedTransliteratorService : ITransliteratorService
         if (e.IsControl)
             buffer.Clear();
         else
-            buffer.RemoveAt(buffer.Count() - 1);
+            buffer.RemoveAt(buffer.Count - 1);
 
         return true;
     }
@@ -93,16 +93,13 @@ public class BufferedTransliteratorService : ITransliteratorService
 
         bool isIrrelevant = !TransliterationTable.IsInAlphabet(e.Character) || isModifierOrShortcut || isNoCaseCharAndShiftIsDown;
 
+        // Transliterate whatever is left in buffer, but only if key is not shift.
+        // Otherwise combos get broken by simply pressing shift, for example
         if (isIrrelevant)
         {
             _loggerService.LogMessage(this, $"[Transliterator]: This key was skipped as irrelevant: {e.Character}");
 
-            // Transliterate whatever is left in buffer, but only if key is not a modifier.
-            // Otherwise combos get broken by simply pressing shift, for example
-            if (e.IsModifier)
-                return true;
-
-            if (buffer.Count > 0)
+            if (buffer.Count > 0 && !e.IsShift)
             {
                 buffer.InvokeBrokenMultiGraphEvent();
                 buffer.Clear();

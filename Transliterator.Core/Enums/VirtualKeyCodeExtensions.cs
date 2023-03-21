@@ -52,8 +52,11 @@ public static class VirtualKeyCodeExtensions
             return '\0';
         }
 
-        uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
+        if (keyboardState[16] == 1)
+            keyboardState[16] = 129;
 
+        uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
+        
         IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
         uint threadId = NativeMethods.GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
         IntPtr inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(threadId);
@@ -65,6 +68,6 @@ public static class VirtualKeyCodeExtensions
             return '\0';
         }
 
-        return string.IsNullOrEmpty(result.ToString()) ? '\0' : char.Parse(result.ToString());
-    }
+      return string.IsNullOrEmpty(result.ToString()) ? '\0' : char.Parse(result.ToString());
+   }
 }

@@ -76,12 +76,38 @@
                 Content="Run at system startup"
                 IsChecked="{Binding IsAutoStartEnabled}"
                 ToolTipService.ShowOnDisabled="True" />
-            <CheckBox
-                HorizontalAlignment="Left"
+            <!--  TODO: Refactor  -->
+            <!--  TODO: Align number icons with text  -->
+
+            <ui:Flyout x:Name="DisableAltShiftFlyout" Padding="20">
+                <StackPanel helpers:MarginSetter.Margin="5">
+                    <TextBlock>After opening system settings:</TextBlock>
+                    <TextBlock>
+                        <ui:SymbolIcon VerticalContentAlignment="Bottom" Symbol="NumberCircle120" />
+                        Click "Advanced Keyboard Settings".
+                    </TextBlock>
+                    <TextBlock>
+                        <ui:SymbolIcon Symbol="NumberCircle220" />
+                        Click "Input Language hot keys".<LineBreak />
+                        "Text Services and Input Languages" window will open.</TextBlock>
+                    <TextBlock VerticalAlignment="Center">
+                        <ui:SymbolIcon Symbol="NumberCircle320" />
+                        Switch to “Advanced Key Settings” tab.<LineBreak />
+                        There, it should be possible to change or remove your input switch shortcut.</TextBlock>
+                    <ui:Anchor
+                        Margin="10"
+                        Content="Open Settings"
+                        Icon="Settings20"
+                        NavigateUri="ms-settings:typing" />
+                </StackPanel>
+            </ui:Flyout>
+            <ui:Button
+                Margin="0,15,0,0"
+                HorizontalAlignment="Center"
+                Click="ButtonShowFlyoutOnClick"
                 Content="Disable Alt + Shift Global Shortcut"
-                IsChecked="{Binding IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
-                ToolTip="This setting stops working once the program is closed."
-                ToolTipService.ShowOnDisabled="True" />
+                Icon="Wrench20"
+                ToolTip="You can remove the shortcut for language switching in system settings" />
         </StackPanel>
 
         <!--  ***  -->

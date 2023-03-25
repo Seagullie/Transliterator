@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics;
+using System.Windows;
 using Transliterator.ViewModels;
 
 namespace Transliterator.Views;
@@ -15,4 +17,9 @@ public partial class SettingsWindow
     }
 
     public SettingsViewModel ViewModel => (SettingsViewModel)DataContext;
+
+    private void ButtonShowFlyoutOnClick(object sender, RoutedEventArgs e)
+    {
+        DisableAltShiftFlyout.Show();
+    }
 }

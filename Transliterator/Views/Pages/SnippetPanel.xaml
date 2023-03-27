@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="Transliterator.Views.Pages.SnippetPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Transliterator.Views.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="SnippetPanel"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid Margin="50,25,50,50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="3*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <ui:TextBox
+                VerticalAlignment="Stretch"
+                PlaceholderText="Type/Paste your text here..."
+                Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="Wrap" />
+        </DockPanel>
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <Button
+                Margin="15,0,15,0"
+                VerticalAlignment="Center"
+                Command="{Binding TransliterateSnippetCommand}"
+                Content="Transliterate" />
+            <CheckBox
+                Margin="15,0,15,0"
+                Content="On The Fly"
+                IsChecked="{Binding ShouldTransliterateOnTheFly}" />
+        </StackPanel>
+        <DockPanel Grid.Row="2">
+            <ui:TextBox
+                VerticalAlignment="Stretch"
+                IsReadOnly="True"
+                PlaceholderText="...and the results will appear here"
+                Text="{Binding TransliterationResults}"
+                TextWrapping="Wrap" />
+        </DockPanel>
+    </Grid>
+</Page>

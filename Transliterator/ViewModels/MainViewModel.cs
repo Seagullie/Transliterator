@@ -14,14 +14,16 @@ using Transliterator.Views;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
+using Wpf.Ui.Controls.Interfaces;
 
 namespace Transliterator.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ObservableObject, ITransliteratorServiceObserver
 {
     // Stores either buffered or unbuffered transliteration service
     private ITransliteratorService _transliteratorService;
 
+    private readonly TransliteratorServiceFactory _transliteratorServiceFactory;
     private readonly SettingsService _settingsService;
     private readonly IHotKeyService _hotKeyService;
 
@@ -38,11 +40,11 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private WindowState _windowState;
 
-    //[ObservableProperty]
-    //private ObservableCollection<object> navigationFooter = new();
+    [ObservableProperty]
+    private ObservableCollection<INavigationControl> navigationFooter = new();
 
-    //[ObservableProperty]
-    //private ObservableCollection<object> navigationItems = new();
+    [ObservableProperty]
+    private ObservableCollection<INavigationControl> navigationItems = new();
 
     [ObservableProperty]
     private HotKey? toggleAppStateShortcut;
@@ -57,10 +59,11 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<TransliterationTable>? transliterationTables;
 
-    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService)
+    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceFactory transliteratorServiceFactory)
     {
         _settingsService = settingsService;
         _hotKeyService = hotKeyService;
+        _transliteratorServiceFactory = transliteratorServiceFactory;
 
         _settingsService.SettingsSaved += OnSettingsSaved;
 
@@ -71,12 +74,45 @@ public partial class MainViewModel : ObservableObject
         LoadTransliterationTables();
         AddTrayMenuItems();
 
-        Theme.Apply(_settingsService.SelectedTheme, BackgroundType.Mica);
+        //Theme.Apply(_settingsService.SelectedTheme, BackgroundType.Mica);
 
         AppState = _transliteratorService!.TransliterationEnabled;
 
         bool showMinimized = _settingsService.IsMinimizedStartEnabled;
         WindowState = showMinimized ? WindowState.Minimized : WindowState.Normal;
+        InitializeViewModel();
+    }
+
+    private void InitializeViewModel()
+    {
+        NavigationItems = new ObservableCollection<INavigationControl>
+        {
+            new NavigationItem()
+            {
+                Content = "Home",
+                PageTag = "dashboard",
+                Icon = SymbolRegular.Home24,
+                PageType = typeof(Views.Pages.MainPage)
+            },
+            new NavigationItem()
+            {
+                Content = "Snippet Panel",
+                PageTag = "snippetPanel",
+                Icon = SymbolRegular.DataHistogram24,
+                PageType = typeof(Views.Pages.SnippetPanel)
+            }
+        };
+
+        NavigationFooter = new ObservableCollection<INavigationControl>
+        {
+            new NavigationItem()
+            {
+                Content = "Settings",
+                PageTag = "settings",
+                Icon = SymbolRegular.Settings24,
+                PageType = typeof(Views.Pages.SettingsPage)
+            }
+        };
     }
 
     private void OnSettingsSaved(object? sender, EventArgs e)
@@ -245,14 +281,18 @@ public partial class MainViewModel : ObservableObject
         if (_transliteratorService != null)
             _transliteratorService.TransliterationEnabled = false;
 
-        if (_settingsService.IsBufferInputEnabled)
-            _transliteratorService = Singleton<BufferedTransliteratorService>.Instance;
-        else
-            _transliteratorService = Singleton<UnbufferedTransliteratorService>.Instance;
+        _transliteratorServiceFactory.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
+
+        _transliteratorService = _transliteratorServiceFactory.CreateTransliteratorService();
 
         if (SelectedTransliterationTable != null)
             _transliteratorService.TransliterationTable = SelectedTransliterationTable;
 
         _transliteratorService.TransliterationEnabled = isCurrentTransliterationServiceEnabled;
+    }
+
+    public void OnTransliteratorServiceChanged(ITransliteratorService newTransliteratorService)
+    {
+        _transliteratorService = newTransliteratorService;
     }
 }

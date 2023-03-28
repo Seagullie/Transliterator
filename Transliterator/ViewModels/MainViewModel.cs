@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 using Transliterator.Services;
@@ -18,12 +17,12 @@ using Wpf.Ui.Controls.Interfaces;
 
 namespace Transliterator.ViewModels;
 
-public partial class MainViewModel : ObservableObject, ITransliteratorServiceObserver
+public partial class MainViewModel : ObservableObject
 {
     // Stores either buffered or unbuffered transliteration service
     private ITransliteratorService _transliteratorService;
 
-    private readonly TransliteratorServiceFactory _transliteratorServiceFactory;
+    private readonly TransliteratorServiceStrategy _transliteratorServiceStrategy;
     private readonly SettingsService _settingsService;
     private readonly IHotKeyService _hotKeyService;
 
@@ -59,18 +58,22 @@ public partial class MainViewModel : ObservableObject, ITransliteratorServiceObs
     [ObservableProperty]
     private ObservableCollection<TransliterationTable>? transliterationTables;
 
-    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceFactory transliteratorServiceFactory)
+    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceStrategy transliteratorServiceStrategy)
     {
         _settingsService = settingsService;
         _hotKeyService = hotKeyService;
-        _transliteratorServiceFactory = transliteratorServiceFactory;
+        _transliteratorServiceStrategy = transliteratorServiceStrategy;
+
+        _transliteratorServiceStrategy.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
+        _transliteratorService = _transliteratorServiceStrategy.CurrentService;
+        _transliteratorService.TransliterationEnabled = _settingsService.IsTransliteratorEnabledAtStartup;
 
         _settingsService.SettingsSaved += OnSettingsSaved;
+        _transliteratorServiceStrategy.TransliteratorServiceChanged += OnTransliteratorServiceChanged;
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
         _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => ToggleAppState());
 
-        SetTransliteratorService();
         LoadTransliterationTables();
         AddTrayMenuItems();
 
@@ -124,7 +127,7 @@ public partial class MainViewModel : ObservableObject, ITransliteratorServiceObs
         ToggleAppStateShortcut = hotKey;
 
         _hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
-        SetTransliteratorService();
+        _transliteratorServiceStrategy.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
     }
 
     [RelayCommand]
@@ -273,26 +276,8 @@ public partial class MainViewModel : ObservableObject, ITransliteratorServiceObs
         _settingsService.Save();
     }
 
-    public void SetTransliteratorService()
+    private void OnTransliteratorServiceChanged(object? sender, TransliteratorServiceChangedEventArgs e)
     {
-        bool isCurrentTransliterationServiceEnabled = _transliteratorService?.TransliterationEnabled ?? _settingsService.IsTransliteratorEnabledAtStartup;
-
-        // disable current transliterator service as it won't be used anymore
-        if (_transliteratorService != null)
-            _transliteratorService.TransliterationEnabled = false;
-
-        _transliteratorServiceFactory.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
-
-        _transliteratorService = _transliteratorServiceFactory.CreateTransliteratorService();
-
-        if (SelectedTransliterationTable != null)
-            _transliteratorService.TransliterationTable = SelectedTransliterationTable;
-
-        _transliteratorService.TransliterationEnabled = isCurrentTransliterationServiceEnabled;
-    }
-
-    public void OnTransliteratorServiceChanged(ITransliteratorService newTransliteratorService)
-    {
-        _transliteratorService = newTransliteratorService;
+        _transliteratorService = e.NewService;
     }
 }

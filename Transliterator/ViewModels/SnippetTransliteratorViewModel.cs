@@ -1,15 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 using Wpf.Ui.Common.Interfaces;
 
 namespace Transliterator.ViewModels;
 
-public partial class SnippetTransliteratorViewModel : ObservableObject, ITransliteratorServiceObserver, IDisposable, INavigationAware
+public partial class SnippetTransliteratorViewModel : ObservableObject, INavigationAware
 {
-    private readonly TransliteratorServiceFactory _transliteratorServiceFactory;
     private ITransliteratorService _transliteratorService;
 
     [ObservableProperty]
@@ -24,16 +22,15 @@ public partial class SnippetTransliteratorViewModel : ObservableObject, ITransli
     [ObservableProperty]
     private TransliterationTable transliterationTable;
 
-    public SnippetTransliteratorViewModel(TransliteratorServiceFactory transliteratorServiceFactory)
+    public SnippetTransliteratorViewModel(TransliteratorServiceStrategy transliteratorServiceStrategy)
     {
-        _transliteratorServiceFactory = transliteratorServiceFactory;
-        _transliteratorServiceFactory.AddObserver(this);
-        _transliteratorService = _transliteratorServiceFactory.CreateTransliteratorService();
+        _transliteratorService = transliteratorServiceStrategy.CurrentService;
+        transliteratorServiceStrategy.TransliteratorServiceChanged += OnTransliteratorServiceChanged;
     }
 
-    public void OnTransliteratorServiceChanged(ITransliteratorService newTransliteratorService)
+    private void OnTransliteratorServiceChanged(object? sender, TransliteratorServiceChangedEventArgs e)
     {
-        _transliteratorService = newTransliteratorService;
+        _transliteratorService = e.NewService;
     }
 
     partial void OnUserInputChanged(string value)
@@ -55,11 +52,6 @@ public partial class SnippetTransliteratorViewModel : ObservableObject, ITransli
             string transliterationResults = _transliteratorService.TransliterationTable?.Transliterate(textToTransliterate);
             TransliterationResults = transliterationResults;
         }
-    }
-
-    public void Dispose()
-    {
-        _transliteratorServiceFactory.RemoveObserver(this);
     }
 
     public void OnNavigatedTo()

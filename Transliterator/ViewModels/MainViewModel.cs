@@ -6,9 +6,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Transliterator.Core.Enums;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
+using Transliterator.Helpers;
 using Transliterator.Services;
 using Transliterator.Views;
 using Wpf.Ui.Appearance;
@@ -65,7 +67,8 @@ public partial class MainViewModel : ObservableObject
         _settingsService.SettingsSaved += OnSettingsSaved;
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-        _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => ToggleAppState());
+
+        _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, ToggleAppState);
 
         SetTransliteratorService();
         LoadTransliterationTables();

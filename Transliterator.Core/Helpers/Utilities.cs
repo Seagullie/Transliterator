@@ -1,5 +1,10 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
+
+using System.Windows.Input;
+
+//using Key = System.Windows.Input.Key;
 
 namespace Transliterator.Helpers;
 
@@ -60,6 +65,18 @@ public class Utilities
             return char_ >= 128;
         })) return true;
         return false;
+    }
+
+    public static bool IsKeyDown(Key key)
+    {
+        return Keyboard.IsKeyDown(key);
+    }
+
+    public static bool IsAltDown()
+    {
+        Key leftAlt = Key.LeftAlt;
+        Key rightAlt = Key.RightAlt;
+        return Keyboard.IsKeyDown(leftAlt) || Keyboard.IsKeyDown(rightAlt);
     }
 
     public static string MapLayoutName(string code = null)

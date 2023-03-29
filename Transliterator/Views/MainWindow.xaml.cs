@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using Transliterator.ViewModels;
 
 namespace Transliterator.Views;
@@ -41,5 +42,13 @@ public partial class MainWindow
     private void ShowCurrentTable(object sender, System.Windows.RoutedEventArgs e)
     {
         ViewModel.OpenTableViewWindowCommand.Execute(null);
+    }
+
+    private void OnWindowStateChanged(object sender, EventArgs e)
+    {
+        if (this.WindowState == System.Windows.WindowState.Maximized)
+        {
+            this.WindowState = System.Windows.WindowState.Normal;
+        }
     }
 }

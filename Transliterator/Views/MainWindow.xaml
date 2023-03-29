@@ -16,6 +16,7 @@
     ExtendsContentIntoTitleBar="True"
     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     ResizeMode="NoResize"
+    StateChanged="OnWindowStateChanged"
     Template="{StaticResource BaseWindowTemplate}"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
@@ -92,7 +93,6 @@
                                     <ui:SymbolIcon Symbol="ArrowExit20" />
                                 </MenuItem.Icon>
                             </MenuItem>
-
                         </ContextMenu>
                     </ui:NotifyIcon.Menu>
                 </ui:NotifyIcon>
@@ -198,6 +198,5 @@
             <Label Content="Toggle Shortcut: " IsEnabled="False" />
             <Label Content="{Binding ToggleAppStateShortcut}" IsEnabled="False" />
         </StackPanel>
-
     </Grid>
 </ui:UiWindow>

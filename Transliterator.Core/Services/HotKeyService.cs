@@ -1,6 +1,7 @@
 ﻿using Transliterator.Core.Helpers;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
+using Transliterator.Helpers;
 
 namespace Transliterator.Core.Services
 {
@@ -8,7 +9,6 @@ namespace Transliterator.Core.Services
     {
         private readonly KeyboardHook _keyboardHook;
         private readonly Dictionary<HotKey, List<Action>> _hotKeys = new();
-
 
         public HotKeyService()
         {
@@ -42,10 +42,15 @@ namespace Transliterator.Core.Services
             var b = _hotKeys.ContainsKey(hotKey);
             if (_hotKeys.TryGetValue(hotKey, out var actions))
             {
+                // TODO: Remove temp fix
+                // double check whether alt is down by using other key state reading method
+                if (hotKey.Modifiers == Enums.ModifierKeys.Alt && !Utilities.IsAltDown()) return;
+
                 foreach (var action in actions)
                 {
                     action();
                 }
+
                 e.Handled = true;
             }
         }

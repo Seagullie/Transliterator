@@ -25,10 +25,7 @@ public partial class MainViewModel : ObservableObject
     private readonly SettingsService _settingsService;
     private readonly IHotKeyService _hotKeyService;
 
-    private SettingsWindow _settingsWindow;
-    private TableViewWindow _tableViewWindow;
-
-    public string? ApplicationTitle => $"{App.AppName} ({SelectedTransliterationTable?.Name})";
+    public string? ApplicationTitle => App.AppName;
 
     [ObservableProperty]
     private bool _appState;
@@ -89,17 +86,17 @@ public partial class MainViewModel : ObservableObject
         {
             new NavigationItem()
             {
-                Content = "Home",
-                PageTag = "dashboard",
-                Icon = SymbolRegular.Home24,
-                PageType = typeof(Views.Pages.MainPage)
+                Content = "Snippet Panel",
+                PageTag = "snippetPanel",
+                Icon = SymbolRegular.Translate24,
+                PageType = typeof(Views.Pages.SnippetPanel)
             },
             new NavigationItem()
             {
-                Content = "Snippet Panel",
-                PageTag = "snippetPanel",
-                Icon = SymbolRegular.DataHistogram24,
-                PageType = typeof(Views.Pages.SnippetPanel)
+                Content = "Table View",
+                PageTag = "tableView",
+                Icon = SymbolRegular.BookLetter24,
+                PageType = typeof(Views.Pages.TableViewPage)
             }
         };
 
@@ -125,40 +122,6 @@ public partial class MainViewModel : ObservableObject
 
         _hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
         _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
-    }
-
-    [RelayCommand]
-    private void OpenSettingsWindow()
-    {
-        // TODO: Rewrite to NavigateToSettingsPage
-
-        if (_settingsWindow == null || !_settingsWindow.IsLoaded)
-            _settingsWindow = new();
-
-        _settingsWindow.Show();
-        _settingsWindow.Focus();
-    }
-
-    [RelayCommand]
-    private void OpenTableViewWindow()
-    {
-        // TODO: Rewrite to NavigateToTableViewPage
-        if (_tableViewWindow == null || !_tableViewWindow.IsLoaded)
-        {
-            var vm = new TableViewModel()
-            {
-                TransliterationTables = TransliterationTables,
-                SelectedTransliterationTable = SelectedTransliterationTable
-            };
-
-            _tableViewWindow = new()
-            {
-                DataContext = vm
-            };
-        }
-
-        _tableViewWindow.Show();
-        _tableViewWindow.Focus();
     }
 
     private void AddTrayMenuItems()

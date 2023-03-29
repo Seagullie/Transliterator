@@ -67,7 +67,7 @@
 
                             <Separator />
 
-                            <MenuItem Click="ShowCurrentTable" Header="Show Table">
+                            <MenuItem Header="Show Table">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="NotebookEye20" />
                                 </MenuItem.Icon>
@@ -79,7 +79,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
 
-                            <MenuItem Click="OpenSettings" Header="Settings">
+                            <MenuItem Header="Settings">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="Settings24" />
                                 </MenuItem.Icon>

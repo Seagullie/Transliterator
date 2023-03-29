@@ -1,9 +1,10 @@
-﻿using Transliterator.ViewModels;
+﻿using System.Windows.Controls;
+using Transliterator.ViewModels;
 using Wpf.Ui.Common.Interfaces;
 
 namespace Transliterator.Views.Pages;
 
-public partial class SettingsPage : INavigableView<SettingsViewModel>
+public partial class SettingsPage : Page, INavigableView<SettingsViewModel>
 {
     public SettingsViewModel ViewModel { get; }
 

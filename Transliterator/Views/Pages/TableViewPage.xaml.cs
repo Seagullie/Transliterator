@@ -4,11 +4,11 @@ using Wpf.Ui.Common.Interfaces;
 
 namespace Transliterator.Views.Pages;
 
-public partial class SnippetPanel : Page, INavigableView<SnippetTransliteratorViewModel>
+public partial class TableViewPage : Page, INavigableView<TableViewModel>
 {
-    public SnippetTransliteratorViewModel ViewModel { get; }
+    public TableViewModel ViewModel { get; }
 
-    public SnippetPanel(SnippetTransliteratorViewModel viewModel)
+    public TableViewPage(TableViewModel viewModel)
     {
         ViewModel = viewModel;
 

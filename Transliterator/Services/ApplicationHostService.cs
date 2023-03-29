@@ -51,7 +51,7 @@ public class ApplicationHostService : IHostedService
             _navigationWindow = (_serviceProvider.GetService(typeof(INavigationWindow)) as INavigationWindow)!;
             _navigationWindow!.ShowWindow();
 
-            _navigationWindow.Navigate(typeof(Views.Pages.SettingsPage));
+            _navigationWindow.Navigate(typeof(Views.Pages.SnippetPanel));
         }
 
         await Task.CompletedTask;

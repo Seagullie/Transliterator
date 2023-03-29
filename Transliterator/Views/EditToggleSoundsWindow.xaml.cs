@@ -9,7 +9,7 @@ public partial class EditToggleSoundsWindow
     public EditToggleSoundsWindow()
     {
         InitializeComponent();
-        DataContext = App.Current.Services.GetService<EditToggleSoundsViewModel>();
+        //DataContext = App.Current.Services.GetService<EditToggleSoundsViewModel>();
     }
 
     public EditToggleSoundsViewModel ViewModel => (EditToggleSoundsViewModel)DataContext;

@@ -9,7 +9,7 @@ public partial class SettingsWindow
     public SettingsWindow()
     {
         InitializeComponent();
-        DataContext = App.Current.Services.GetService<SettingsViewModel>();
+        //DataContext = App.Current.Services.GetService<SettingsViewModel>();
 
         ((SettingsViewModel)DataContext).OnRequestClose += (s, e) => Close();
     }

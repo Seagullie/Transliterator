@@ -32,8 +32,14 @@ public class TransliteratorServiceContext : ITransliteratorService
     public TransliterationTable? TransliterationTable 
     {
         get => CurrentService.TransliterationTable;
-        set => CurrentService.TransliterationTable = value;
+        set
+        {
+            CurrentService.TransliterationTable = value;
+            TransliterationTableChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
+
+    public event EventHandler? TransliterationTableChanged;
 
     public TransliteratorServiceContext()
     {

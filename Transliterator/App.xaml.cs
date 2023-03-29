@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -19,39 +18,7 @@ public partial class App : Application
 
     public App()
     {
-        Services = ConfigureServices();
-
         InitializeComponent();
-    }
-
-    /// <summary>
-    /// Gets the current <see cref="App"/> instance in use
-    /// </summary>
-    public new static App Current => (App)Application.Current;
-
-    /// <summary>
-    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
-    /// </summary>
-    public IServiceProvider Services { get; }
-
-    /// <summary>
-    /// Configures the services for the application.
-    /// </summary>
-    private static IServiceProvider ConfigureServices()
-    {
-        var services = new ServiceCollection();
-
-        // Services
-        services.AddSingleton<SettingsService>();
-        services.AddSingleton<IHotKeyService, HotKeyService>();
-
-        // ViewModels
-        //services.AddTransient<MainViewModel>();
-        //services.AddTransient<SettingsViewModel>();
-        //services.AddTransient<SnippetTransliteratorViewModel>();
-        //services.AddTransient<EditToggleSoundsViewModel>();
-
-        return services.BuildServiceProvider();
     }
 
     // The.NET Generic Host provides dependency injection, configuration, logging, and other services.
@@ -90,7 +57,8 @@ public partial class App : Application
             // Views and ViewModels
             services.AddScoped<Views.Pages.SnippetPanel>();
             services.AddScoped<ViewModels.SnippetTransliteratorViewModel>();
-            services.AddScoped<Views.Pages.MainPage>();
+            services.AddScoped<Views.Pages.TableViewPage>();
+            services.AddScoped<ViewModels.TableViewModel>();
             services.AddScoped<ViewModels.MainPageViewModel>();
             services.AddScoped<Views.Pages.SettingsPage>();
             services.AddScoped<ViewModels.SettingsViewModel>();

@@ -8,7 +8,7 @@ public partial class MainWindow
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = App.Current.Services.GetService<MainViewModel>();
+        //DataContext = App.Current.Services.GetService<MainViewModel>();
     }
 
     public MainViewModel ViewModel => (MainViewModel)DataContext;
@@ -16,11 +16,6 @@ public partial class MainWindow
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
         ViewModel.SaveSettings();
-    }
-
-    private void OpenSettings(object sender, System.Windows.RoutedEventArgs e)
-    {
-        ViewModel.OpenSettingsWindowCommand.Execute(null);
     }
 
     private void Close(object sender, System.Windows.RoutedEventArgs e)
@@ -31,10 +26,5 @@ public partial class MainWindow
     private void ToggleTransliterator(object sender, System.Windows.RoutedEventArgs e)
     {
         ViewModel.ToggleAppStateCommand.Execute(null);
-    }
-
-    private void ShowCurrentTable(object sender, System.Windows.RoutedEventArgs e)
-    {
-        ViewModel.OpenTableViewWindowCommand.Execute(null);
     }
 }

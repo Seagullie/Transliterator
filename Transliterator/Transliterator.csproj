@@ -7,14 +7,14 @@
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
 	<ApplicationIcon>translit-icon-sharp-corners.ico</ApplicationIcon>
+	<StartupObject>Transliterator.App</StartupObject>
+	<NeutralLanguage>en</NeutralLanguage>
+	<Authors>Seagullie, bind-w-exit</Authors>
+	<PackageLicenseExpression>AGPL-3.0</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<RepositoryUrl>https://github.com/Seagullie/Transliterator</RepositoryUrl>
+	<Version>0.1.0</Version>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Models\**" />
-    <EmbeddedResource Remove="Models\**" />
-    <None Remove="Models\**" />
-    <Page Remove="Models\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="translit-icon-sharp-corners.ico">
@@ -37,5 +37,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Transliterator.Core\Transliterator.Core.csproj" />
   </ItemGroup>
-
+	
 </Project>

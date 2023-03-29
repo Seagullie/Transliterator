@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="600"
+    Height="850"
     ExtendsContentIntoTitleBar="True"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
@@ -83,5 +83,4 @@
             </Border>
         </Grid>
     </Grid>
-
 </ui:UiWindow>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Transliterator.Core.Models;
@@ -43,6 +44,17 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string toggleTranslitShortcut;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ToggleOffSoundFileName))]
+    private string toggleOffSoundFilePath;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ToggleOnSoundFileName))]
+    private string toggleOnSoundFilePath;
+
+    public string ToggleOffSoundFileName { get => Path.GetFileName(ToggleOffSoundFilePath) ?? "<None>"; }
+    public string ToggleOnSoundFileName { get => Path.GetFileName(ToggleOnSoundFilePath) ?? "<None>"; }
+
     public event EventHandler OnRequestClose;
 
     public SettingsViewModel(SettingsService settingsService)
@@ -64,13 +76,6 @@ public partial class SettingsViewModel : ObservableObject
         IsToggleSoundOn = _settingsService.IsToggleSoundOn;
         IsTranslitEnabledAtStartup = _settingsService.IsTransliteratorEnabledAtStartup;
         ToggleHotKey = _settingsService.ToggleHotKey;
-    }
-
-    [RelayCommand]
-    private static void OpenEditToggleSoundsWindow()
-    {
-        EditToggleSoundsWindow editToggleSoundsWindow = new();
-        editToggleSoundsWindow.ShowDialog();
     }
 
     [RelayCommand]
@@ -110,9 +115,6 @@ public partial class SettingsViewModel : ObservableObject
     // TODO: not trigger on window init
     partial void OnIsBufferInputEnabledChanged(bool value)
     {
-        // TODO: Uncomment after migrating more things from old project
-        //liveTransliterator.displayCombos = value;
-
         // TODO: Add DebugService
         //if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
         //{
@@ -171,5 +173,57 @@ public partial class SettingsViewModel : ObservableObject
             ShowcaseText += charter;
             await Task.Delay(300);
         }
+    }
+
+    [RelayCommand]
+    private void ChangeToggleOffSound()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "Audio documents (.wav)|*.wav" // Filter files by extension
+        };
+
+        bool? result = dialog.ShowDialog();
+
+        if (result != null && result == true)
+        {
+            // Open document
+            string pathToFile = dialog.FileName;
+            ToggleOffSoundFilePath = pathToFile;
+            _settingsService.PathToCustomToggleOffSound = pathToFile;
+        }
+    }
+
+    [RelayCommand]
+    private void ChangeToggleOnSound()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "Audio documents (.wav)|*.wav" // Filter files by extension
+        };
+
+        bool? result = dialog.ShowDialog();
+
+        if (result != null && result == true)
+        {
+            // Open document
+            string pathToFile = dialog.FileName;
+            ToggleOnSoundFilePath = pathToFile;
+            _settingsService.PathToCustomToggleOnSound = pathToFile;
+        }
+    }
+
+    [RelayCommand]
+    private void DeleteToggleOffSound()
+    {
+        ToggleOffSoundFilePath = null;
+        _settingsService.PathToCustomToggleOffSound = null;
+    }
+
+    [RelayCommand]
+    private void DeleteToggleOnSound()
+    {
+        ToggleOnSoundFilePath = null;
+        _settingsService.PathToCustomToggleOnSound = null;
     }
 }

@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="SettingsPage"
-    d:DesignHeight="450"
+    d:DesignHeight="1015"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -17,7 +17,9 @@
         <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
     </Page.Resources>
 
-    <ScrollViewer Padding="20">
+    <!--  TODO: Replace Labels with TextBoxes  -->
+
+    <ScrollViewer Margin="0,0,0,0" Padding="20">
         <StackPanel>
 
             <StackPanel Margin="0,0,0,20">
@@ -31,10 +33,10 @@
             </StackPanel>
 
             <StackPanel Margin="0,0,0,20">
-                <TextBlock
+                <Label
                     Margin="0,0,0,10"
-                    FontSize="18"
-                    Text="General" />
+                    Content="General"
+                    FontSize="18" />
                 <CheckBox
                     HorizontalAlignment="Left"
                     Content="Start minimized"
@@ -64,10 +66,10 @@
             </StackPanel>
 
             <StackPanel Margin="0,0,0,20">
-                <TextBlock
+                <Label
                     Margin="0,0,0,10"
-                    FontSize="18"
-                    Text="Buffer characters while typing" />
+                    Content="Buffer characters while typing"
+                    FontSize="18" />
                 <DockPanel>
                     <StackPanel HorizontalAlignment="Left">
                         <RadioButton
@@ -99,77 +101,79 @@
             </StackPanel>
 
             <StackPanel Margin="0,0,0,20">
-                <TextBlock
+                <Label
                     Margin="0,0,0,10"
-                    FontSize="18"
-                    Text="Sound" />
+                    Content="Sound"
+                    FontSize="18" />
                 <CheckBox
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Content="Play sound on toggle"
                     IsChecked="{Binding IsToggleSoundOn}" />
 
-                <StackPanel>
-                    <Label HorizontalAlignment="Center" Content="Sound on toggle on:" />
+                <StackPanel Margin="0,15,0,0">
+                    <Label
+                        HorizontalAlignment="Left"
+                        Content="Sound on toggle on:"
+                        FontSize="14" />
 
                     <StackPanel
                         Height="Auto"
                         VerticalAlignment="Center"
-                        helpers:MarginSetter.LastItemMargin="10"
-                        helpers:MarginSetter.Margin="10"
-                        Orientation="Horizontal">
-                        <!--  TODO: Replace unicode icons with framework icons  -->
-                        <TextBox
-                            Width="200"
-                            IsEnabled="False"
-                            Text="{Binding ToggleOnSoundFileName, Mode=OneWay}"
-                            TextAlignment="Center"
-                            ToolTip="{Binding ToggleOnSoundFilePath}"
-                            ToolTipService.ShowOnDisabled="true" />
-                        <StackPanel
-                            helpers:MarginSetter.LastItemMargin="10"
-                            helpers:MarginSetter.Margin="10"
-                            Orientation="Horizontal">
-                            <Button
+                        helpers:MarginSetter.Margin="0, 5, 0, 5">
+
+                        <TextBlock>
+                            <ui:SymbolIcon FontSize="20" Symbol="Folder20" />
+
+                            <Label
+                                d:Content="path/to/custom/sound"
+                                Content="{Binding ToggleOnSoundFileName, Mode=OneWay}"
+                                ToolTip="{Binding ToggleOnSoundFilePath}"
+                                ToolTipService.ShowOnDisabled="true" />
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,0,5,0"
                                 Command="{Binding ChangeToggleOnSoundCommand}"
-                                Content="📁"
+                                Icon="Folder20"
                                 ToolTip="Set custom sound" />
-                            <Button
+                            <ui:Button
                                 Command="{Binding DeleteToggleOnSoundCommand}"
-                                Content="✕"
+                                Icon="Delete20"
                                 ToolTip="Clear custom sound" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
 
                 <StackPanel Margin="0,15,0,0">
-                    <Label HorizontalAlignment="Center" Content="Sound on toggle off:" />
+                    <Label
+                        HorizontalAlignment="Left"
+                        Content="Sound on toggle off:"
+                        FontSize="14" />
 
                     <StackPanel
                         Height="Auto"
                         VerticalAlignment="Center"
-                        helpers:MarginSetter.LastItemMargin="10"
-                        helpers:MarginSetter.Margin="10"
-                        Orientation="Horizontal">
-                        <TextBox
-                            Width="200"
-                            IsEnabled="False"
-                            Text="{Binding ToggleOffSoundFileName, Mode=OneWay}"
-                            TextAlignment="Center"
-                            ToolTip="{Binding ToggleOffSoundFilePath}"
-                            ToolTipService.ShowOnDisabled="true" />
-                        <StackPanel
-                            Margin="5,0,5,0"
-                            helpers:MarginSetter.LastItemMargin="10"
-                            helpers:MarginSetter.Margin="10"
-                            Orientation="Horizontal">
-                            <Button
+                        helpers:MarginSetter.Margin="0, 5, 0, 5">
+
+                        <TextBlock>
+                            <ui:SymbolIcon FontSize="20" Symbol="Folder20" />
+
+                            <Label
+                                d:Content="path/to/custom/sound"
+                                Content="{Binding ToggleOffSoundFileName, Mode=OneWay}"
+                                ToolTip="{Binding ToggleOffSoundFilePath}"
+                                ToolTipService.ShowOnDisabled="true" />
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,0,5,0"
                                 Command="{Binding ChangeToggleOffSoundCommand}"
-                                Content="📁"
+                                Icon="Folder20"
                                 ToolTip="Set custom sound" />
-                            <Button
+                            <ui:Button
                                 Command="{Binding DeleteToggleOffSoundCommand}"
-                                Content="✕"
+                                Icon="Delete20"
                                 ToolTip="Clear custom sound" />
                         </StackPanel>
                     </StackPanel>
@@ -177,10 +181,10 @@
             </StackPanel>
 
             <StackPanel Margin="0,0,0,20">
-                <TextBlock
+                <Label
                     Margin="0,0,0,10"
-                    FontSize="18"
-                    Text="Shortcuts" />
+                    Content="Shortcuts"
+                    FontSize="18" />
                 <DockPanel>
                     <Label VerticalAlignment="Center" Content="Toggle Transliterator:" />
                     <controls:HotKeyTextBox
@@ -196,15 +200,16 @@
                 </DockPanel>
             </StackPanel>
 
-            <StackPanel Margin="0,0,0,20">
-                <TextBlock
-                    Margin="0,0,0,10"
-                    FontSize="18"
-                    Text="Other" />
-                <Button
-                    Margin="0,0,0,15"
-                    Command="{Binding OpenTranslitTablesWindowCommand}"
-                    Content="Edit Tables" />
+            <Label
+                Margin="0,0,0,10"
+                Content="Other"
+                FontSize="18" />
+            <StackPanel
+                Margin="0,0,0,20"
+                helpers:MarginSetter.Margin="15"
+                Orientation="Horizontal">
+
+                <Button Command="{Binding OpenTranslitTablesWindowCommand}" Content="Edit Tables" />
                 <Button Command="{Binding OpenDebugWindowCommand}" Content="To Debug Panel" />
             </StackPanel>
         </StackPanel>

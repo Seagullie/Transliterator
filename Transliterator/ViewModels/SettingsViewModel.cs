@@ -52,6 +52,9 @@ public partial class SettingsViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(ToggleOnSoundFileName))]
     private string toggleOnSoundFilePath;
 
+    [ObservableProperty]
+    private Wpf.Ui.Appearance.ThemeType _currentTheme = Wpf.Ui.Appearance.ThemeType.Unknown;
+
     public string ToggleOffSoundFileName { get => Path.GetFileName(ToggleOffSoundFilePath) ?? "<None>"; }
     public string ToggleOnSoundFileName { get => Path.GetFileName(ToggleOnSoundFilePath) ?? "<None>"; }
 
@@ -76,6 +79,7 @@ public partial class SettingsViewModel : ObservableObject
         IsToggleSoundOn = _settingsService.IsToggleSoundOn;
         IsTranslitEnabledAtStartup = _settingsService.IsTransliteratorEnabledAtStartup;
         ToggleHotKey = _settingsService.ToggleHotKey;
+        CurrentTheme = _settingsService.SelectedTheme;
     }
 
     [RelayCommand]
@@ -225,5 +229,30 @@ public partial class SettingsViewModel : ObservableObject
     {
         ToggleOnSoundFilePath = null;
         _settingsService.PathToCustomToggleOnSound = null;
+    }
+
+    [RelayCommand]
+    private void OnChangeTheme(string parameter)
+    {
+        switch (parameter)
+        {
+            case "theme_light":
+                if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Light)
+                    break;
+
+                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
+                CurrentTheme = Wpf.Ui.Appearance.ThemeType.Light;
+
+                break;
+
+            default:
+                if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
+                    break;
+
+                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
+                CurrentTheme = Wpf.Ui.Appearance.ThemeType.Dark;
+
+                break;
+        }
     }
 }

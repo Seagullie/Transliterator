@@ -15,7 +15,7 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <Grid Background="PaleVioletRed">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />

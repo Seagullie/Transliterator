@@ -15,6 +15,7 @@
 
     <Page.Resources>
         <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <helpers:ThemeEnumToBooleanConverter x:Key="ThemeEnumToBooleanConverter" />
     </Page.Resources>
 
     <!--  TODO: Replace Labels with TextBoxes  -->
@@ -27,8 +28,20 @@
                     Margin="0,0,0,10"
                     Content="App theme"
                     FontSize="18" />
-                <RadioButton Content="Light" />
-                <RadioButton Content="Dark" />
+                <RadioButton
+                    Margin="0,12,0,0"
+                    Command="{Binding ChangeThemeCommand, Mode=OneWay}"
+                    CommandParameter="theme_light"
+                    Content="Light"
+                    GroupName="themeSelect"
+                    IsChecked="{Binding CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
+                <RadioButton
+                    Margin="0,8,0,0"
+                    Command="{Binding ChangeThemeCommand, Mode=OneWay}"
+                    CommandParameter="theme_dark"
+                    Content="Dark"
+                    GroupName="themeSelect"
+                    IsChecked="{Binding CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
                 <RadioButton Content="Use system settings" IsEnabled="False" />
             </StackPanel>
 

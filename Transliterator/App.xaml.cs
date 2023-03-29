@@ -38,7 +38,7 @@ public partial class App : Application
             services.AddSingleton<IPageService, PageService>();
 
             // Theme manipulation
-            //services.AddSingleton<IThemeService, ThemeService>();
+            services.AddSingleton<IThemeService, ThemeService>();
 
             // TaskBar manipulation
             //services.AddSingleton<ITaskBarService, TaskBarService>();

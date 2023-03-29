@@ -14,6 +14,7 @@ using Wpf.Ui.Appearance;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Interfaces;
+using Wpf.Ui.Mvvm.Contracts;
 
 namespace Transliterator.ViewModels;
 
@@ -53,7 +54,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<TransliterationTable>? transliterationTables;
 
-    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceContext transliteratorServiceContext)
+    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceContext transliteratorServiceContext, IThemeService themeService)
     {
         _settingsService = settingsService;
         _hotKeyService = hotKeyService;
@@ -71,7 +72,7 @@ public partial class MainViewModel : ObservableObject
         LoadTransliterationTables();
         AddTrayMenuItems();
 
-        //Theme.Apply(_settingsService.SelectedTheme, BackgroundType.Mica);
+        themeService.SetTheme(_settingsService.SelectedTheme);
 
         AppState = _transliteratorService!.TransliterationEnabled;
 

@@ -78,7 +78,7 @@ public partial class App : Application
 
             services.AddSingleton<SettingsService>();
             services.AddSingleton<IHotKeyService, HotKeyService>();
-            services.AddSingleton<TransliteratorServiceStrategy>();
+            services.AddSingleton<TransliteratorServiceContext>();
 
             // Service containing navigation, same as INavigationWindow... but without window
             services.AddSingleton<INavigationService, NavigationService>();

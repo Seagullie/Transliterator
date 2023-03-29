@@ -19,17 +19,16 @@ namespace Transliterator.ViewModels;
 
 public partial class MainViewModel : ObservableObject
 {
-    // Stores either buffered or unbuffered transliteration service
-    private ITransliteratorService _transliteratorService;
-
-    private readonly TransliteratorServiceStrategy _transliteratorServiceStrategy;
+    // _transliteratorService == _transliteratorServiceContext as ITransliteratorService
+    private readonly ITransliteratorService _transliteratorService;
+    private readonly TransliteratorServiceContext _transliteratorServiceContext;
     private readonly SettingsService _settingsService;
     private readonly IHotKeyService _hotKeyService;
 
     private SettingsWindow _settingsWindow;
     private TableViewWindow _tableViewWindow;
 
-    public string? ApplicationTitle => App.AppName + " (" + SelectedTransliterationTable.Name + ")";
+    public string? ApplicationTitle => $"{App.AppName} ({SelectedTransliterationTable?.Name})";
 
     [ObservableProperty]
     private bool _appState;
@@ -57,18 +56,17 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<TransliterationTable>? transliterationTables;
 
-    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceStrategy transliteratorServiceStrategy)
+    public MainViewModel(SettingsService settingsService, IHotKeyService hotKeyService, TransliteratorServiceContext transliteratorServiceContext)
     {
         _settingsService = settingsService;
         _hotKeyService = hotKeyService;
-        _transliteratorServiceStrategy = transliteratorServiceStrategy;
+        _transliteratorServiceContext = transliteratorServiceContext;
+        _transliteratorService = transliteratorServiceContext;
 
-        _transliteratorServiceStrategy.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
-        _transliteratorService = _transliteratorServiceStrategy.CurrentService;
+        _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
         _transliteratorService.TransliterationEnabled = _settingsService.IsTransliteratorEnabledAtStartup;
 
         _settingsService.SettingsSaved += OnSettingsSaved;
-        _transliteratorServiceStrategy.TransliteratorServiceChanged += OnTransliteratorServiceChanged;
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
         _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => ToggleAppState());
@@ -126,7 +124,7 @@ public partial class MainViewModel : ObservableObject
         ToggleAppStateShortcut = hotKey;
 
         _hotKeyService.RegisterHotKey(hotKey, () => ToggleAppState());
-        _transliteratorServiceStrategy.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
+        _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
     }
 
     [RelayCommand]
@@ -259,10 +257,5 @@ public partial class MainViewModel : ObservableObject
         _settingsService.LastSelectedTransliterationTable = SelectedTransliterationTable?.ToString() ?? "";
         _settingsService.SelectedTheme = Theme.GetAppTheme();
         _settingsService.Save();
-    }
-
-    private void OnTransliteratorServiceChanged(object? sender, TransliteratorServiceChangedEventArgs e)
-    {
-        _transliteratorService = e.NewService;
     }
 }

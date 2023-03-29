@@ -22,15 +22,9 @@ public partial class SnippetTransliteratorViewModel : ObservableObject, INavigat
     [ObservableProperty]
     private TransliterationTable transliterationTable;
 
-    public SnippetTransliteratorViewModel(TransliteratorServiceStrategy transliteratorServiceStrategy)
+    public SnippetTransliteratorViewModel(TransliteratorServiceContext transliteratorServiceStrategy)
     {
-        _transliteratorService = transliteratorServiceStrategy.CurrentService;
-        transliteratorServiceStrategy.TransliteratorServiceChanged += OnTransliteratorServiceChanged;
-    }
-
-    private void OnTransliteratorServiceChanged(object? sender, TransliteratorServiceChangedEventArgs e)
-    {
-        _transliteratorService = e.NewService;
+        _transliteratorService = transliteratorServiceStrategy;
     }
 
     partial void OnUserInputChanged(string value)

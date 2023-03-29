@@ -1,6 +1,8 @@
-﻿namespace Transliterator.Core.Services;
+﻿using Transliterator.Core.Models;
 
-public class TransliteratorServiceStrategy
+namespace Transliterator.Core.Services;
+
+public class TransliteratorServiceContext : ITransliteratorService
 {
     private readonly ITransliteratorService _bufferedTransliteratorService = new BufferedTransliteratorService();
     private readonly ITransliteratorService _unbufferedTransliteratorService = new UnbufferedTransliteratorService();
@@ -15,16 +17,25 @@ public class TransliteratorServiceStrategy
             {
                 useUnbufferedTransliteratorService = value;
                 UpdateCurrentService(value);
-                TransliteratorServiceChanged?.Invoke(this, new TransliteratorServiceChangedEventArgs(CurrentService));
             }
         }
     }
 
     public ITransliteratorService CurrentService { get; private set; }
 
-    public event EventHandler<TransliteratorServiceChangedEventArgs>? TransliteratorServiceChanged;
+    public bool TransliterationEnabled 
+    {
+        get => CurrentService.TransliterationEnabled;
+        set => CurrentService.TransliterationEnabled = value;
+    }
 
-    public TransliteratorServiceStrategy()
+    public TransliterationTable? TransliterationTable 
+    {
+        get => CurrentService.TransliterationTable;
+        set => CurrentService.TransliterationTable = value;
+    }
+
+    public TransliteratorServiceContext()
     {
         CurrentService = _bufferedTransliteratorService;
     }
@@ -35,12 +46,14 @@ public class TransliteratorServiceStrategy
         {
             _unbufferedTransliteratorService.TransliterationTable = CurrentService.TransliterationTable;
             _unbufferedTransliteratorService.TransliterationEnabled = CurrentService.TransliterationEnabled;
+            CurrentService.TransliterationEnabled = false;
             CurrentService = _unbufferedTransliteratorService;
         }
         else
         {
             _bufferedTransliteratorService.TransliterationTable = CurrentService.TransliterationTable;
             _bufferedTransliteratorService.TransliterationEnabled = CurrentService.TransliterationEnabled;
+            CurrentService.TransliterationEnabled = false;
             CurrentService = _bufferedTransliteratorService;
         }
     }

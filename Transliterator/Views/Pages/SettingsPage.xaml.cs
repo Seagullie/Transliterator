@@ -1,17 +1,18 @@
-﻿using Wpf.Ui.Common.Interfaces;
+﻿using Transliterator.ViewModels;
+using Wpf.Ui.Common.Interfaces;
 
 namespace Transliterator.Views.Pages;
 
-public partial class SettingsPage : INavigableView<ViewModels.SettingsViewModel>
+public partial class SettingsPage : INavigableView<SettingsViewModel>
 {
-    public ViewModels.SettingsViewModel ViewModel
-    {
-        get;
-    }
+    public SettingsViewModel ViewModel { get; }
 
-    public SettingsPage(ViewModels.SettingsViewModel viewModel)
+    public SettingsPage(SettingsViewModel viewModel)
     {
         ViewModel = viewModel;
+
+        //TODO: Remove DataContext;
+        DataContext = viewModel;
 
         InitializeComponent();
     }

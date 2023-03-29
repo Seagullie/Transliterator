@@ -23,11 +23,6 @@ public partial class MainWindow
         ViewModel.OpenSettingsWindowCommand.Execute(null);
     }
 
-    private void OpenSnippetPanel(object sender, System.Windows.RoutedEventArgs e)
-    {
-        ViewModel.OpenSnippetTransliteratorWindowCommand.Execute(null);
-    }
-
     private void Close(object sender, System.Windows.RoutedEventArgs e)
     {
         System.Windows.Application.Current.Shutdown();

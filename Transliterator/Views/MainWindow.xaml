@@ -73,7 +73,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
 
-                            <MenuItem Click="OpenSnippetPanel" Header="Snippet Panel">
+                            <MenuItem Header="Snippet Panel">
                                 <MenuItem.Icon>
                                     <ui:SymbolIcon Symbol="Translate20" />
                                 </MenuItem.Icon>

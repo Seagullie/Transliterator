@@ -27,7 +27,6 @@ public partial class MainViewModel : ObservableObject
     private readonly IHotKeyService _hotKeyService;
 
     private SettingsWindow _settingsWindow;
-    private SnippetTransliteratorWindow _snippetTransliteratorWindow;
     private TableViewWindow _tableViewWindow;
 
     public string? ApplicationTitle => App.AppName + " (" + SelectedTransliterationTable.Name + ")";
@@ -140,20 +139,6 @@ public partial class MainViewModel : ObservableObject
 
         _settingsWindow.Show();
         _settingsWindow.Focus();
-    }
-
-    [RelayCommand]
-    private void OpenSnippetTransliteratorWindow()
-    {
-        // TODO: Rewrite to NavigateToSnippetTransliteratePage
-        if (_snippetTransliteratorWindow == null || !_snippetTransliteratorWindow.IsLoaded)
-        {
-            _snippetTransliteratorWindow = new();
-            _snippetTransliteratorWindow.ViewModel.TransliterationTable = SelectedTransliterationTable;
-        }
-
-        _snippetTransliteratorWindow.Show();
-        _snippetTransliteratorWindow.Focus();
     }
 
     [RelayCommand]

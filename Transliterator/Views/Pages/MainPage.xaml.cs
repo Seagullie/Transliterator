@@ -1,22 +1,19 @@
-﻿using Wpf.Ui.Common.Interfaces;
+﻿using Transliterator.ViewModels;
+using Wpf.Ui.Common.Interfaces;
 
-namespace Transliterator.Views.Pages
+namespace Transliterator.Views.Pages;
+
+public partial class MainPage : INavigableView<MainPageViewModel>
 {
-    /// <summary>
-    /// Interaction logic for MainPage.xaml
-    /// </summary>
-    public partial class MainPage : INavigableView<ViewModels.MainPageViewModel>
+    public MainPageViewModel ViewModel { get; }
+
+    public MainPage(MainPageViewModel viewModel)
     {
-        public ViewModels.MainPageViewModel ViewModel
-        {
-            get;
-        }
+        ViewModel = viewModel;
 
-        public MainPage(ViewModels.MainPageViewModel viewModel)
-        {
-            ViewModel = viewModel;
+        //TODO: Remove DataContext;
+        DataContext = viewModel;
 
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -27,6 +27,7 @@
 
         <ui:NavigationCompact
             x:Name="RootNavigation"
+            Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="0"
             Footer="{Binding ViewModel.NavigationFooter, Mode=TwoWay}"
@@ -38,7 +39,7 @@
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="40,0,0,0"
+            Icon="pack://application:,,,/Resources/Icons/translit-icon-sharp-corners.png"
             MinimizeToTray="True">
             <ui:TitleBar.Tray>
                 <ui:NotifyIcon
@@ -53,7 +54,7 @@
             <ui:TitleBar.Header>
                 <DockPanel>
                     <ui:ToggleSwitch
-                        Margin="100,0,0,0"
+                        Margin="120,0,0,0"
                         DockPanel.Dock="Left"
                         IsChecked="{Binding ViewModel.AppState, Mode=TwoWay}"
                         ToolTip="{Binding ViewModel.ToggleAppStateShortcut, Mode=OneWay}" />

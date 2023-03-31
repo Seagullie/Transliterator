@@ -11,9 +11,7 @@ public partial class SnippetPanel : Page, INavigableView<SnippetTransliteratorVi
     public SnippetPanel(SnippetTransliteratorViewModel viewModel)
     {
         ViewModel = viewModel;
-
-        //TODO: Remove DataContext;
-        DataContext = viewModel;
+        DataContext = this;
 
         InitializeComponent();
     }

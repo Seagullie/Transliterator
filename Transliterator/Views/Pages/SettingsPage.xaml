@@ -30,18 +30,18 @@
                     FontSize="18" />
                 <RadioButton
                     Margin="0,12,0,0"
-                    Command="{Binding ChangeThemeCommand, Mode=OneWay}"
+                    Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
                     CommandParameter="theme_light"
                     Content="Light"
                     GroupName="themeSelect"
-                    IsChecked="{Binding CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
+                    IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
                 <RadioButton
                     Margin="0,8,0,0"
-                    Command="{Binding ChangeThemeCommand, Mode=OneWay}"
+                    Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
                     CommandParameter="theme_dark"
                     Content="Dark"
                     GroupName="themeSelect"
-                    IsChecked="{Binding CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
+                    IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
                 <RadioButton Content="Use system settings" IsEnabled="False" />
             </StackPanel>
 
@@ -53,26 +53,26 @@
                 <CheckBox
                     HorizontalAlignment="Left"
                     Content="Start minimized"
-                    IsChecked="{Binding IsMinimizedStartEnabled}"
+                    IsChecked="{Binding ViewModel.IsMinimizedStartEnabled}"
                     ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
                 <CheckBox
                     HorizontalAlignment="Left"
                     Content="Turn on translit at startup"
-                    IsChecked="{Binding IsTranslitEnabledAtStartup}" />
+                    IsChecked="{Binding ViewModel.IsTranslitEnabledAtStartup}" />
                 <CheckBox
                     Content="Enable State Overlay"
-                    IsChecked="{Binding IsStateOverlayEnabled}"
+                    IsChecked="{Binding ViewModel.IsStateOverlayEnabled}"
                     IsEnabled="False"
                     ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
                 <CheckBox
                     HorizontalAlignment="Left"
                     Content="Run at system startup"
-                    IsChecked="{Binding IsAutoStartEnabled}"
+                    IsChecked="{Binding ViewModel.IsAutoStartEnabled}"
                     ToolTipService.ShowOnDisabled="True" />
                 <CheckBox
                     HorizontalAlignment="Left"
                     Content="Disable Alt + Shift Global Shortcut"
-                    IsChecked="{Binding IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
+                    IsChecked="{Binding ViewModel.IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
                     IsEnabled="False"
                     ToolTip="This setting stops working once the program is closed."
                     ToolTipService.ShowOnDisabled="True" />
@@ -90,14 +90,14 @@
                             VerticalAlignment="Top"
                             AutomationProperties.AutomationId="displayRadioBtn"
                             Content="Display"
-                            IsChecked="{Binding IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
+                            IsChecked="{Binding ViewModel.IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
 
                         <RadioButton
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             AutomationProperties.AutomationId="waitForComboRadioBtn"
                             Content="Buffer"
-                            IsChecked="{Binding IsBufferInputEnabled}"
+                            IsChecked="{Binding ViewModel.IsBufferInputEnabled}"
                             ToolTip="Select this mode if you experience buggy or incorrect transliteration." />
                     </StackPanel>
                     <ui:TextBox
@@ -109,7 +109,7 @@
                         BorderThickness="1"
                         IsReadOnly="True"
                         PlaceholderText="Demo Text Area"
-                        Text="{Binding ShowcaseText}" />
+                        Text="{Binding ViewModel.ShowcaseText}" />
                 </DockPanel>
             </StackPanel>
 
@@ -122,7 +122,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Content="Play sound on toggle"
-                    IsChecked="{Binding IsToggleSoundOn}" />
+                    IsChecked="{Binding ViewModel.IsToggleSoundOn}" />
 
                 <StackPanel Margin="0,15,0,0">
                     <Label
@@ -140,18 +140,18 @@
 
                             <Label
                                 d:Content="path/to/custom/sound"
-                                Content="{Binding ToggleOnSoundFileName, Mode=OneWay}"
-                                ToolTip="{Binding ToggleOnSoundFilePath}"
+                                Content="{Binding ViewModel.ToggleOnSoundFileName, Mode=OneWay}"
+                                ToolTip="{Binding ViewModel.ToggleOnSoundFilePath}"
                                 ToolTipService.ShowOnDisabled="true" />
                         </TextBlock>
                         <StackPanel Orientation="Horizontal">
                             <ui:Button
                                 Margin="0,0,5,0"
-                                Command="{Binding ChangeToggleOnSoundCommand}"
+                                Command="{Binding ViewModel.ChangeToggleOnSoundCommand}"
                                 Icon="Folder20"
                                 ToolTip="Set custom sound" />
                             <ui:Button
-                                Command="{Binding DeleteToggleOnSoundCommand}"
+                                Command="{Binding ViewModel.DeleteToggleOnSoundCommand}"
                                 Icon="Delete20"
                                 ToolTip="Clear custom sound" />
                         </StackPanel>
@@ -174,18 +174,18 @@
 
                             <Label
                                 d:Content="path/to/custom/sound"
-                                Content="{Binding ToggleOffSoundFileName, Mode=OneWay}"
-                                ToolTip="{Binding ToggleOffSoundFilePath}"
+                                Content="{Binding ViewModel.ToggleOffSoundFileName, Mode=OneWay}"
+                                ToolTip="{Binding ViewModel.ToggleOffSoundFilePath}"
                                 ToolTipService.ShowOnDisabled="true" />
                         </TextBlock>
                         <StackPanel Orientation="Horizontal">
                             <ui:Button
                                 Margin="0,0,5,0"
-                                Command="{Binding ChangeToggleOffSoundCommand}"
+                                Command="{Binding ViewModel.ChangeToggleOffSoundCommand}"
                                 Icon="Folder20"
                                 ToolTip="Set custom sound" />
                             <ui:Button
-                                Command="{Binding DeleteToggleOffSoundCommand}"
+                                Command="{Binding ViewModel.DeleteToggleOffSoundCommand}"
                                 Icon="Delete20"
                                 ToolTip="Clear custom sound" />
                         </StackPanel>
@@ -207,7 +207,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
-                        HotKey="{Binding ToggleHotKey}"
+                        HotKey="{Binding ViewModel.ToggleHotKey}"
                         Style="{DynamicResource DefaultTextBoxStyle}"
                         TextAlignment="Center" />
                 </DockPanel>
@@ -222,8 +222,8 @@
                 helpers:MarginSetter.Margin="15"
                 Orientation="Horizontal">
 
-                <Button Command="{Binding OpenTranslitTablesWindowCommand}" Content="Edit Tables" />
-                <Button Command="{Binding OpenDebugWindowCommand}" Content="To Debug Panel" />
+                <Button Command="{Binding ViewModel.OpenTranslitTablesWindowCommand}" Content="Edit Tables" />
+                <Button Command="{Binding ViewModel.OpenDebugWindowCommand}" Content="To Debug Panel" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

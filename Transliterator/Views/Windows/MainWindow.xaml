@@ -8,7 +8,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="MainWindow"
     Width="600"
-    Height="850"
+    Height="700"
     ExtendsContentIntoTitleBar="True"
     WindowBackdropType="Mica"
     WindowCornerPreference="Round"
@@ -38,7 +38,8 @@
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="42,0,0,0">
+            Margin="40,0,0,0"
+            MinimizeToTray="True">
             <ui:TitleBar.Tray>
                 <ui:NotifyIcon
                     FocusOnLeftClick="True"
@@ -49,23 +50,30 @@
                     </ui:NotifyIcon.Menu>
                 </ui:NotifyIcon>
             </ui:TitleBar.Tray>
+            <ui:TitleBar.Header>
+                <DockPanel>
+                    <ui:ToggleSwitch
+                        Margin="100,0,0,0"
+                        DockPanel.Dock="Left"
+                        IsChecked="{Binding ViewModel.AppState, Mode=TwoWay}"
+                        ToolTip="{Binding ViewModel.ToggleAppStateShortcut, Mode=OneWay}" />
+                    <ComboBox
+                        MaxWidth="120"
+                        DisplayMemberPath="Name"
+                        DockPanel.Dock="Right"
+                        ItemsSource="{Binding ViewModel.TransliterationTables}"
+                        SelectedItem="{Binding ViewModel.SelectedTransliterationTable}"
+                        ToolTip="{Binding ViewModel.SelectedTransliterationTable.Name}"
+                        ToolTipService.InitialShowDelay="0" />
+                </DockPanel>
+            </ui:TitleBar.Header>
         </ui:TitleBar>
 
-        <ComboBox
-            Grid.Column="1"
-            MaxWidth="120"
-            HorizontalAlignment="Stretch"
-            DisplayMemberPath="Name"
-            ItemsSource="{Binding ViewModel.TransliterationTables}"
-            SelectedItem="{Binding ViewModel.SelectedTransliterationTable}"
-            ToolTip="{Binding ViewModel.SelectedTransliterationTable.Name}"
-            ToolTipService.InitialShowDelay="0" />
+
+
 
         <Grid Grid.Row="2" Grid.Column="1">
-            <Border
-                Margin="0,46,0,0"
-                Background="{DynamicResource ControlFillColorDefaultBrush}"
-                CornerRadius="8,0,0,0">
+            <Border Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8,0,0,0">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

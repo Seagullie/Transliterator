@@ -115,8 +115,8 @@ public partial class DebugViewModel : ObservableObject
     [RelayCommand]
     private void OpenSettingsWindow()
     {
-        SettingsWindow settingsWindow = new();
-        settingsWindow.Show();
+        //SettingsWindow settingsWindow = new();
+        //settingsWindow.Show();
     }
 
     // TODO: Uncomment after migrating more things from old project

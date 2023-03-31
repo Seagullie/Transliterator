@@ -39,7 +39,7 @@
             Grid.Row="1"
             Margin="0"
             Padding="0"
-            ItemsSource="{Binding SelectedTransliterationTable, Mode=OneWay}"
+            ItemsSource="{Binding ViewModel.SelectedTransliterationTable, Mode=OneWay}"
             ScrollViewer.CanContentScroll="True">
             <ListView.ItemTemplate>
                 <DataTemplate>

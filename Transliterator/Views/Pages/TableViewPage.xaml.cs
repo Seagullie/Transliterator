@@ -11,9 +11,7 @@ public partial class TableViewPage : Page, INavigableView<TableViewModel>
     public TableViewPage(TableViewModel viewModel)
     {
         ViewModel = viewModel;
-
-        //TODO: Remove DataContext;
-        DataContext = viewModel;
+        DataContext = this;
 
         InitializeComponent();
     }

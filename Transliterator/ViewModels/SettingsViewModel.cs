@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Transliterator.Core.Models;
 using Transliterator.Services;
 using Transliterator.Views;
+using Wpf.Ui.Appearance;
 
 namespace Transliterator.ViewModels;
 
@@ -237,20 +238,22 @@ public partial class SettingsViewModel : ObservableObject
         switch (parameter)
         {
             case "theme_light":
-                if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Light)
+                if (CurrentTheme == ThemeType.Light)
                     break;
 
-                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Light);
-                CurrentTheme = Wpf.Ui.Appearance.ThemeType.Light;
+                Theme.Apply(ThemeType.Light);
+                CurrentTheme = ThemeType.Light;
+                _settingsService.SelectedTheme = ThemeType.Light;
 
                 break;
 
             default:
-                if (CurrentTheme == Wpf.Ui.Appearance.ThemeType.Dark)
+                if (CurrentTheme == ThemeType.Dark)
                     break;
 
-                Wpf.Ui.Appearance.Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
-                CurrentTheme = Wpf.Ui.Appearance.ThemeType.Dark;
+                Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
+                CurrentTheme = ThemeType.Dark;
+                _settingsService.SelectedTheme = ThemeType.Dark;
 
                 break;
         }

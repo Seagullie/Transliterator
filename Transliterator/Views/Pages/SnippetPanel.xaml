@@ -25,7 +25,7 @@
             <ui:TextBox
                 VerticalAlignment="Stretch"
                 PlaceholderText="Type/Paste your text here..."
-                Text="{Binding UserInput, UpdateSourceTrigger=PropertyChanged}"
+                Text="{Binding ViewModel.UserInput, UpdateSourceTrigger=PropertyChanged}"
                 TextWrapping="Wrap" />
         </DockPanel>
         <StackPanel
@@ -35,19 +35,19 @@
             <Button
                 Margin="15,0,15,0"
                 VerticalAlignment="Center"
-                Command="{Binding TransliterateSnippetCommand}"
+                Command="{Binding ViewModel.TransliterateSnippetCommand}"
                 Content="Transliterate" />
             <CheckBox
                 Margin="15,0,15,0"
                 Content="On The Fly"
-                IsChecked="{Binding ShouldTransliterateOnTheFly}" />
+                IsChecked="{Binding ViewModel.ShouldTransliterateOnTheFly}" />
         </StackPanel>
         <DockPanel Grid.Row="2">
             <ui:TextBox
                 VerticalAlignment="Stretch"
                 IsReadOnly="True"
                 PlaceholderText="...and the results will appear here"
-                Text="{Binding TransliterationResults}"
+                Text="{Binding ViewModel.TransliterationResults}"
                 TextWrapping="Wrap" />
         </DockPanel>
     </Grid>

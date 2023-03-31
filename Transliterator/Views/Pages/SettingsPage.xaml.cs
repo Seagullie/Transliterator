@@ -11,9 +11,7 @@ public partial class SettingsPage : Page, INavigableView<SettingsViewModel>
     public SettingsPage(SettingsViewModel viewModel)
     {
         ViewModel = viewModel;
-
-        //TODO: Remove DataContext;
-        DataContext = viewModel;
+        DataContext = this;
 
         InitializeComponent();
     }

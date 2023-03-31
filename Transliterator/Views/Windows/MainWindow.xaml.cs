@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using Transliterator.ViewModels;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
 
@@ -8,20 +9,17 @@ namespace Transliterator.Views.Windows;
 
 public partial class MainWindow : INavigationWindow
 {
-    public ViewModels.MainViewModel ViewModel
-    {
-        get;
-    }
+    public MainWindowViewModel ViewModel { get; }
 
-    public MainWindow(ViewModels.MainViewModel viewModel, IPageService pageService, INavigationService navigationService)
+    public MainWindow(MainWindowViewModel viewModel, IPageService pageService, INavigationService navigationService)
     {
         ViewModel = viewModel;
         DataContext = this;
 
         InitializeComponent();
         SetPageService(pageService);
-
         navigationService.SetNavigationControl(RootNavigation);
+        ViewModel.InitializeTheme();
     }
 
     #region INavigationWindow methods
@@ -46,12 +44,11 @@ public partial class MainWindow : INavigationWindow
 
     #endregion INavigationWindow methods
 
-    /// <summary>
-    /// Raises the closed event.
-    /// </summary>
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
+
+        ViewModel.SaveSettings();
 
         // Make sure that closing this window will begin the process of closing the application.
         Application.Current.Shutdown();

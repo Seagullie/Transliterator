@@ -52,14 +52,13 @@ public partial class App : Application
 
             // Main window with navigation
             services.AddScoped<INavigationWindow, Views.Windows.MainWindow>();
-            services.AddScoped<ViewModels.MainViewModel>();
+            services.AddScoped<ViewModels.MainWindowViewModel>();
 
             // Views and ViewModels
             services.AddScoped<Views.Pages.SnippetPanel>();
             services.AddScoped<ViewModels.SnippetTransliteratorViewModel>();
             services.AddScoped<Views.Pages.TableViewPage>();
             services.AddScoped<ViewModels.TableViewModel>();
-            services.AddScoped<ViewModels.MainPageViewModel>();
             services.AddScoped<Views.Pages.SettingsPage>();
             services.AddScoped<ViewModels.SettingsViewModel>();
 

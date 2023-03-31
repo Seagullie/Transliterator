@@ -8,7 +8,6 @@ using System.Windows;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 using Transliterator.Services;
-using Wpf.Ui.Appearance;
 using Wpf.Ui.Common;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Interfaces;
@@ -18,6 +17,9 @@ namespace Transliterator.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
+    private const string pathToTables = "Resources/TranslitTables";
+    private const string pathToSounds = "Resources/Sounds";
+
     private readonly IHotKeyService _hotKeyService;
     private readonly SettingsService _settingsService;
     private readonly ITransliteratorService _transliteratorService;
@@ -109,7 +111,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void PlayToggleSound()
     {
-        string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Resources/Audio/{(_transliteratorService.TransliterationEnabled == true ? "cont" : "pause")}.wav");
+        string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{pathToSounds}/{(_transliteratorService.TransliterationEnabled == true ? "cont" : "pause")}.wav");
 
         if (_transliteratorService.TransliterationEnabled == true && !string.IsNullOrEmpty(_settingsService.PathToCustomToggleOnSound))
             pathToSoundToPlay = _settingsService.PathToCustomToggleOnSound;
@@ -127,7 +129,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void LoadTransliterationTables()
     {
-        string pathToTables = BufferedTransliteratorService.StandardTransliterationTablesPath;
         var tableNames = FileService.GetFileNamesWithoutExtension(pathToTables);
 
         TransliterationTables = new();

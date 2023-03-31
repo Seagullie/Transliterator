@@ -5,7 +5,6 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<UseWindowsForms>true</UseWindowsForms>
 	<ApplicationIcon>Resources\Icons\translit-icon-sharp-corners.ico</ApplicationIcon>
   </PropertyGroup>
 

@@ -22,6 +22,9 @@ public partial class SnippetTransliteratorViewModel : ObservableObject, INavigat
     [ObservableProperty]
     private TransliterationTable transliterationTable;
 
+    [ObservableProperty]
+    private bool _isTextBoxFocused;
+
     public SnippetTransliteratorViewModel(TransliteratorServiceContext transliteratorServiceStrategy)
     {
         _transliteratorService = transliteratorServiceStrategy;
@@ -56,5 +59,10 @@ public partial class SnippetTransliteratorViewModel : ObservableObject, INavigat
     public void OnNavigatedFrom()
     {
         _transliteratorService.TransliterationEnabled = true;
+    }
+
+    partial void OnIsTextBoxFocusedChanged(bool value)
+    {
+        _transliteratorService.TransliterationEnabled = !value;
     }
 }

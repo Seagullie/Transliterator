@@ -21,13 +21,14 @@
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0">
-            <ui:TextBox
-                VerticalAlignment="Stretch"
-                PlaceholderText="Type/Paste your text here..."
-                Text="{Binding ViewModel.UserInput, UpdateSourceTrigger=PropertyChanged}"
-                TextWrapping="Wrap" />
-        </DockPanel>
+        <ui:TextBox
+            Grid.Row="0"
+            VerticalAlignment="Stretch"
+            IsKeyboardFocusedChanged="TextBox_IsKeyboardFocusedChanged"
+            PlaceholderText="Type/Paste your text here..."
+            Text="{Binding ViewModel.UserInput, UpdateSourceTrigger=PropertyChanged}"
+            TextWrapping="Wrap" />
+
         <StackPanel
             Grid.Row="1"
             HorizontalAlignment="Center"
@@ -42,13 +43,13 @@
                 Content="On The Fly"
                 IsChecked="{Binding ViewModel.ShouldTransliterateOnTheFly}" />
         </StackPanel>
-        <DockPanel Grid.Row="2">
-            <ui:TextBox
-                VerticalAlignment="Stretch"
-                IsReadOnly="True"
-                PlaceholderText="...and the results will appear here"
-                Text="{Binding ViewModel.TransliterationResults}"
-                TextWrapping="Wrap" />
-        </DockPanel>
+
+        <ui:TextBox
+            Grid.Row="2"
+            VerticalAlignment="Stretch"
+            IsReadOnly="True"
+            PlaceholderText="...and the results will appear here"
+            Text="{Binding ViewModel.TransliterationResults}"
+            TextWrapping="Wrap" />
     </Grid>
 </Page>

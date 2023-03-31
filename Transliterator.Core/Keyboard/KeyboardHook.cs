@@ -104,7 +104,7 @@ internal sealed class KeyboardHook : IKeyboardHook, IDisposable
         }
         else
         {
-            character = keyboardLowLevelHookStruct.VirtualKeyCode.ToUnicode();
+           character = keyboardLowLevelHookStruct.VirtualKeyCode.ToUnicode();
         }
 
         // Check the key to find if there any modifiers, store these in the global values.
@@ -160,7 +160,7 @@ internal sealed class KeyboardHook : IKeyboardHook, IDisposable
 
         var keyEventArgs = new KeyboardHookEventArgs
         {
-            Character = _capsLock || _leftShift || _rightShift ? char.ToUpper(character) : character,
+            Character = _capsLock || _leftShift || _rightShift ? char.ToUpper(character) : char.ToLower(character),
             Flags = keyboardLowLevelHookStruct.Flags,
             IsCapsLockActive = _capsLock,
             IsKeyDown = isKeyDown,

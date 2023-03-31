@@ -15,4 +15,9 @@ public partial class SnippetPanel : Page, INavigableView<SnippetTransliteratorVi
 
         InitializeComponent();
     }
+
+    private void TextBox_IsKeyboardFocusedChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+    {
+        ViewModel.IsTextBoxFocused = (bool)e.NewValue;
+    }
 }

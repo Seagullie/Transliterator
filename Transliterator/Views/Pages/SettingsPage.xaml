@@ -20,7 +20,10 @@
 
     <!--  TODO: Replace Labels with TextBoxes  -->
 
-    <ScrollViewer Margin="0,0,0,0" Padding="20">
+    <ui:DynamicScrollViewer
+        Margin="0,0,0,0"
+        Padding="20"
+        IsTabStop="False">
         <StackPanel>
 
             <StackPanel Margin="0,0,0,20">
@@ -226,5 +229,5 @@
                 <Button Command="{Binding ViewModel.OpenDebugWindowCommand}" Content="To Debug Panel" />
             </StackPanel>
         </StackPanel>
-    </ScrollViewer>
+    </ui:DynamicScrollViewer>
 </Page>

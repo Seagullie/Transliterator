@@ -116,85 +116,96 @@
                 </DockPanel>
             </StackPanel>
 
-            <StackPanel Margin="0,0,0,20">
-                <Label
-                    Margin="0,0,0,10"
-                    Content="Sound"
-                    FontSize="18" />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Content="Play sound on toggle"
-                    IsChecked="{Binding ViewModel.IsToggleSoundOn}" />
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="Play sound on toggle" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Active" />
+                        <ui:ToggleSwitch
+                            Grid.Column="2"
+                            Margin="0,0,10,0"
+                            IsChecked="{Binding ViewModel.IsToggleSoundOn}" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Custom sound on toggle off:" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontStyle="Italic"
+                            Text="{Binding ViewModel.ToggleOnSoundFileName, Mode=OneWay}"
+                            ToolTip="{Binding ViewModel.ToggleOnSoundFilePath}" />
+                        <ui:Button
+                            Grid.Column="2"
+                            Margin="0,0,5,0"
+                            Command="{Binding ViewModel.ChangeToggleOnSoundCommand}"
+                            Content="Open"
+                            Icon="Folder24"
+                            ToolTip="Set custom sound" />
+                        <ui:Button
+                            Grid.Column="3"
+                            Command="{Binding ViewModel.DeleteToggleOnSoundCommand}"
+                            Icon="Delete24"
+                            ToolTip="Clear custom sound" />
 
-                <StackPanel Margin="0,15,0,0">
-                    <Label
-                        HorizontalAlignment="Left"
-                        Content="Sound on toggle on:"
-                        FontSize="14" />
-
-                    <StackPanel
-                        Height="Auto"
-                        VerticalAlignment="Center"
-                        helpers:MarginSetter.Margin="0, 5, 0, 5">
-
-                        <TextBlock>
-                            <ui:SymbolIcon FontSize="20" Symbol="Folder20" />
-
-                            <Label
-                                d:Content="path/to/custom/sound"
-                                Content="{Binding ViewModel.ToggleOnSoundFileName, Mode=OneWay}"
-                                ToolTip="{Binding ViewModel.ToggleOnSoundFilePath}"
-                                ToolTipService.ShowOnDisabled="true" />
-                        </TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <ui:Button
-                                Margin="0,0,5,0"
-                                Command="{Binding ViewModel.ChangeToggleOnSoundCommand}"
-                                Icon="Folder20"
-                                ToolTip="Set custom sound" />
-                            <ui:Button
-                                Command="{Binding ViewModel.DeleteToggleOnSoundCommand}"
-                                Icon="Delete20"
-                                ToolTip="Clear custom sound" />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Margin="0,15,0,0">
-                    <Label
-                        HorizontalAlignment="Left"
-                        Content="Sound on toggle off:"
-                        FontSize="14" />
-
-                    <StackPanel
-                        Height="Auto"
-                        VerticalAlignment="Center"
-                        helpers:MarginSetter.Margin="0, 5, 0, 5">
-
-                        <TextBlock>
-                            <ui:SymbolIcon FontSize="20" Symbol="Folder20" />
-
-                            <Label
-                                d:Content="path/to/custom/sound"
-                                Content="{Binding ViewModel.ToggleOffSoundFileName, Mode=OneWay}"
-                                ToolTip="{Binding ViewModel.ToggleOffSoundFilePath}"
-                                ToolTipService.ShowOnDisabled="true" />
-                        </TextBlock>
-                        <StackPanel Orientation="Horizontal">
-                            <ui:Button
-                                Margin="0,0,5,0"
-                                Command="{Binding ViewModel.ChangeToggleOffSoundCommand}"
-                                Icon="Folder20"
-                                ToolTip="Set custom sound" />
-                            <ui:Button
-                                Command="{Binding ViewModel.DeleteToggleOffSoundCommand}"
-                                Icon="Delete20"
-                                ToolTip="Clear custom sound" />
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Custom sound on toggle off:" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontStyle="Italic"
+                            Text="{Binding ViewModel.ToggleOffSoundFileName, Mode=OneWay}"
+                            ToolTip="{Binding ViewModel.ToggleOffSoundFilePath}" />
+                        <ui:Button
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Margin="0,0,5,0"
+                            Command="{Binding ViewModel.ChangeToggleOffSoundCommand}"
+                            Content="Open"
+                            Icon="Folder24"
+                            ToolTip="Set custom sound" />
+                        <ui:Button
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Command="{Binding ViewModel.DeleteToggleOffSoundCommand}"
+                            Icon="Delete24"
+                            ToolTip="Clear custom sound" />
+                    </Grid>
+                </Expander.Content>
+            </Expander>
 
             <StackPanel Margin="0,0,0,20">
                 <Label

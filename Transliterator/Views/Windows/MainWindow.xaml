@@ -58,14 +58,7 @@
                         DockPanel.Dock="Left"
                         IsChecked="{Binding ViewModel.AppState, Mode=TwoWay}"
                         ToolTip="{Binding ViewModel.ToggleAppStateShortcut, Mode=OneWay}" />
-                    <ComboBox
-                        MaxWidth="120"
-                        DisplayMemberPath="Name"
-                        DockPanel.Dock="Right"
-                        ItemsSource="{Binding ViewModel.TransliterationTables}"
-                        SelectedItem="{Binding ViewModel.SelectedTransliterationTable}"
-                        ToolTip="{Binding ViewModel.SelectedTransliterationTable.Name}"
-                        ToolTipService.InitialShowDelay="0" />
+
                 </DockPanel>
             </ui:TitleBar.Header>
         </ui:TitleBar>
@@ -80,14 +73,32 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Frame x:Name="RootFrame" Grid.Row="1" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                     <ui:Breadcrumb
-                        Grid.Row="0"
                         Margin="20,10"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         FontSize="28"
                         Navigation="{Binding ElementName=RootNavigation, Mode=OneWay}" />
+                    <ComboBox
+                        Grid.Column="1"
+                        MinWidth="150"
+                        MaxWidth="150"
+                        Margin="15"
+                        HorizontalAlignment="Right"
+                        DisplayMemberPath="Name"
+                        DockPanel.Dock="Right"
+                        ItemsSource="{Binding ViewModel.TransliterationTables}"
+                        SelectedItem="{Binding ViewModel.SelectedTransliterationTable}"
+                        ToolTip="{Binding ViewModel.SelectedTransliterationTable.Name}"
+                        ToolTipService.InitialShowDelay="0" />
+                    <Frame
+                        x:Name="RootFrame"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2" />
                 </Grid>
             </Border>
         </Grid>

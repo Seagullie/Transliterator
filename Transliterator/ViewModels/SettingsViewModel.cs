@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Transliterator.Core.Models;
 using Transliterator.Services;
-using Transliterator.Views;
+using Transliterator.Views.Windows;
 using Wpf.Ui.Appearance;
 
 namespace Transliterator.ViewModels;

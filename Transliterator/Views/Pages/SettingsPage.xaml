@@ -48,99 +48,144 @@
                 <RadioButton Content="Use system settings" IsEnabled="False" />
             </StackPanel>
 
-            <StackPanel Margin="0,0,0,20">
-                <Label
-                    Margin="0,0,0,10"
-                    Content="General"
-                    FontSize="18" />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Start minimized"
-                    IsChecked="{Binding ViewModel.IsMinimizedStartEnabled}"
-                    ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Turn on translit at startup"
-                    IsChecked="{Binding ViewModel.IsTranslitEnabledAtStartup}" />
-                <CheckBox
-                    Content="Enable State Overlay"
-                    IsChecked="{Binding ViewModel.IsStateOverlayEnabled}"
-                    IsEnabled="False"
-                    ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Run at system startup"
-                    IsChecked="{Binding ViewModel.IsAutoStartEnabled}"
-                    ToolTipService.ShowOnDisabled="True" />
-                <CheckBox
-                    HorizontalAlignment="Left"
-                    Content="Disable Alt + Shift Global Shortcut"
-                    IsChecked="{Binding ViewModel.IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
-                    IsEnabled="False"
-                    ToolTip="This setting stops working once the program is closed."
-                    ToolTipService.ShowOnDisabled="True" />
-            </StackPanel>
-
-            <StackPanel Margin="0,0,0,20">
-                <Label
-                    Margin="0,0,0,10"
-                    Content="Buffer characters while typing"
-                    FontSize="18" />
-                <DockPanel>
-                    <StackPanel HorizontalAlignment="Left">
-                        <RadioButton
+            <Expander Margin="0,0,0,20" IsExpanded="True">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Settings24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="General" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Margin="20,0,0,0">
+                        <CheckBox
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            AutomationProperties.AutomationId="displayRadioBtn"
-                            Content="Display"
-                            IsChecked="{Binding ViewModel.IsBufferInputEnabled, Converter={StaticResource InvertBoolConverter}}" />
-
-                        <RadioButton
+                            Content="Start minimized"
+                            IsChecked="{Binding ViewModel.IsMinimizedStartEnabled}"
+                            ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
+                        <CheckBox
                             HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            AutomationProperties.AutomationId="waitForComboRadioBtn"
-                            Content="Buffer"
-                            IsChecked="{Binding ViewModel.IsBufferInputEnabled}"
-                            ToolTip="Select this mode if you experience buggy or incorrect transliteration." />
+                            Content="Turn on translit at startup"
+                            IsChecked="{Binding ViewModel.IsTranslitEnabledAtStartup}" />
+                        <CheckBox
+                            Content="Enable State Overlay"
+                            IsChecked="{Binding ViewModel.IsStateOverlayEnabled}"
+                            IsEnabled="False"
+                            ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
+                        <CheckBox
+                            HorizontalAlignment="Left"
+                            Content="Run at system startup"
+                            IsChecked="{Binding ViewModel.IsAutoStartEnabled}"
+                            ToolTipService.ShowOnDisabled="True" />
+                        <CheckBox
+                            HorizontalAlignment="Left"
+                            Content="Disable Alt + Shift Global Shortcut"
+                            IsChecked="{Binding ViewModel.IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
+                            IsEnabled="False"
+                            ToolTip="This setting stops working once the program is closed."
+                            ToolTipService.ShowOnDisabled="True" />
                     </StackPanel>
-                    <ui:TextBox
-                        MinWidth="120"
-                        MaxWidth="120"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        BorderThickness="1"
-                        IsReadOnly="True"
-                        PlaceholderText="Demo Text Area"
-                        Text="{Binding ViewModel.ShowcaseText}" />
-                </DockPanel>
-            </StackPanel>
+                </Expander.Content>
+            </Expander>
+
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid ToolTip="Turn on if you experience buggy or incorrect transliteration.">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="TextClearFormatting20" />
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" Text="Buffer input" />
+                            <TextBlock Text="Buffer characters while typing" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Active" />
+                        <ui:ToggleSwitch
+                            Grid.Column="3"
+                            Margin="0,0,10,0"
+                            IsChecked="{Binding ViewModel.IsBufferInputEnabled}" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Margin="20,0,0,0">
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontWeight="SemiBold"
+                            Text="Preview" />
+                        <ui:TextBox
+                            MinWidth="120"
+                            MaxWidth="120"
+                            HorizontalAlignment="Left"
+                            HorizontalContentAlignment="Center"
+                            Focusable="False"
+                            PlaceholderText="Demo Text Area"
+                            Text="{Binding ViewModel.ShowcaseText}" />
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
 
             <Expander Margin="0,0,0,20">
                 <Expander.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock
+                        <ui:SymbolIcon
                             Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Text="Play sound on toggle" />
-                        <TextBlock
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="MusicNote120" />
+                        <StackPanel
                             Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" Text="Sound" />
+                            <TextBlock Text="Play sound on toggle" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Column="2"
                             Margin="0,0,10,0"
                             VerticalAlignment="Center"
                             Text="Active" />
                         <ui:ToggleSwitch
-                            Grid.Column="2"
+                            Grid.Column="3"
                             Margin="0,0,10,0"
                             IsChecked="{Binding ViewModel.IsToggleSoundOn}" />
                     </Grid>
                 </Expander.Header>
                 <Expander.Content>
-                    <Grid>
+                    <Grid Margin="20,0,20,0" IsEnabled="{Binding ViewModel.IsToggleSoundOn}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />

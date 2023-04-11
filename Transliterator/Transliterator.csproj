@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
-	<ApplicationIcon>translit-icon-sharp-corners.ico</ApplicationIcon>
+	<ApplicationIcon>Resources\Icons\translit-icon-sharp-corners.ico</ApplicationIcon>
 	<StartupObject>Transliterator.App</StartupObject>
 	<NeutralLanguage>en</NeutralLanguage>
 	<Authors>Seagullie, bind-w-exit</Authors>
@@ -17,9 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="translit-icon-sharp-corners.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Resources\Icons\translit-icon-sharp-corners.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +34,51 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Transliterator.Core\Transliterator.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\translit-icon-sharp-corners.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\Sounds\cont.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Sounds\pause.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableDiacriticsAndAccents.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableKZCYR-KZLAT_2021.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableKZLAT-KZCYR_2021.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableLAT-BEL_BGN_PCGN.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableLAT-BUL.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableLAT-KZCYR_2021.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableLAT-UKR.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableMisc.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableMONLAT-MONCYR.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\TranslitTables\tableOsuEmojis.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 	
 </Project>

@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Transliterator.Core.Models;
+using Transliterator.Core.Services;
 using Transliterator.Services;
 using Transliterator.Views.Windows;
 using Wpf.Ui.Appearance;
@@ -13,7 +15,13 @@ namespace Transliterator.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
+    private readonly IHotKeyService _hotkeyService;
     private readonly SettingsService _settingsService;
+
+    private bool _isInitialized;
+
+    [ObservableProperty]
+    private ThemeType _currentTheme;   
 
     [ObservableProperty]
     private bool isAltShiftGlobalShortcutEnabled;
@@ -43,9 +51,6 @@ public partial class SettingsViewModel : ObservableObject
     private HotKey toggleHotKey;
 
     [ObservableProperty]
-    private string toggleTranslitShortcut;
-
-    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ToggleOffSoundFileName))]
     private string toggleOffSoundFilePath;
 
@@ -54,24 +59,36 @@ public partial class SettingsViewModel : ObservableObject
     private string toggleOnSoundFilePath;
 
     [ObservableProperty]
-    private Wpf.Ui.Appearance.ThemeType _currentTheme = Wpf.Ui.Appearance.ThemeType.Unknown;
+    private string toggleTranslitShortcut;
+
+    public bool IsHotkeySuppressionEnabled
+    {
+        get => !_hotkeyService.IsHotkeyHandlingEnabled;
+        set => _hotkeyService.IsHotkeyHandlingEnabled = !value;
+    }
+
+    public List<ThemeType> Themes { get; private set; } = new() { ThemeType.Dark, ThemeType.Light };
 
     public string ToggleOffSoundFileName { get => Path.GetFileName(ToggleOffSoundFilePath) ?? "<None>"; }
+
     public string ToggleOnSoundFileName { get => Path.GetFileName(ToggleOnSoundFilePath) ?? "<None>"; }
 
-    public event EventHandler OnRequestClose;
-
-    public SettingsViewModel(SettingsService settingsService)
+    public SettingsViewModel(SettingsService settingsService, IHotKeyService hotKeyService)
     {
+        _isInitialized = false;
+
         _settingsService = settingsService;
+        _hotkeyService = hotKeyService;
 
         InitializePropertiesFromSettings();
+
+        _isInitialized = true;
     }
 
     public void InitializePropertiesFromSettings()
     {
-        // TODO: Uncomment after migrating more things from old project
         _settingsService.Load();
+        CurrentTheme = _settingsService.SelectedTheme;
         IsAltShiftGlobalShortcutEnabled = _settingsService.IsAltShiftGlobalShortcutEnabled;
         IsAutoStartEnabled = _settingsService.IsAutoStartEnabled;
         IsBufferInputEnabled = _settingsService.IsBufferInputEnabled;
@@ -80,29 +97,9 @@ public partial class SettingsViewModel : ObservableObject
         IsToggleSoundOn = _settingsService.IsToggleSoundOn;
         IsTranslitEnabledAtStartup = _settingsService.IsTransliteratorEnabledAtStartup;
         ToggleHotKey = _settingsService.ToggleHotKey;
-        CurrentTheme = _settingsService.SelectedTheme;
     }
 
-    [RelayCommand]
-    private static void OpenDebugWindow()
-    {
-        // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
-        DebugWindow debugWindow = new();
-        debugWindow.Show();
-    }
-
-    [RelayCommand]
-    private static void OpenTranslitTablesWindow()
-    {
-        // TODO: Rewrite to NavigateToTranslitTablesPage or prevent the creation of multiple windows
-        // TODO: Uncomment after migrating more things from old project
-        //TranslitTablesWindow translitTables = new();
-        //translitTables.Show();
-    }
-
-    // TODO: Show success message via snackbar
-    [RelayCommand]
-    private void ApplyChanges()
+    private void SavePropertiesToSettings()
     {
         _settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
         _settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
@@ -111,73 +108,25 @@ public partial class SettingsViewModel : ObservableObject
         _settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
         _settingsService.IsToggleSoundOn = IsToggleSoundOn;
         _settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
+        _settingsService.SelectedTheme = CurrentTheme;
         _settingsService.ToggleHotKey = ToggleHotKey;
         _settingsService.Save();
-
-        OnRequestClose?.Invoke(this, EventArgs.Empty);
     }
 
-    // TODO: not trigger on window init
-    partial void OnIsBufferInputEnabledChanged(bool value)
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        // TODO: Add DebugService
-        //if (debugWindow != null && debugWindow.underTestByWinDriverCheckBox.IsChecked == true)
-        //{
-        //    return;
-        //}
-        //else
-        //{
-        if (ShowcaseBufferInputEnabledModeCommand.IsRunning)
-            ShowcaseBufferInputEnabledModeCommand.Cancel();
+        base.OnPropertyChanged(e);
 
-        if (ShowcaseBufferInputDisabledModeCommand.IsRunning)
-            ShowcaseBufferInputDisabledModeCommand.Cancel();
-
-        ShowcaseText = "";
-
-        if (value)
-            ShowcaseBufferInputEnabledModeCommand.ExecuteAsync(null);
-        else
-            ShowcaseBufferInputDisabledModeCommand.ExecuteAsync(null);
-        //}
+        if (_isInitialized)
+            SavePropertiesToSettings();
     }
 
     [RelayCommand]
-    private async Task ShowcaseBufferInputDisabledMode(CancellationToken cancellationToken)
+    private static void OpenDebugWindow()
     {
-        const string showcaseString = "^a~o`i\"u";
-        const string showcaseString2 = "âõíü";
-
-        for (int i = 0; i < showcaseString.Length; i++)
-        {
-            if (cancellationToken.IsCancellationRequested)
-                return;
-
-            ShowcaseText += showcaseString[i];
-            await Task.Delay(300);
-            if ((i + 1) % 2 == 0)
-            {
-                await Task.Delay(150);
-                ShowcaseText = ShowcaseText.Remove(ShowcaseText.Length - 2, 2);
-                ShowcaseText += showcaseString2[i / 2];
-                await Task.Delay(300);
-            }
-        }
-    }
-
-    [RelayCommand]
-    private async Task ShowcaseBufferInputEnabledMode(CancellationToken cancellationToken)
-    {
-        const string showcaseString = "âõíü";
-
-        foreach (char charter in showcaseString)
-        {
-            if (cancellationToken.IsCancellationRequested)
-                return;
-
-            ShowcaseText += charter;
-            await Task.Delay(300);
-        }
+        // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
+        DebugWindow debugWindow = new();
+        debugWindow.Show();
     }
 
     [RelayCommand]
@@ -232,30 +181,63 @@ public partial class SettingsViewModel : ObservableObject
         _settingsService.PathToCustomToggleOnSound = null;
     }
 
-    [RelayCommand]
-    private void OnChangeTheme(string parameter)
+    partial void OnCurrentThemeChanged(ThemeType value)
     {
-        switch (parameter)
+        Theme.Apply(value);
+    }
+
+    partial void OnIsBufferInputEnabledChanged(bool value)
+    {
+        if (ShowcaseBufferInputEnabledModeCommand.IsRunning)
+            ShowcaseBufferInputEnabledModeCommand.Cancel();
+
+        if (ShowcaseBufferInputDisabledModeCommand.IsRunning)
+            ShowcaseBufferInputDisabledModeCommand.Cancel();
+
+        ShowcaseText = "";
+
+        if (value)
+            ShowcaseBufferInputEnabledModeCommand.ExecuteAsync(null);
+        else
+            ShowcaseBufferInputDisabledModeCommand.ExecuteAsync(null);
+    }
+
+
+    [RelayCommand]
+    private async Task ShowcaseBufferInputDisabledMode(CancellationToken cancellationToken)
+    {
+        const string showcaseString = "^a~o`i\"u";
+        const string showcaseString2 = "âõíü";
+
+        for (int i = 0; i < showcaseString.Length; i++)
         {
-            case "theme_light":
-                if (CurrentTheme == ThemeType.Light)
-                    break;
+            if (cancellationToken.IsCancellationRequested)
+                return;
 
-                Theme.Apply(ThemeType.Light);
-                CurrentTheme = ThemeType.Light;
-                _settingsService.SelectedTheme = ThemeType.Light;
+            ShowcaseText += showcaseString[i];
+            await Task.Delay(300, cancellationToken);
+            if ((i + 1) % 2 == 0)
+            {
+                await Task.Delay(150, cancellationToken);
+                ShowcaseText = ShowcaseText.Remove(ShowcaseText.Length - 2, 2);
+                ShowcaseText += showcaseString2[i / 2];
+                await Task.Delay(300, cancellationToken);
+            }
+        }
+    }
 
-                break;
+    [RelayCommand]
+    private async Task ShowcaseBufferInputEnabledMode(CancellationToken cancellationToken)
+    {
+        const string showcaseString = "âõíü";
 
-            default:
-                if (CurrentTheme == ThemeType.Dark)
-                    break;
+        foreach (char charter in showcaseString)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                return;
 
-                Theme.Apply(Wpf.Ui.Appearance.ThemeType.Dark);
-                CurrentTheme = ThemeType.Dark;
-                _settingsService.SelectedTheme = ThemeType.Dark;
-
-                break;
+            ShowcaseText += charter;
+            await Task.Delay(600, cancellationToken);
         }
     }
 }

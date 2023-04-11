@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using Transliterator.ViewModels;
 using Wpf.Ui.Common.Interfaces;
 
@@ -14,5 +15,10 @@ public partial class SettingsPage : Page, INavigableView<SettingsViewModel>
         DataContext = this;
 
         InitializeComponent();
+    }
+
+    private void HotKeyTextBox_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        ViewModel.IsHotkeySuppressionEnabled = (bool)e.NewValue;
     }
 }

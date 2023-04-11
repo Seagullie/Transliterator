@@ -20,33 +20,35 @@
 
     <!--  TODO: Replace Labels with TextBoxes  -->
 
-    <ui:DynamicScrollViewer
-        Margin="0,0,0,0"
-        Padding="20"
-        IsTabStop="False">
+    <ui:DynamicScrollViewer Padding="20" IsTabStop="False">
         <StackPanel>
 
-            <StackPanel Margin="0,0,0,20">
-                <Label
-                    Margin="0,0,0,10"
-                    Content="App theme"
-                    FontSize="18" />
-                <RadioButton
-                    Margin="0,12,0,0"
-                    Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
-                    CommandParameter="theme_light"
-                    Content="Light"
-                    GroupName="themeSelect"
-                    IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}" />
-                <RadioButton
-                    Margin="0,8,0,0"
-                    Command="{Binding ViewModel.ChangeThemeCommand, Mode=OneWay}"
-                    CommandParameter="theme_dark"
-                    Content="Dark"
-                    GroupName="themeSelect"
-                    IsChecked="{Binding ViewModel.CurrentTheme, Converter={StaticResource ThemeEnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}" />
-                <RadioButton Content="Use system settings" IsEnabled="False" />
-            </StackPanel>
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Color24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="App theme" />
+                        <ComboBox
+                            Grid.Column="2"
+                            ItemsSource="{Binding ViewModel.Themes}"
+                            SelectedItem="{Binding ViewModel.CurrentTheme}" />
+                    </Grid>
+                </Expander.Header>
+            </Expander>
 
             <Expander Margin="0,0,0,20" IsExpanded="True">
                 <Expander.Header>
@@ -54,8 +56,6 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <ui:SymbolIcon
                             Grid.Column="0"
@@ -252,38 +252,81 @@
                 </Expander.Content>
             </Expander>
 
-            <StackPanel Margin="0,0,0,20">
-                <Label
-                    Margin="0,0,0,10"
-                    Content="Shortcuts"
-                    FontSize="18" />
-                <DockPanel>
-                    <Label VerticalAlignment="Center" Content="Toggle Transliterator:" />
-                    <controls:HotKeyTextBox
-                        Grid.Column="1"
-                        MinWidth="120"
-                        MaxWidth="120"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        HotKey="{Binding ViewModel.ToggleHotKey}"
-                        Style="{DynamicResource DefaultTextBoxStyle}"
-                        TextAlignment="Center" />
-                </DockPanel>
-            </StackPanel>
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Keyboard24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Shortcuts" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <Grid Margin="20,0,20,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-            <Label
-                Margin="0,0,0,10"
-                Content="Other"
-                FontSize="18" />
-            <StackPanel
-                Margin="0,0,0,20"
-                helpers:MarginSetter.Margin="15"
-                Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="Toggle Transliterator:" />
+                        <controls:HotKeyTextBox
+                            Grid.Column="1"
+                            MinWidth="120"
+                            MaxWidth="120"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            HotKey="{Binding ViewModel.ToggleHotKey}"
+                            IsKeyboardFocusedChanged="HotKeyTextBox_IsKeyboardFocusedChanged"
+                            IsReadOnly="True"
+                            IsReadOnlyCaretVisible="False"
+                            Style="{DynamicResource DefaultTextBoxStyle}"
+                            TextAlignment="Center" />
+                    </Grid>
+                </Expander.Content>
+            </Expander>
 
-                <Button Command="{Binding ViewModel.OpenTranslitTablesWindowCommand}" Content="Edit Tables" />
-                <Button Command="{Binding ViewModel.OpenDebugWindowCommand}" Content="To Debug Panel" />
-            </StackPanel>
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Code24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Other" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Margin="20,0,20,0">
+                        <Button
+                            VerticalAlignment="Center"
+                            Command="{Binding ViewModel.OpenDebugWindowCommand}"
+                            Content="To Debug Panel" />
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+
         </StackPanel>
     </ui:DynamicScrollViewer>
 </Page>

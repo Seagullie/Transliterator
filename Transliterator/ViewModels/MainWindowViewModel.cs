@@ -66,7 +66,9 @@ public partial class MainWindowViewModel : ObservableObject
         _settingsService.SettingsSaved += OnSettingsSaved;
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-        _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
+        if (ToggleAppStateShortcut != null)
+            _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
+        
 
         _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
         _transliteratorService.TransliterationEnabled = _settingsService.IsTransliteratorEnabledAtStartup;
@@ -96,7 +98,8 @@ public partial class MainWindowViewModel : ObservableObject
             _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-        _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
+        if (ToggleAppStateShortcut != null)
+            _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
 
         _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
     }

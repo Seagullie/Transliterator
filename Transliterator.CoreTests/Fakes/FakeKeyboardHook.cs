@@ -1,24 +1,23 @@
 ﻿using Transliterator.Core.Keyboard;
 
-namespace Transliterator.CoreTests.Fakes
+namespace Transliterator.CoreTests.Fakes;
+
+internal class FakeKeyboardHook : IKeyboardHook
 {
-    internal class FakeKeyboardHook : IKeyboardHook
+    public event EventHandler<KeyboardHookEventArgs>? KeyDown;
+
+    public static bool IsShiftDown;
+
+    public void TextEntry(string text)
     {
-        public event EventHandler<KeyboardHookEventArgs>? KeyDown;
-
-        public static bool IsShiftDown;
-
-        public void TextEntry(string text)
+        foreach (var character in text)
         {
-            foreach (var character in text)
+            var e = new KeyboardHookEventArgs()
             {
-                var e = new KeyboardHookEventArgs()
-                {
-                    Character = character
-                };
+                Character = character
+            };
 
-                KeyDown?.Invoke(this, e);
-            }
+            KeyDown?.Invoke(this, e);
         }
     }
 }

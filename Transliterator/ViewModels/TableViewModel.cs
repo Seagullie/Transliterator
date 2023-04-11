@@ -1,18 +1,26 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
 using Transliterator.Core.Models;
+using Transliterator.Core.Services;
 
 namespace Transliterator.ViewModels;
 
 public partial class TableViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private ObservableCollection<TransliterationTable>? transliterationTables;
+    private readonly ITransliteratorService _transliteratorService;
 
-    [ObservableProperty]
-    private TransliterationTable? selectedTransliterationTable;
-
-    public TableViewModel()
+    public TransliterationTable? SelectedTransliterationTable
     {
+        get => _transliteratorService.TransliterationTable;
+    }
+
+    public TableViewModel(TransliteratorServiceContext transliteratorServiceContext)
+    {
+        _transliteratorService = transliteratorServiceContext;
+        transliteratorServiceContext.TransliterationTableChanged += OnTransliterationTableChanged;
+    }
+
+    private void OnTransliterationTableChanged(object? sender, System.EventArgs e)
+    {
+        OnPropertyChanged(nameof(SelectedTransliterationTable));
     }
 }

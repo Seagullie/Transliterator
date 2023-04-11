@@ -9,7 +9,7 @@ using Transliterator.Core.Keyboard;
 using Transliterator.Core.Services;
 using Transliterator.ViewModels;
 
-namespace Transliterator.Views;
+namespace Transliterator.Views.Windows;
 
 public partial class DebugWindow
 {

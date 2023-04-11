@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Transliterator.Core.Keyboard;
 
-namespace Transliterator.Core.Keyboard
+public interface IKeyboardHook
 {
-    public interface IKeyboardHook
-    {
-        event EventHandler<KeyboardHookEventArgs>? KeyDown;
-    }
+    event EventHandler<KeyboardHookEventArgs>? KeyDown;
 }

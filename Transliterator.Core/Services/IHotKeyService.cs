@@ -1,10 +1,12 @@
 ﻿using Transliterator.Core.Models;
 
-namespace Transliterator.Core.Services
+namespace Transliterator.Core.Services;
+
+public interface IHotKeyService
 {
-    public interface IHotKeyService
-    {
-        void RegisterHotKey(HotKey hotKey, Action action);
-        void UnregisterHotKey(HotKey hotKey);
-    }
+    bool IsHotkeyHandlingEnabled { get; set; }
+
+    void RegisterHotKey(HotKey hotKey, Action action);
+
+    void UnregisterHotKey(HotKey hotKey);
 }

@@ -1,0 +1,328 @@
+﻿<Page
+    x:Class="Transliterator.Views.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Transliterator.Views.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:Transliterator.Helpers"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="SettingsPage"
+    d:DesignHeight="1015"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <helpers:ThemeEnumToBooleanConverter x:Key="ThemeEnumToBooleanConverter" />
+    </Page.Resources>
+
+    <!--  TODO: Replace Labels with TextBoxes  -->
+
+    <ui:DynamicScrollViewer Padding="20" IsTabStop="False">
+        <StackPanel>
+
+            <ui:Card Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:SymbolIcon
+                        Grid.Column="0"
+                        Margin="10"
+                        FontSize="24"
+                        Symbol="Color24" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Text="App theme" />
+                    <ComboBox
+                        Grid.Column="2"
+                        ItemsSource="{Binding ViewModel.Themes}"
+                        SelectedItem="{Binding ViewModel.CurrentTheme}" />
+                </Grid>
+            </ui:Card>
+
+            <Expander Margin="0,0,0,20" IsExpanded="True">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Settings24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="General" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Margin="20,0,0,0">
+                        <CheckBox
+                            HorizontalAlignment="Left"
+                            Content="Start minimized"
+                            IsChecked="{Binding ViewModel.IsMinimizedStartEnabled}"
+                            ToolTip="Start in minimized state. Goes well with `Turn on translit at startup` and `Run at system startup` checked." />
+                        <CheckBox
+                            HorizontalAlignment="Left"
+                            Content="Turn on translit at startup"
+                            IsChecked="{Binding ViewModel.IsTranslitEnabledAtStartup}" />
+                        <CheckBox
+                            Content="Enable State Overlay"
+                            IsChecked="{Binding ViewModel.IsStateOverlayEnabled}"
+                            IsEnabled="False"
+                            ToolTip="State Overlay is a little green/red circle indicating whether the app is toggled on or off." />
+                        <CheckBox
+                            HorizontalAlignment="Left"
+                            Content="Run at system startup"
+                            IsChecked="{Binding ViewModel.IsAutoStartEnabled}"
+                            ToolTipService.ShowOnDisabled="True" />
+                        <CheckBox
+                            HorizontalAlignment="Left"
+                            Content="Disable Alt + Shift Global Shortcut"
+                            IsChecked="{Binding ViewModel.IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
+                            IsEnabled="False"
+                            ToolTip="This setting stops working once the program is closed."
+                            ToolTipService.ShowOnDisabled="True" />
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid ToolTip="Turn on if you experience buggy or incorrect transliteration.">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="TextClearFormatting20" />
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" Text="Buffer input" />
+                            <TextBlock Text="Buffer characters while typing" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Active" />
+                        <ui:ToggleSwitch
+                            Grid.Column="3"
+                            Margin="0,0,10,0"
+                            IsChecked="{Binding ViewModel.IsBufferInputEnabled}" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Margin="20,0,0,0">
+                        <TextBlock
+                            Margin="0,0,0,10"
+                            FontWeight="SemiBold"
+                            Text="Preview" />
+                        <ui:TextBox
+                            MinWidth="120"
+                            MaxWidth="120"
+                            HorizontalAlignment="Left"
+                            HorizontalContentAlignment="Center"
+                            Focusable="False"
+                            PlaceholderText="Demo Text Area"
+                            Text="{Binding ViewModel.ShowcaseText}" />
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="MusicNote120" />
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" Text="Sound" />
+                            <TextBlock Text="Play sound on toggle" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Active" />
+                        <ui:ToggleSwitch
+                            Grid.Column="3"
+                            Margin="0,0,10,0"
+                            IsChecked="{Binding ViewModel.IsToggleSoundOn}" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <Grid Margin="20,0,20,0" IsEnabled="{Binding ViewModel.IsToggleSoundOn}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="10" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Custom sound on toggle off:" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontStyle="Italic"
+                            Text="{Binding ViewModel.ToggleOnSoundFileName, Mode=OneWay}"
+                            ToolTip="{Binding ViewModel.ToggleOnSoundFilePath}" />
+                        <ui:Button
+                            Grid.Column="2"
+                            Margin="0,0,5,0"
+                            Command="{Binding ViewModel.ChangeToggleOnSoundCommand}"
+                            Content="Open"
+                            Icon="Folder24"
+                            ToolTip="Set custom sound" />
+                        <ui:Button
+                            Grid.Column="3"
+                            Command="{Binding ViewModel.DeleteToggleOnSoundCommand}"
+                            Icon="Delete24"
+                            ToolTip="Clear custom sound" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            VerticalAlignment="Center"
+                            Text="Custom sound on toggle off:" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontStyle="Italic"
+                            Text="{Binding ViewModel.ToggleOffSoundFileName, Mode=OneWay}"
+                            ToolTip="{Binding ViewModel.ToggleOffSoundFilePath}" />
+                        <ui:Button
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Margin="0,0,5,0"
+                            Command="{Binding ViewModel.ChangeToggleOffSoundCommand}"
+                            Content="Open"
+                            Icon="Folder24"
+                            ToolTip="Set custom sound" />
+                        <ui:Button
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Command="{Binding ViewModel.DeleteToggleOffSoundCommand}"
+                            Icon="Delete24"
+                            ToolTip="Clear custom sound" />
+                    </Grid>
+                </Expander.Content>
+            </Expander>
+
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Keyboard24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Shortcuts" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <Grid Margin="20,0,20,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock VerticalAlignment="Center" Text="Toggle Transliterator:" />
+                        <controls:HotKeyTextBox
+                            Grid.Column="1"
+                            MinWidth="120"
+                            MaxWidth="120"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            HotKey="{Binding ViewModel.ToggleHotKey}"
+                            IsKeyboardFocusedChanged="HotKeyTextBox_IsKeyboardFocusedChanged"
+                            IsReadOnly="True"
+                            IsReadOnlyCaretVisible="False"
+                            Style="{DynamicResource DefaultTextBoxStyle}"
+                            TextAlignment="Center" />
+                    </Grid>
+                </Expander.Content>
+            </Expander>
+
+            <Expander Margin="0,0,0,20">
+                <Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon
+                            Grid.Column="0"
+                            Margin="10"
+                            FontSize="24"
+                            Symbol="Code24" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5"
+                            VerticalAlignment="Center"
+                            FontWeight="SemiBold"
+                            Text="Other" />
+                    </Grid>
+                </Expander.Header>
+                <Expander.Content>
+                    <StackPanel Margin="20,0,20,0">
+                        <Button
+                            VerticalAlignment="Center"
+                            Command="{Binding ViewModel.OpenDebugWindowCommand}"
+                            Content="To Debug Panel" />
+                    </StackPanel>
+                </Expander.Content>
+            </Expander>
+        </StackPanel>
+    </ui:DynamicScrollViewer>
+</Page>

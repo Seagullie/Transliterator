@@ -1,10 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
-using Transliterator.Core.Keyboard;
 using Transliterator.Core.Services;
 using Transliterator.Helpers;
-using Transliterator.Views;
 
 namespace Transliterator.ViewModels;
 
@@ -115,8 +113,8 @@ public partial class DebugViewModel : ObservableObject
     [RelayCommand]
     private void OpenSettingsWindow()
     {
-        SettingsWindow settingsWindow = new();
-        settingsWindow.Show();
+        //SettingsWindow settingsWindow = new();
+        //settingsWindow.Show();
     }
 
     // TODO: Uncomment after migrating more things from old project

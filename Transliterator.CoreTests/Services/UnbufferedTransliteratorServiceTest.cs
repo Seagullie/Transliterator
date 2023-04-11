@@ -50,7 +50,7 @@ public class UnbufferedTransliteratorServiceTest
         string testString = "kolo";
 
         // Make sure each char in test string is an isolated grapheme
-        foreach (char chr in testString) 
+        foreach (char chr in testString)
             Assert.IsTrue(transliterationTable.IsIsolatedGrapheme(chr), $"{chr} belongs to a combo");
 
         // Act

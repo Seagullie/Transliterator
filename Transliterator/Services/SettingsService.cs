@@ -4,6 +4,7 @@ using System.IO;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Models;
 using Wpf.Ui.Appearance;
+using Wpf.Ui.Mvvm.Contracts;
 
 namespace Transliterator.Services;
 
@@ -18,12 +19,12 @@ public partial class SettingsService : SettingsBase
     public bool IsStateOverlayEnabled { get; set; } = true;
     public bool IsToggleSoundOn { get; set; } = true;
     public bool IsTransliteratorEnabledAtStartup { get; set; } = true;
-    public ThemeType SelectedTheme { get; set; } = ThemeType.Dark;
+    public ThemeType SelectedTheme { get; set; }
     public string LastSelectedTransliterationTable { get; set; } = "";
     public string PathToCustomToggleOffSound { get; set; } = "";
     public string PathToCustomToggleOnSound { get; set; } = "";
 
-    public HotKey ToggleHotKey { get; set; } = new(VirtualKeyCode.KeyT, ModifierKeys.Alt);
+    public HotKey? ToggleHotKey { get; set; } = new(VirtualKeyCode.KeyT, ModifierKeys.Alt);
 
     // Events
 
@@ -33,14 +34,15 @@ public partial class SettingsService : SettingsBase
 
     public event EventHandler? SettingsSaved;
 
-    public SettingsService() : base(configurationFilePath)
+    public SettingsService(IThemeService themeService) : base(configurationFilePath)
     {
-        Load();
+        SelectedTheme = themeService.GetSystemTheme(); // Setting a default value
     }
 
     public override void Reset()
     {
         base.Reset();
+
         SettingsReset?.Invoke(this, EventArgs.Empty);
     }
 

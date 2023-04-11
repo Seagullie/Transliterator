@@ -3,39 +3,43 @@ using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Helpers;
 
-namespace Transliterator.Core.Services
+namespace Transliterator.Core.Services;
+
+public class HotKeyService : IHotKeyService
 {
-    public class HotKeyService : IHotKeyService
+    private readonly KeyboardHook _keyboardHook;
+    private readonly Dictionary<HotKey, List<Action>> _hotKeys = new();
+
+    public bool IsHotkeyHandlingEnabled { get; set; } = true;
+
+    public HotKeyService()
     {
-        private readonly KeyboardHook _keyboardHook;
-        private readonly Dictionary<HotKey, List<Action>> _hotKeys = new();
+        _keyboardHook = Singleton<KeyboardHook>.Instance;
+        _keyboardHook.KeyDown += HandleKeyPressed;
+    }
 
-        public HotKeyService()
+    public void RegisterHotKey(HotKey hotKey, Action action)
+    {
+        if (!_hotKeys.ContainsKey(hotKey))
         {
-            _keyboardHook = Singleton<KeyboardHook>.Instance;
-            _keyboardHook.KeyDown += HandleKeyPressed;
+            _hotKeys.Add(hotKey, new List<Action>());
         }
 
-        public void RegisterHotKey(HotKey hotKey, Action action)
+        _hotKeys[hotKey].Add(action);
+    }
+
+    public void UnregisterHotKey(HotKey hotKey)
+    {
+        if (_hotKeys.TryGetValue(hotKey, out var actions))
         {
-            if (!_hotKeys.ContainsKey(hotKey))
-            {
-                _hotKeys.Add(hotKey, new List<Action>());
-            }
-
-            _hotKeys[hotKey].Add(action);
+            actions.Clear();
+            _hotKeys.Remove(hotKey);
         }
+    }
 
-        public void UnregisterHotKey(HotKey hotKey)
-        {
-            if (_hotKeys.TryGetValue(hotKey, out var actions))
-            {
-                actions.Clear();
-                _hotKeys.Remove(hotKey);
-            }
-        }
-
-        private void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
+    private void HandleKeyPressed(object? sender, KeyboardHookEventArgs e)
+    {
+        if (IsHotkeyHandlingEnabled)
         {
             var hotKey = new HotKey(e.Key, e.GetModifierKeys());
 

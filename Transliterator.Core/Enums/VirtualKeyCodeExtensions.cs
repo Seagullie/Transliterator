@@ -42,6 +42,7 @@ public static class VirtualKeyCodeExtensions
         return isModifier;
     }
 
+    // TODO: Fix ToUnicode method (sometimes prints only capital characters)
     public static char ToUnicode(this VirtualKeyCode virtualKeyCode)
     {
         byte[] keyboardState = new byte[255];

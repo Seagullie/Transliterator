@@ -22,32 +22,30 @@
     <ui:DynamicScrollViewer Padding="20" IsTabStop="False">
         <StackPanel>
 
-            <Expander Margin="0,0,0,20">
-                <Expander.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon
-                            Grid.Column="0"
-                            Margin="10"
-                            FontSize="24"
-                            Symbol="Color24" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="5"
-                            VerticalAlignment="Center"
-                            FontWeight="SemiBold"
-                            Text="App theme" />
-                        <ComboBox
-                            Grid.Column="2"
-                            ItemsSource="{Binding ViewModel.Themes}"
-                            SelectedItem="{Binding ViewModel.CurrentTheme}" />
-                    </Grid>
-                </Expander.Header>
-            </Expander>
+            <ui:Card Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ui:SymbolIcon
+                        Grid.Column="0"
+                        Margin="10"
+                        FontSize="24"
+                        Symbol="Color24" />
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="5"
+                        VerticalAlignment="Center"
+                        FontWeight="SemiBold"
+                        Text="App theme" />
+                    <ComboBox
+                        Grid.Column="2"
+                        ItemsSource="{Binding ViewModel.Themes}"
+                        SelectedItem="{Binding ViewModel.CurrentTheme}" />
+                </Grid>
+            </ui:Card>
 
             <Expander Margin="0,0,0,20" IsExpanded="True">
                 <Expander.Header>

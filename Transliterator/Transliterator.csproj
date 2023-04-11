@@ -5,7 +5,7 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<ApplicationIcon>translit-icon-sharp-corners.ico</ApplicationIcon>
+	<ApplicationIcon>Resources\Icons\translit-icon-sharp-corners.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="translit-icon-sharp-corners.ico">
+    <Content Include="Resources\Icons\translit-icon-sharp-corners.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

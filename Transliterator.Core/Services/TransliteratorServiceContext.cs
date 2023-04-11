@@ -8,6 +8,7 @@ public class TransliteratorServiceContext : ITransliteratorService
     private readonly ITransliteratorService _unbufferedTransliteratorService = new UnbufferedTransliteratorService();
 
     private bool useUnbufferedTransliteratorService;
+
     public bool UseUnbufferedTransliteratorService
     {
         get => useUnbufferedTransliteratorService;
@@ -23,13 +24,13 @@ public class TransliteratorServiceContext : ITransliteratorService
 
     public ITransliteratorService CurrentService { get; private set; }
 
-    public bool TransliterationEnabled 
+    public bool TransliterationEnabled
     {
         get => CurrentService.TransliterationEnabled;
         set => CurrentService.TransliterationEnabled = value;
     }
 
-    public TransliterationTable? TransliterationTable 
+    public TransliterationTable? TransliterationTable
     {
         get => CurrentService.TransliterationTable;
         set

@@ -68,7 +68,6 @@ public partial class MainWindowViewModel : ObservableObject
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
         if (ToggleAppStateShortcut != null)
             _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
-        
 
         _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
         _transliteratorService.TransliterationEnabled = _settingsService.IsTransliteratorEnabledAtStartup;

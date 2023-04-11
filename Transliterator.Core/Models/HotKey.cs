@@ -15,7 +15,7 @@ public class HotKey
         Modifiers = modifiers;
     }
 
-    public HotKey(uint keyCode, uint modifiers) : this ((VirtualKeyCode)keyCode, (ModifierKeys)modifiers)
+    public HotKey(uint keyCode, uint modifiers) : this((VirtualKeyCode)keyCode, (ModifierKeys)modifiers)
     {
     }
 

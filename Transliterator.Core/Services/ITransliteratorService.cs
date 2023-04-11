@@ -1,11 +1,10 @@
 ﻿using Transliterator.Core.Models;
 
-namespace Transliterator.Core.Services
-{
-    public interface ITransliteratorService
-    {
-        public bool TransliterationEnabled { get; set; }
+namespace Transliterator.Core.Services;
 
-        public TransliterationTable? TransliterationTable { get; set; }
-    }
+public interface ITransliteratorService
+{
+    public bool TransliterationEnabled { get; set; }
+
+    public TransliterationTable? TransliterationTable { get; set; }
 }

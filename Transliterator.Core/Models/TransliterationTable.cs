@@ -1,6 +1,4 @@
-﻿using System.Reflection.PortableExecutable;
-
-namespace Transliterator.Core.Models;
+﻿namespace Transliterator.Core.Models;
 
 public class TransliterationTable : SortedDictionary<string, string>
 {

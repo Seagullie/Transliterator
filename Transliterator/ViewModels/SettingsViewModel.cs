@@ -21,7 +21,7 @@ public partial class SettingsViewModel : ObservableObject
     private bool _isInitialized;
 
     [ObservableProperty]
-    private ThemeType _currentTheme;   
+    private ThemeType _currentTheme;
 
     [ObservableProperty]
     private bool isAltShiftGlobalShortcutEnabled;
@@ -201,7 +201,6 @@ public partial class SettingsViewModel : ObservableObject
         else
             ShowcaseBufferInputDisabledModeCommand.ExecuteAsync(null);
     }
-
 
     [RelayCommand]
     private async Task ShowcaseBufferInputDisabledMode(CancellationToken cancellationToken)

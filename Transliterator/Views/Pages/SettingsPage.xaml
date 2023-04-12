@@ -14,7 +14,7 @@
 
     <Page.Resources>
         <helpers:InvertBoolConverter x:Key="InvertBoolConverter" />
-        <helpers:ThemeEnumToBooleanConverter x:Key="ThemeEnumToBooleanConverter" />
+        <helpers:BoolToStateStringConverter x:Key="BoolToStateStringConverter" />
     </Page.Resources>
 
     <!--  TODO: Replace Labels with TextBoxes  -->
@@ -124,7 +124,7 @@
                             Grid.Column="2"
                             Margin="0,0,10,0"
                             VerticalAlignment="Center"
-                            Text="Active" />
+                            Text="{Binding ViewModel.IsBufferInputEnabled, Converter={StaticResource BoolToStateStringConverter}}" />
                         <ui:ToggleSwitch
                             Grid.Column="3"
                             Margin="0,0,10,0"
@@ -174,7 +174,7 @@
                             Grid.Column="2"
                             Margin="0,0,10,0"
                             VerticalAlignment="Center"
-                            Text="Active" />
+                            Text="{Binding ViewModel.IsToggleSoundOn, Converter={StaticResource BoolToStateStringConverter}}" />
                         <ui:ToggleSwitch
                             Grid.Column="3"
                             Margin="0,0,10,0"

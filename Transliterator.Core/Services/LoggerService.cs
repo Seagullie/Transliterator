@@ -5,26 +5,11 @@ namespace Transliterator.Core.Services;
 
 public class LoggerService
 {
-    private static LoggerService _instance;
-
-    private LoggerService()
-    {
-    }
-
-    public event EventHandler<NewLogMessageEventArg> NewLogMessage;
-
-    public static LoggerService GetInstance()
-    {
-        if (_instance == null)
-        {
-            _instance = new LoggerService();
-        }
-        return _instance;
-    }
+    public event EventHandler<NewLogMessageEventArgs>? NewLogMessage;
 
     public void LogMessage(object sender, string message, string color = null)
     {
-        NewLogMessage?.Invoke(sender, new NewLogMessageEventArg(message, color));
+        NewLogMessage?.Invoke(sender, new NewLogMessageEventArgs(message, color));
         Debug.WriteLine(message);
     }
 }

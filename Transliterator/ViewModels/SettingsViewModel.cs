@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -15,10 +17,11 @@ namespace Transliterator.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    private readonly IHotKeyService _hotkeyService;
-    private readonly SettingsService _settingsService;
+    private readonly bool _isInitialized = false;
 
-    private bool _isInitialized;
+    private readonly SettingsService _settingsService;
+    private readonly IHotKeyService _hotkeyService;
+    private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
     private ThemeType _currentTheme;
@@ -73,12 +76,11 @@ public partial class SettingsViewModel : ObservableObject
 
     public string ToggleOnSoundFileName { get => Path.GetFileName(ToggleOnSoundFilePath) ?? "<None>"; }
 
-    public SettingsViewModel(SettingsService settingsService, IHotKeyService hotKeyService)
+    public SettingsViewModel(SettingsService settingsService, IHotKeyService hotKeyService, IServiceProvider serviceProvider)
     {
-        _isInitialized = false;
-
         _settingsService = settingsService;
         _hotkeyService = hotKeyService;
+        _serviceProvider = serviceProvider;
 
         InitializePropertiesFromSettings();
 
@@ -122,11 +124,11 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private static void OpenDebugWindow()
+    private void OpenDebugWindow()
     {
-        // TODO: Rewrite to NavigateToDebugPage or prevent the creation of multiple windows
-        DebugWindow debugWindow = new();
-        debugWindow.Show();
+        // TODO: Prevent the creation of multiple debug windows
+        var debugWindow = _serviceProvider.GetService<DebugWindow>();
+        debugWindow?.Show();
     }
 
     [RelayCommand]

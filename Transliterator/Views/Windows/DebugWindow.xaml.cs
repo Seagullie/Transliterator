@@ -13,38 +13,39 @@ namespace Transliterator.Views.Windows;
 
 public partial class DebugWindow
 {
-    private LoggerService loggerService;
+    private readonly LoggerService _loggerService;
 
-    public DebugWindow()
+    public DebugWindow(DebugWindowViewModel viewModel, LoggerService loggerService)
     {
-        loggerService = LoggerService.GetInstance();
+        ViewModel = viewModel;
+        DataContext = this;
 
-        loggerService.NewLogMessage += ConsoleLog;
-
-        ViewModel = new();
-        DataContext = ViewModel;
+        _loggerService = loggerService;
+        _loggerService.NewLogMessage += ConsoleLog;
 
         InitializeComponent();
     }
 
-    public DebugViewModel ViewModel { get; private set; }
+    public DebugWindowViewModel ViewModel { get; }
 
     public void AppendColoredText(RichTextBox box, string text, string color)
     {
-        BrushConverter bc = new BrushConverter();
-        TextRange tr = new TextRange(box.Document.ContentEnd, box.Document.ContentEnd);
-        tr.Text = text;
+        BrushConverter bc = new();
+        TextRange tr = new(box.Document.ContentEnd, box.Document.ContentEnd)
+        {
+            Text = text
+        };
         try
         {
             tr.ApplyPropertyValue(TextElement.ForegroundProperty,
                 bc.ConvertFromString(color));
         }
-        catch (FormatException) { }
+        catch (NotSupportedException) { }
     }
 
-    public void ConsoleLog(object sender, NewLogMessageEventArg e)
+    public void ConsoleLog(object? sender, NewLogMessageEventArgs e)
     {
-        if (!ViewModel.logsEnabled)
+        if (!ViewModel.LogsEnabled)
         {
             return;
         }
@@ -66,41 +67,23 @@ public partial class DebugWindow
         outputTextBox.ScrollToEnd();
     }
 
-    private void DebugWindow1_Closed(object sender, EventArgs e)
+    private void DebugWindow_Closed(object sender, EventArgs e)
     {
         // Unregister log event handler to avoid duplication once the window is opened again & disable logging when DebugWindow is not open
-        loggerService.NewLogMessage -= ConsoleLog;
+        _loggerService.NewLogMessage -= ConsoleLog;
     }
 
     // TODO: Transfer the bindings to XAML
-    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    private void DebugWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        // --
-
-        // TODO: Fix XAML binding equivalent
-
-        //var stateColorBindingObject = new Binding("StateDesc")
-        //{
-        //    Mode = BindingMode.OneWay,
-        //    Source = liveTransliterator.keyLogger
-        //};
-
-        //IValueConverter converterFunc = new StateToColorConverter();
-        //stateColorBindingObject.Converter = converterFunc;
-
-        //BindingOperations.SetBinding(StateLabel, Label.ForegroundProperty, stateColorBindingObject);
-
-        // --
-
-        loggerService.LogMessage(this, "Up And Running");
-        loggerService.LogMessage(this, $"BaseDir is: {AppDomain.CurrentDomain.BaseDirectory}");
+        _loggerService.LogMessage(this, "Up And Running");
+        _loggerService.LogMessage(this, $"BaseDir is: {AppDomain.CurrentDomain.BaseDirectory}");
     }
 
     // Can't move to view model cause it references a control
-    private async void simulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
+    private async void SimulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
     {
         textBox1.Focus();
-
         Singleton<KeyboardInputGenerator>.Instance.TextEntry("simulated");
     }
 }

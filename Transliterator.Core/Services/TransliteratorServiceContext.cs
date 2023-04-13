@@ -1,11 +1,47 @@
-﻿using Transliterator.Core.Models;
+﻿using System.Collections.ObjectModel;
+using Transliterator.Core.Helpers.Events;
+using Transliterator.Core.Models;
 
 namespace Transliterator.Core.Services;
 
-public class TransliteratorServiceContext : ITransliteratorService
+public class TransliteratorServiceContext : ITransliteratorServiceContext, ITransliteratorService
 {
     private readonly ITransliteratorService _bufferedTransliteratorService = new BufferedTransliteratorService();
     private readonly ITransliteratorService _unbufferedTransliteratorService = new UnbufferedTransliteratorService();
+
+    private ITransliteratorService _currentService;
+
+    public bool TransliterationEnabled
+    {
+        get => _currentService.TransliterationEnabled;
+        set
+        {
+            _currentService.TransliterationEnabled = value;
+            TransliterationEnabledChanged?.Invoke(this, new TransliterationEnabledChangedEventArgs(value));
+        }
+    }
+
+    public TransliterationTable? TransliterationTable
+    {
+        get => _currentService.TransliterationTable;
+        set
+        {
+            _currentService.TransliterationTable = value;
+            TransliterationTableChanged?.Invoke(this, new TransliterationTableChangedEventArgs(value));
+        }
+    }
+
+    private ObservableCollection<TransliterationTable>? transliterationTables;
+
+    public ObservableCollection<TransliterationTable>? TransliterationTables
+    {
+        get => transliterationTables;
+        set
+        {
+            transliterationTables = value;
+            TransliterationTablesChanged?.Invoke(this, new TransliterationTablesChangedEventArgs(value));
+        }
+    }
 
     private bool useUnbufferedTransliteratorService;
 
@@ -22,46 +58,32 @@ public class TransliteratorServiceContext : ITransliteratorService
         }
     }
 
-    public ITransliteratorService CurrentService { get; private set; }
+    public event EventHandler<TransliterationEnabledChangedEventArgs>? TransliterationEnabledChanged;
 
-    public bool TransliterationEnabled
-    {
-        get => CurrentService.TransliterationEnabled;
-        set => CurrentService.TransliterationEnabled = value;
-    }
+    public event EventHandler<TransliterationTableChangedEventArgs>? TransliterationTableChanged;
 
-    public TransliterationTable? TransliterationTable
-    {
-        get => CurrentService.TransliterationTable;
-        set
-        {
-            CurrentService.TransliterationTable = value;
-            TransliterationTableChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    public event EventHandler? TransliterationTableChanged;
+    public event EventHandler<TransliterationTablesChangedEventArgs>? TransliterationTablesChanged;
 
     public TransliteratorServiceContext()
     {
-        CurrentService = _bufferedTransliteratorService;
+        _currentService = _bufferedTransliteratorService;
     }
 
     private void UpdateCurrentService(bool useUnbufferedTransliteratorService)
     {
         if (useUnbufferedTransliteratorService)
         {
-            _unbufferedTransliteratorService.TransliterationTable = CurrentService.TransliterationTable;
-            _unbufferedTransliteratorService.TransliterationEnabled = CurrentService.TransliterationEnabled;
-            CurrentService.TransliterationEnabled = false;
-            CurrentService = _unbufferedTransliteratorService;
+            _unbufferedTransliteratorService.TransliterationTable = _currentService.TransliterationTable;
+            _unbufferedTransliteratorService.TransliterationEnabled = _currentService.TransliterationEnabled;
+            _currentService.TransliterationEnabled = false;
+            _currentService = _unbufferedTransliteratorService;
         }
         else
         {
-            _bufferedTransliteratorService.TransliterationTable = CurrentService.TransliterationTable;
-            _bufferedTransliteratorService.TransliterationEnabled = CurrentService.TransliterationEnabled;
-            CurrentService.TransliterationEnabled = false;
-            CurrentService = _bufferedTransliteratorService;
+            _bufferedTransliteratorService.TransliterationTable = _currentService.TransliterationTable;
+            _bufferedTransliteratorService.TransliterationEnabled = _currentService.TransliterationEnabled;
+            _currentService.TransliterationEnabled = false;
+            _currentService = _bufferedTransliteratorService;
         }
     }
 }

@@ -2,13 +2,12 @@
 using CommunityToolkit.Mvvm.Input;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
-using Wpf.Ui.Common.Interfaces;
 
 namespace Transliterator.ViewModels;
 
-public partial class SnippetTransliteratorViewModel : ObservableObject, INavigationAware
+public partial class SnippetTransliteratorViewModel : ObservableObject
 {
-    private ITransliteratorService _transliteratorService;
+    private ITransliteratorServiceContext _transliteratorServiceContext;
 
     [ObservableProperty]
     private bool _shouldTransliterateOnTheFly;
@@ -20,49 +19,29 @@ public partial class SnippetTransliteratorViewModel : ObservableObject, INavigat
     private string _userInput;
 
     [ObservableProperty]
-    private TransliterationTable transliterationTable;
-
-    [ObservableProperty]
     private bool _isTextBoxFocused;
 
-    public SnippetTransliteratorViewModel(TransliteratorServiceContext transliteratorServiceStrategy)
+    public SnippetTransliteratorViewModel(ITransliteratorServiceContext transliteratorServiceContext)
     {
-        _transliteratorService = transliteratorServiceStrategy;
+        _transliteratorServiceContext = transliteratorServiceContext;
     }
 
     partial void OnUserInputChanged(string value)
     {
         if (ShouldTransliterateOnTheFly)
-        {
-            string textToTransliterate = value;
-            string transliterationResults = _transliteratorService.TransliterationTable?.Transliterate(textToTransliterate);
-            TransliterationResults = transliterationResults;
-        }
+            TransliterationResults = _transliteratorServiceContext.TransliterationTable?.Transliterate(value);
     }
 
     [RelayCommand]
     private void TransliterateSnippet()
     {
-        string textToTransliterate = UserInput;
-        if (!string.IsNullOrEmpty(textToTransliterate))
-        {
-            string transliterationResults = _transliteratorService.TransliterationTable?.Transliterate(textToTransliterate);
-            TransliterationResults = transliterationResults;
-        }
-    }
-
-    public void OnNavigatedTo()
-    {
-        _transliteratorService.TransliterationEnabled = false;
-    }
-
-    public void OnNavigatedFrom()
-    {
-        _transliteratorService.TransliterationEnabled = true;
+        if (!string.IsNullOrEmpty(UserInput))
+            TransliterationResults = _transliteratorServiceContext.TransliterationTable?.Transliterate(UserInput);
     }
 
     partial void OnIsTextBoxFocusedChanged(bool value)
     {
-        _transliteratorService.TransliterationEnabled = !value;
+        if (value && _transliteratorServiceContext.TransliterationEnabled)
+            _transliteratorServiceContext.TransliterationEnabled = false;
     }
 }

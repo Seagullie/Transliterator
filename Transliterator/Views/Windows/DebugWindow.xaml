@@ -5,152 +5,119 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:viewmodels="clr-namespace:Transliterator.ViewModels"
-    x:Name="DebugWindow1"
     Title="Debug"
-    Width="910"
+    Width="800"
     Height="Auto"
-    d:DataContext="{d:DesignInstance Type=viewmodels:DebugViewModel}"
-    d:DesignHeight="618.058"
-    Closed="DebugWindow1_Closed"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Loaded="MainWindow_Loaded"
-    ResizeMode="CanMinimize"
+    Closed="DebugWindow_Closed"
+    ExtendsContentIntoTitleBar="True"
+    Loaded="DebugWindow_Loaded"
+    WindowBackdropType="Mica"
+    WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <!--  TODO: Refactor  -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-    <Border x:Name="WindowBorder">
+        <ui:TitleBar
+            Title="Debug Window"
+            Grid.Row="0"
+            Icon="pack://application:,,,/Resources/Icons/translit-icon-sharp-corners.png" />
 
-        <Grid Margin="15" HorizontalAlignment="Stretch">
+        <Grid Grid.Row="1">
+            <Grid Margin="15" HorizontalAlignment="Stretch">
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="27*" />
-                <ColumnDefinition Width="589*" />
-                <ColumnDefinition Width="264*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="8*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-            <!--  TODO: Fix Foreground binding  -->
-            <Label
-                x:Name="StateLabel"
-                Grid.Column="1"
-                Margin="3,11,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Content="{Binding AppStateDesc}"
-                Foreground="Green" />
-            <ComboBox
-                x:Name="translitTablesBox"
-                Grid.Column="1"
-                Margin="0,14,0,0"
-                HorizontalAlignment="Right"
-                BorderBrush="#0F000000"
-                ItemsSource="{Binding TranslitTables, Mode=OneWay}"
-                SelectedItem="{Binding SelectedTranslitTable}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="27*" />
+                    <ColumnDefinition Width="589*" />
+                    <ColumnDefinition Width="264*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="8*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
 
-            <DockPanel Grid.Row="1" Grid.Column="1">
+                <ComboBox
+                    Grid.Column="1"
+                    MinWidth="150"
+                    MaxWidth="150"
+                    HorizontalAlignment="Right"
+                    DisplayMemberPath="Name"
+                    DockPanel.Dock="Right"
+                    ItemsSource="{Binding ViewModel.TransliterationTables}"
+                    SelectedItem="{Binding ViewModel.SelectedTransliterationTable}"
+                    ToolTip="{Binding ViewModel.SelectedTransliterationTable.Name}"
+                    ToolTipService.InitialShowDelay="0" />
 
-                <TextBox
-                    x:Name="textBox1"
-                    Margin="0,30,0,0"
-                    DockPanel.Dock="Bottom"
-                    TextWrapping="Wrap" />
-                <!--  TODO: Figure out how to remove white border around the textbox  -->
-                <!--  TODO: Figure out how to make it noneditable  -->
-                <RichTextBox
-                    x:Name="outputTextBox"
-                    DockPanel.Dock="Bottom"
-                    VerticalScrollBarVisibility="Auto" />
-            </DockPanel>
+                <DockPanel Grid.Row="1" Grid.Column="1">
 
-            <UniformGrid
-                Grid.Row="1"
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Stretch"
-                Columns="1"
-                Rows="11">
+                    <TextBox
+                        x:Name="textBox1"
+                        Margin="0,30,0,0"
+                        DockPanel.Dock="Bottom"
+                        TextWrapping="Wrap" />
+                    <!--  TODO: Figure out how to remove white border around the textbox  -->
+                    <!--  TODO: Figure out how to make it noneditable  -->
+                    <RichTextBox
+                        x:Name="outputTextBox"
+                        DockPanel.Dock="Bottom"
+                        VerticalScrollBarVisibility="Auto" />
+                </DockPanel>
 
-                <Button
-                    x:Name="toggleTranslitBtn"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    Command="{Binding ToggleTranslitCommand}"
-                    Content="Toggle" />
-                <Button
-                    x:Name="settingsBtn"
-                    HorizontalAlignment="Stretch"
-                    AutomationProperties.AutomationId="settingsBtn"
-                    Command="{Binding OpenSettingsWindowCommand}"
-                    Content="Settings" />
-                <Button
-                    x:Name="toggleLogsBtn"
-                    HorizontalAlignment="Stretch"
-                    Command="{Binding ToggleLogsCommand}"
-                    Content="Toggle Logs"
-                    Foreground="#FFA41E9E" />
-                <Button
-                    x:Name="showTranslitTableBtn"
-                    HorizontalAlignment="Stretch"
-                    Command="{Binding ShowTranslitTableCommand}"
-                    Content="Show Translit Table" />
-                <Button
-                    x:Name="checkCaseButtonsBtn"
-                    HorizontalAlignment="Stretch"
-                    Command="{Binding CheckCaseButtonsCommand}"
-                    Content="Check Case Buttons" />
-                <Button
-                    x:Name="simulateKeyboardInputBtn"
-                    HorizontalAlignment="Stretch"
-                    Click="simulateKeyboardInputBtn_Click"
-                    Content="Simulate Keyboard Input" />
-                <Button
-                    x:Name="getKeyLoggerMemoryBtn"
-                    HorizontalAlignment="Stretch"
-                    Command="{Binding GetKeyLoggerMemoryCommand}"
-                    Content="Get Key Logger Memory" />
-                <Button
-                    x:Name="allowInjectedKeysBtn"
-                    HorizontalAlignment="Stretch"
-                    Command="{Binding AllowInjectedKeysCommand}"
-                    Content="Allow Injected Keys" />
-                <Button
-                    x:Name="slowDownKBEInjectionsBtn"
-                    HorizontalAlignment="Stretch"
-                    Command="{Binding SlowDownKBEInjectionsCommand}"
-                    Content="Slow Down KBE Injections" />
-                <Button
-                    x:Name="getLayoutBtn"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding GetLayoutCommand}"
-                    Content="Get Layout" />
-            </UniformGrid>
+                <UniformGrid
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Stretch"
+                    Columns="1"
+                    Rows="11">
 
-            <CheckBox
-                x:Name="underTestByWinDriverCheckBox"
-                Grid.Row="2"
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                AutomationProperties.AutomationId="underTestByWinDriverCheckBox"
-                Background="#FF882727"
-                BorderBrush="#FF962828"
-                BorderThickness="1,1,1,1"
-                Content="Under Test By WinDriver"
-                Foreground="#FFA43636" />
-            <Button
-                x:Name="changeThemeBtn"
-                Grid.Row="2"
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Command="{Binding ChangeThemeCommand}"
-                Content="Change Theme" />
+                    <ToggleButton
+                        HorizontalAlignment="Stretch"
+                        Content="Toggle Transliterator"
+                        IsChecked="{Binding ViewModel.AppState, Mode=TwoWay}" />
+                    <ToggleButton
+                        HorizontalAlignment="Stretch"
+                        Content="Toggle Logs"
+                        IsChecked="{Binding ViewModel.LogsEnabled, Mode=TwoWay}" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.LogTransliterationTableCommand}"
+                        Content="Print Translit Table" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.CheckCaseButtonsCommand}"
+                        Content="Check Case Buttons"
+                        IsEnabled="False" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.GetKeyLoggerMemoryCommand}"
+                        Content="Get Key Logger Memory"
+                        IsEnabled="False" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.AllowInjectedKeysCommand}"
+                        Content="Allow Injected Keys"
+                        IsEnabled="False" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Click="SimulateKeyboardInputBtn_Click"
+                        Content="Simulate Keyboard Input" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.SlowDownKBEInjectionsCommand}"
+                        Content="Slow Down KBE Injections"
+                        IsEnabled="False" />
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.GetLayoutCommand}"
+                        Content="Get Layout" />
+                </UniformGrid>
+            </Grid>
         </Grid>
-    </Border>
+    </Grid>
 </ui:UiWindow>

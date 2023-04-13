@@ -1,26 +1,33 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+using Transliterator.Core.Helpers.Events;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 
 namespace Transliterator.ViewModels;
 
-public partial class TableViewModel : ObservableObject
+public partial class TableViewModel : ObservableObject, IDisposable
 {
-    private readonly ITransliteratorService _transliteratorService;
+    private readonly ITransliteratorServiceContext _transliteratorServiceContext;
 
     public TransliterationTable? SelectedTransliterationTable
     {
-        get => _transliteratorService.TransliterationTable;
+        get => _transliteratorServiceContext.TransliterationTable;
     }
 
-    public TableViewModel(TransliteratorServiceContext transliteratorServiceContext)
+    public TableViewModel(ITransliteratorServiceContext transliteratorServiceContext)
     {
-        _transliteratorService = transliteratorServiceContext;
-        transliteratorServiceContext.TransliterationTableChanged += OnTransliterationTableChanged;
+        _transliteratorServiceContext = transliteratorServiceContext;
+        _transliteratorServiceContext.TransliterationTableChanged += OnTransliterationTableChanged;
     }
 
-    private void OnTransliterationTableChanged(object? sender, System.EventArgs e)
+    private void OnTransliterationTableChanged(object? sender, TransliterationTableChangedEventArgs e)
     {
         OnPropertyChanged(nameof(SelectedTransliterationTable));
+    }
+
+    public void Dispose()
+    {
+        _transliteratorServiceContext.TransliterationTableChanged -= OnTransliterationTableChanged;
     }
 }

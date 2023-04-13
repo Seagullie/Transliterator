@@ -1,6 +1,4 @@
-﻿using Transliterator.Core.Models;
-
-namespace Transliterator.Core.Services.BufferedTransliterator;
+﻿namespace Transliterator.Core.Models;
 
 /// <summary>
 /// At any given time, buffer can be in these 5 states:<br/>
@@ -31,7 +29,7 @@ public class MultiGraphBuffer : List<string>
             InvokeBrokenMultiGraphEvent();
         }
 
-        base.Add(item);
+        Add(item);
     }
 
     public void InvokeBrokenMultiGraphEvent()

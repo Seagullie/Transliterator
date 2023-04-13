@@ -4,7 +4,6 @@ using Transliterator.Core.Helpers;
 using Transliterator.Core.Helpers.Exceptions;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
-using Transliterator.Core.Services.BufferedTransliterator;
 
 namespace Transliterator.Core.Services;
 
@@ -20,7 +19,7 @@ public class BufferedTransliteratorService : ITransliteratorService
 
     public BufferedTransliteratorService()
     {
-        _loggerService = LoggerService.GetInstance();
+        _loggerService = Singleton<LoggerService>.Instance;
         _keyboardHook = Singleton<KeyboardHook>.Instance;
         _keyboardInputGenerator = Singleton<KeyboardInputGenerator>.Instance;
         _keyboardHook.KeyDown += HandleKeyDown;
@@ -31,7 +30,7 @@ public class BufferedTransliteratorService : ITransliteratorService
     // Constructor for testing purposes
     internal BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator)
     {
-        _loggerService = LoggerService.GetInstance();
+        _loggerService = Singleton<LoggerService>.Instance;
         _keyboardHook = keyboardHook;
         _keyboardInputGenerator = keyboardInputGenerator;
 

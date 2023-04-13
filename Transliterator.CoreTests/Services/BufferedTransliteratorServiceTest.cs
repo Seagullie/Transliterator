@@ -3,7 +3,7 @@ using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 using Transliterator.CoreTests.Fakes;
 
-namespace Transliterator.CoreTests.Services.BufferedTransliterator;
+namespace Transliterator.CoreTests.Services;
 
 [TestClass]
 public class BufferedTransliteratorServiceTest

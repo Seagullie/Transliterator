@@ -3,7 +3,7 @@ using Transliterator.Core.Helpers.Events;
 
 namespace Transliterator.Core.Services;
 
-public class LoggerService
+public class LoggerService : ILoggerService
 {
     public event EventHandler<NewLogMessageEventArgs>? NewLogMessage;
 

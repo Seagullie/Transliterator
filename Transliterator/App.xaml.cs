@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using Transliterator.Core.Helpers;
+using Transliterator.Core.Keyboard;
 using Transliterator.Core.Services;
 using Transliterator.Services;
 using Wpf.Ui.Mvvm.Contracts;
@@ -37,9 +38,15 @@ public partial class App : Application
             services.AddSingleton<IThemeService, ThemeService>();
 
             services.AddSingleton<SettingsService>();
-            services.AddSingleton<ITransliteratorServiceContext, TransliteratorServiceContext>();
+
+            // Transliterator services        
+            services.AddSingleton<IKeyboardHook, KeyboardHook>();
             services.AddSingleton<IHotKeyService, HotKeyService>();
-            services.AddSingleton(Singleton<LoggerService>.Instance);
+            services.AddSingleton<IKeyboardInputGenerator, KeyboardInputGenerator>();
+            services.AddSingleton<ILoggerService, LoggerService>();
+            services.AddSingleton<ITransliteratorServiceContext, TransliteratorServiceContext>();
+            services.AddSingleton<BufferedTransliteratorService>();
+            services.AddSingleton<UnbufferedTransliteratorService>();
 
             // Service containing navigation, same as INavigationWindow... but without window
             services.AddSingleton<INavigationService, NavigationService>();

@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Transliterator.Core.Helpers;
 using Transliterator.Core.Helpers.Events;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Services;
@@ -13,10 +12,13 @@ namespace Transliterator.Views.Windows;
 
 public partial class DebugWindow
 {
-    private readonly LoggerService _loggerService;
+    private readonly ILoggerService _loggerService;
+    private readonly IKeyboardInputGenerator _keyboardInputGenerator;
 
-    public DebugWindow(DebugWindowViewModel viewModel, LoggerService loggerService)
+    public DebugWindow(DebugWindowViewModel viewModel, ILoggerService loggerService, IKeyboardInputGenerator keyboardInputGenerator)
     {
+        _keyboardInputGenerator = keyboardInputGenerator;
+
         ViewModel = viewModel;
         DataContext = this;
 
@@ -84,6 +86,6 @@ public partial class DebugWindow
     private async void SimulateKeyboardInputBtn_Click(object sender, RoutedEventArgs e)
     {
         textBox1.Focus();
-        Singleton<KeyboardInputGenerator>.Instance.TextEntry("simulated");
+        _keyboardInputGenerator.TextEntry("simulated");
     }
 }

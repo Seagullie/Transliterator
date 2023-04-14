@@ -8,6 +8,11 @@ namespace Transliterator.Core.Services;
 // (except for Isolated Graphemes. Those can be transliterated right away so there is no need to pass and instantly erase a character)
 public class UnbufferedTransliteratorService : BufferedTransliteratorService
 {
+    public UnbufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator, ILoggerService loggerService)
+        : base(keyboardHook, keyboardInputGenerator, loggerService)
+    {
+    }
+
     /// <summary>
     /// Send backspace characters to erase user input
     /// </summary>

@@ -1,5 +1,4 @@
-﻿using Transliterator.Core.Helpers;
-using Transliterator.Core.Keyboard;
+﻿using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Helpers;
 
@@ -7,14 +6,14 @@ namespace Transliterator.Core.Services;
 
 public class HotKeyService : IHotKeyService
 {
-    private readonly KeyboardHook _keyboardHook;
+    private readonly IKeyboardHook _keyboardHook;
     private readonly Dictionary<HotKey, List<Action>> _hotKeys = new();
 
     public bool IsHotkeyHandlingEnabled { get; set; } = true;
 
-    public HotKeyService()
+    public HotKeyService(IKeyboardHook keyboardHook)
     {
-        _keyboardHook = Singleton<KeyboardHook>.Instance;
+        _keyboardHook = keyboardHook;
         _keyboardHook.KeyDown += HandleKeyPressed;
     }
 

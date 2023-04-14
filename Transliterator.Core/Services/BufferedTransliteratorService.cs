@@ -1,6 +1,4 @@
-﻿using System.IO;
-using Transliterator.Core.Enums;
-using Transliterator.Core.Helpers;
+﻿using Transliterator.Core.Enums;
 using Transliterator.Core.Helpers.Exceptions;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
@@ -9,32 +7,20 @@ namespace Transliterator.Core.Services;
 
 public class BufferedTransliteratorService : ITransliteratorService
 {
-    public static readonly string StandardTransliterationTablesPath = Path.Combine(AppContext.BaseDirectory, "Resources/TranslitTables");
+    protected readonly IKeyboardHook _keyboardHook;
+    protected readonly IKeyboardInputGenerator _keyboardInputGenerator;
+    protected readonly ILoggerService _loggerService;
 
     protected MultiGraphBuffer buffer = new();
 
-    protected readonly LoggerService _loggerService;
-    protected readonly IKeyboardHook _keyboardHook;
-    protected readonly IKeyboardInputGenerator _keyboardInputGenerator;
-
-    public BufferedTransliteratorService()
-    {
-        _loggerService = Singleton<LoggerService>.Instance;
-        _keyboardHook = Singleton<KeyboardHook>.Instance;
-        _keyboardInputGenerator = Singleton<KeyboardInputGenerator>.Instance;
-        _keyboardHook.KeyDown += HandleKeyDown;
-
-        buffer.MultiGraphBrokenEvent += Transliterate;
-    }
-
-    // Constructor for testing purposes
-    internal BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator)
-    {
-        _loggerService = Singleton<LoggerService>.Instance;
+    public BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator, ILoggerService loggerService)
+    {      
         _keyboardHook = keyboardHook;
         _keyboardInputGenerator = keyboardInputGenerator;
+        _loggerService = loggerService;
 
         _keyboardHook.KeyDown += HandleKeyDown;
+
         buffer.MultiGraphBrokenEvent += Transliterate;
     }
 

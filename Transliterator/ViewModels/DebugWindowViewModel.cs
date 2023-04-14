@@ -12,13 +12,13 @@ namespace Transliterator.ViewModels;
 
 public partial class DebugWindowViewModel : ObservableObject, IDisposable
 {
-    private readonly LoggerService _loggerService;
+    private readonly ILoggerService _loggerService;
     private readonly ITransliteratorServiceContext _transliteratorServiceContext;
 
     [ObservableProperty]
     private bool logsEnabled = true;
 
-    public DebugWindowViewModel(ITransliteratorServiceContext transliteratorServiceContext, LoggerService loggerService)
+    public DebugWindowViewModel(ITransliteratorServiceContext transliteratorServiceContext, ILoggerService loggerService)
     {
         _transliteratorServiceContext = transliteratorServiceContext;
         _loggerService = loggerService;

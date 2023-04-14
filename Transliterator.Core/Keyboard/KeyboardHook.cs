@@ -1,15 +1,12 @@
 ﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Native;
 using Transliterator.Core.Structs;
 
-[assembly: InternalsVisibleTo("Transliterator.CoreTests")]
-
 namespace Transliterator.Core.Keyboard;
 
-internal sealed class KeyboardHook : IKeyboardHook, IDisposable
+public sealed class KeyboardHook : IKeyboardHook, IDisposable
 {
     private const int WmKeyDown = 256;
     private const int WmSysKeyDown = 260;
@@ -40,7 +37,10 @@ internal sealed class KeyboardHook : IKeyboardHook, IDisposable
 
     private NativeMethods.LowLevelKeyboardProc _proc;
 
-    internal bool SkipUnicodeKeys { get; set; } = true;
+    /// <summary>
+    /// Ignores input from KeyboardInputGenerator
+    /// </summary>
+    public bool SkipUnicodeKeys { get; set; } = true;
 
     public static bool IsCapsLockActive { get => _capsLock; }
     public static bool IsShiftDown { get => _leftShift || _rightShift; }

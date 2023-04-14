@@ -6,8 +6,8 @@ namespace Transliterator.Core.Services;
 
 public class TransliteratorServiceContext : ITransliteratorServiceContext, ITransliteratorService
 {
-    private readonly ITransliteratorService _bufferedTransliteratorService = new BufferedTransliteratorService();
-    private readonly ITransliteratorService _unbufferedTransliteratorService = new UnbufferedTransliteratorService();
+    private readonly ITransliteratorService _bufferedTransliteratorService;
+    private readonly ITransliteratorService _unbufferedTransliteratorService;
 
     private ITransliteratorService _currentService;
 
@@ -64,8 +64,11 @@ public class TransliteratorServiceContext : ITransliteratorServiceContext, ITran
 
     public event EventHandler<TransliterationTablesChangedEventArgs>? TransliterationTablesChanged;
 
-    public TransliteratorServiceContext()
+    public TransliteratorServiceContext(BufferedTransliteratorService bufferedTransliteratorService, UnbufferedTransliteratorService unbufferedTransliteratorService)
     {
+        _bufferedTransliteratorService = bufferedTransliteratorService;
+        _unbufferedTransliteratorService = unbufferedTransliteratorService;
+
         _currentService = _bufferedTransliteratorService;
     }
 

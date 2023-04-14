@@ -1,11 +1,10 @@
 ﻿using Transliterator.Core.Helpers.Events;
 
-namespace Transliterator.Core.Services
-{
-    public interface ILoggerService
-    {
-        event EventHandler<NewLogMessageEventArgs>? NewLogMessage;
+namespace Transliterator.Core.Services;
 
-        void LogMessage(object sender, string message, string color = null);
-    }
+public interface ILoggerService
+{
+    event EventHandler<NewLogMessageEventArgs>? NewLogMessage;
+
+    void LogMessage(object sender, string message, string color = null);
 }

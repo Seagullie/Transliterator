@@ -13,7 +13,7 @@ namespace Transliterator.ViewModels;
 
 public partial class DebugWindowViewModel : ObservableObject, IDisposable
 {
-    private readonly ILoggerService _loggerService;
+    private readonly ILoggerService? _loggerService;
     private readonly ITransliteratorServiceContext _transliteratorServiceContext;
     private readonly IKeyboardHook _keyboardHook;
 

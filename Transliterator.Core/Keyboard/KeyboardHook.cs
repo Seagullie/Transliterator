@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Native;
+using Transliterator.Core.Services;
 using Transliterator.Core.Structs;
 
 namespace Transliterator.Core.Keyboard;
@@ -37,6 +38,8 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
 
     private NativeMethods.LowLevelKeyboardProc _proc;
 
+    private readonly ILoggerService? _loggerService;
+
     /// <summary>
     /// Ignores input from KeyboardInputGenerator
     /// </summary>
@@ -50,6 +53,11 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
         SyncLockState();
         _proc = HookCallback;
         SetHook(_proc);
+    }
+
+    public KeyboardHook(ILoggerService loggerService) : this()
+    {
+        _loggerService = loggerService;
     }
 
     private IntPtr SetHook(NativeMethods.LowLevelKeyboardProc proc)
@@ -104,7 +112,7 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
         }
         else
         {
-           character = keyboardLowLevelHookStruct.VirtualKeyCode.ToUnicode();
+            character = keyboardLowLevelHookStruct.VirtualKeyCode.ToUnicode();
         }
 
         // Check the key to find if there any modifiers, store these in the global values.
@@ -191,14 +199,19 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
             // Skip the unicode input
             if (SkipUnicodeKeys && eventArgs.Key == VirtualKeyCode.Packet)
             {
-                Debug.WriteLine($"{eventArgs.Key} ignored (injected) ({eventArgs.Character}) ({(eventArgs.IsKeyDown ? "down" : "up")})", $"[KeyboardHook {GetHashCode()}]");
+                var log = $"[KeyboardHook]: {eventArgs.Key} ignored (injected) ({eventArgs.Character}) ({(eventArgs.IsKeyDown ? "down" : "up")})";
+                Debug.WriteLine(log);
+                _loggerService?.LogMessage(this, log);
 
                 return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
             }
 
             if (eventArgs.IsKeyDown)
             {
-                Debug.WriteLine($"{eventArgs.Key} pressed down ({eventArgs.Character})", $"[KeyboardHook {GetHashCode()}]");
+                var log = $"[KeyboardHook]: {eventArgs.Key} pressed down ({eventArgs.Character})";
+                Debug.WriteLine(log);
+                _loggerService?.LogMessage(this, log);
+
                 KeyDown?.Invoke(this, eventArgs);
 
                 if (eventArgs.Handled)

@@ -1,4 +1,5 @@
-﻿using Transliterator.Core.Enums;
+﻿using System.Diagnostics;
+using Transliterator.Core.Enums;
 using Transliterator.Core.Helpers.Exceptions;
 using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
@@ -9,19 +10,23 @@ public class BufferedTransliteratorService : ITransliteratorService
 {
     protected readonly IKeyboardHook _keyboardHook;
     protected readonly IKeyboardInputGenerator _keyboardInputGenerator;
-    protected readonly ILoggerService _loggerService;
+    protected readonly ILoggerService? _loggerService;
 
     protected MultiGraphBuffer buffer = new();
 
-    public BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator, ILoggerService loggerService)
+    public BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator)
     {      
         _keyboardHook = keyboardHook;
         _keyboardInputGenerator = keyboardInputGenerator;
-        _loggerService = loggerService;
 
         _keyboardHook.KeyDown += HandleKeyDown;
 
         buffer.MultiGraphBrokenEvent += Transliterate;
+    }
+
+    public BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator, ILoggerService loggerService) : this(keyboardHook, keyboardInputGenerator)
+    {
+        _loggerService = loggerService;
     }
 
     public event EventHandler? StateChangedEvent;
@@ -83,7 +88,9 @@ public class BufferedTransliteratorService : ITransliteratorService
         // Otherwise combos get broken by simply pressing shift, for example
         if (isIrrelevant)
         {
-            _loggerService.LogMessage(this, $"[Transliterator]: This key was skipped as irrelevant: {e.Character}");
+            var log = $"[Transliterator]: This key was skipped as irrelevant: {e.Character}";
+            Debug.WriteLine(log);
+            _loggerService?.LogMessage(this, log);
 
             if (buffer.Count > 0 && !e.IsShift)
             {

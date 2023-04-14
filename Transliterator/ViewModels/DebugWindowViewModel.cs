@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using Transliterator.Core.Helpers.Events;
+using Transliterator.Core.Keyboard;
 using Transliterator.Core.Models;
 using Transliterator.Core.Services;
 using Transliterator.Helpers;
@@ -14,14 +15,16 @@ public partial class DebugWindowViewModel : ObservableObject, IDisposable
 {
     private readonly ILoggerService _loggerService;
     private readonly ITransliteratorServiceContext _transliteratorServiceContext;
+    private readonly IKeyboardHook _keyboardHook;
 
     [ObservableProperty]
     private bool logsEnabled = true;
 
-    public DebugWindowViewModel(ITransliteratorServiceContext transliteratorServiceContext, ILoggerService loggerService)
+    public DebugWindowViewModel(ITransliteratorServiceContext transliteratorServiceContext, ILoggerService loggerService, IKeyboardHook keyboardHook)
     {
         _transliteratorServiceContext = transliteratorServiceContext;
         _loggerService = loggerService;
+        _keyboardHook = keyboardHook;
 
         _transliteratorServiceContext.TransliterationEnabledChanged += OnTransliterationEnabledChanged;
         _transliteratorServiceContext.TransliterationTableChanged += OnTransliterationTableChanged;
@@ -46,6 +49,16 @@ public partial class DebugWindowViewModel : ObservableObject, IDisposable
         set => _transliteratorServiceContext.TransliterationTables = value;
     }
 
+    public bool AllowInjectedKeys
+    {
+        get => !_keyboardHook.SkipUnicodeKeys;
+        set
+        {
+            _keyboardHook.SkipUnicodeKeys = !value;
+            _loggerService.LogMessage(this, $"Injected Keys will now {(value ? "be" : "not be")} handled by Keyboard Hook");
+        }
+    }
+
     private void OnTransliterationEnabledChanged(object? sender, TransliterationEnabledChangedEventArgs e)
     {
         OnPropertyChanged(nameof(AppState));
@@ -59,14 +72,6 @@ public partial class DebugWindowViewModel : ObservableObject, IDisposable
     private void OnTransliterationTablesChanged(object? sender, TransliterationTablesChangedEventArgs e)
     {
         OnPropertyChanged(nameof(TransliterationTables));
-    }
-
-    //// TODO: AllowInjectedKeys
-    [RelayCommand]
-    private void AllowInjectedKeys()
-    {
-        //KeyboardHook.SkipInjected = false;
-        //_loggerService.LogMessage(this, "Injected Keys will now be handled by Keyboard Hook");
     }
 
     // TODO: CheckCaseButtons
@@ -95,7 +100,7 @@ public partial class DebugWindowViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private void LogTransliterateTable()
+    private void LogTransliterationTable()
     {
         string serializedTable = JsonConvert.SerializeObject(SelectedTransliterationTable, Formatting.Indented);
         _loggerService.LogMessage(this, "\n" + serializedTable);

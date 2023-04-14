@@ -2,5 +2,7 @@
 
 public interface IKeyboardHook
 {
+    bool SkipUnicodeKeys { get; set; }
+
     event EventHandler<KeyboardHookEventArgs>? KeyDown;
 }

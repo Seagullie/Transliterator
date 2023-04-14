@@ -98,11 +98,10 @@
                         Command="{Binding ViewModel.GetKeyLoggerMemoryCommand}"
                         Content="Get Key Logger Memory"
                         IsEnabled="False" />
-                    <Button
+                    <ToggleButton
                         HorizontalAlignment="Stretch"
-                        Command="{Binding ViewModel.AllowInjectedKeysCommand}"
                         Content="Allow Injected Keys"
-                        IsEnabled="False" />
+                        IsChecked="{Binding ViewModel.AllowInjectedKeys, Mode=TwoWay}" />
                     <Button
                         HorizontalAlignment="Stretch"
                         Click="SimulateKeyboardInputBtn_Click"

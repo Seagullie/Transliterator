@@ -6,5 +6,5 @@ public interface ILoggerService
 {
     event EventHandler<NewLogMessageEventArgs>? NewLogMessage;
 
-    void LogMessage(object sender, string message, string color = null);
+    void LogMessage(object? sender, string message, string color = null);
 }

@@ -24,7 +24,7 @@ public partial class SettingsService : SettingsBase
     public string PathToCustomToggleOffSound { get; set; } = "";
     public string PathToCustomToggleOnSound { get; set; } = "";
 
-    public HotKey? ToggleHotKey { get; set; } = new(VirtualKeyCode.KeyT, ModifierKeys.Alt);
+    public HotKey ToggleHotKey { get; set; } = new(VirtualKeyCode.KeyT, ModifierKeys.Alt);
 
     // Events
 

@@ -65,4 +65,10 @@ internal static partial class NativeMethods
 
     [DllImport(User32)]
     internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr lpdwProcessId);
+
+    [DllImport(User32)]
+    internal static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+    [DllImport(User32)]
+    internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 }

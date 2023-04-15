@@ -3,16 +3,23 @@ using Transliterator.Core.Enums;
 
 namespace Transliterator.Core.Models;
 
-public class HotKey
+public struct HotKey
 {
+    private static int hotkeyIdCounter = 0;
+
     public static HotKey None { get; } = new();
+
     public VirtualKeyCode Key { get; set; }
+
     public ModifierKeys Modifiers { get; set; }
+
+    public int Id { get; private set; }
 
     public HotKey(VirtualKeyCode keyCode, ModifierKeys modifiers)
     {
         Key = keyCode;
         Modifiers = modifiers;
+        Id = hotkeyIdCounter++;
     }
 
     public HotKey(uint keyCode, uint modifiers) : this((VirtualKeyCode)keyCode, (ModifierKeys)modifiers)
@@ -23,6 +30,17 @@ public class HotKey
     {
         Key = VirtualKeyCode.None;
         Modifiers = ModifierKeys.None;
+        Id = hotkeyIdCounter++;
+    }
+
+    public static bool operator ==(HotKey a, HotKey b)
+    {
+        return a.Equals(b);
+    }
+
+    public static bool operator !=(HotKey a, HotKey b)
+    {
+        return !(a == b);
     }
 
     public override bool Equals(object? obj)

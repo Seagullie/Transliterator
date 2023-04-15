@@ -30,7 +30,7 @@ public class HotKeyTextBox : TextBox
         if (ContextMenu is not null)
             ContextMenu.Visibility = Visibility.Collapsed;
 
-        Text = HotKey?.ToString();
+        Text = HotKey.ToString();
     }
 
     public HotKey HotKey

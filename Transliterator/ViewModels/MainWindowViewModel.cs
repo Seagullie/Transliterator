@@ -41,7 +41,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     private ObservableCollection<MenuItem> trayMenuItems = new();
 
     [ObservableProperty]
-    private HotKey? toggleAppStateShortcut;
+    private HotKey toggleAppStateShortcut;
 
     public MainWindowViewModel(SettingsService settingsService, ITransliteratorServiceContext transliteratorServiceContext, IHotKeyService hotKeyService, IThemeService themeService)
     {
@@ -61,7 +61,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         AppState = _settingsService.IsTransliteratorEnabledAtStartup;
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-        if (ToggleAppStateShortcut != null)
+        if (ToggleAppStateShortcut != HotKey.None)
             _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
 
         WindowState = _settingsService.IsMinimizedStartEnabled ? WindowState.Minimized : WindowState.Normal;
@@ -188,11 +188,11 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     private void OnSettingsSaved(object? sender, EventArgs e)
     {
-        if (ToggleAppStateShortcut is not null)
+        if (ToggleAppStateShortcut != HotKey.None)
             _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-        if (ToggleAppStateShortcut != null)
+        if (ToggleAppStateShortcut != HotKey.None)
             _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
 
         _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;

@@ -103,16 +103,19 @@ public partial class SettingsViewModel : ObservableObject
 
     private void SavePropertiesToSettings()
     {
-        _settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
-        _settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
-        _settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
-        _settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
-        _settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
-        _settingsService.IsToggleSoundOn = IsToggleSoundOn;
-        _settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
-        _settingsService.SelectedTheme = CurrentTheme;
-        _settingsService.ToggleHotKey = ToggleHotKey;
-        _settingsService.Save();
+        if (_isInitialized)
+        {
+            _settingsService.IsAltShiftGlobalShortcutEnabled = IsAltShiftGlobalShortcutEnabled;
+            _settingsService.IsAutoStartEnabled = IsAutoStartEnabled;
+            _settingsService.IsBufferInputEnabled = IsBufferInputEnabled;
+            _settingsService.IsMinimizedStartEnabled = IsMinimizedStartEnabled;
+            _settingsService.IsStateOverlayEnabled = IsStateOverlayEnabled;
+            _settingsService.IsToggleSoundOn = IsToggleSoundOn;
+            _settingsService.IsTransliteratorEnabledAtStartup = IsTranslitEnabledAtStartup;
+            _settingsService.SelectedTheme = CurrentTheme;
+            _settingsService.ToggleHotKey = ToggleHotKey;
+            _settingsService.Save();
+        }
     }
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)

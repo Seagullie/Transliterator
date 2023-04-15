@@ -7,9 +7,10 @@ namespace Transliterator.Core.Services;
 public class LoggerService : ILoggerService
 {
     private readonly Dictionary<Type, string> _interfaceColors = new() {
-            { typeof(IKeyboardHook), "red" },
-            { typeof(ITransliteratorService), "green" }
-        };
+        { typeof(IKeyboardHook), "red" },
+        { typeof(ITransliteratorService), "green" },
+        { typeof(IHotKeyService), "yellow" }
+    };
 
     public event EventHandler<NewLogMessageEventArgs>? NewLogMessage;
 
@@ -28,6 +29,6 @@ public class LoggerService : ILoggerService
         }
 
         NewLogMessage?.Invoke(sender, new NewLogMessageEventArgs(message, color));
-        Debug.WriteLine(message);
+        //Debug.WriteLine(message);
     }
 }

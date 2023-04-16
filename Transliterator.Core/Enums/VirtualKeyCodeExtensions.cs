@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Text;
+using Transliterator.Core.Keyboard;
 using Transliterator.Core.Native;
 
 namespace Transliterator.Core.Enums;
@@ -52,19 +53,16 @@ public static class VirtualKeyCodeExtensions
             return '\0';
         }
 
-        short shiftKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.Shift);
+        short shiftKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.LeftShift);
 
-        if ((shiftKeyState & 0x8000) != 0)
-            keyboardState[(ushort)VirtualKeyCode.Shift] = 0x80;
-        else
-            keyboardState[(ushort)VirtualKeyCode.Shift] = 0;
+        bool isShift = (shiftKeyState & 0x8000) != 0;
 
-        short capitalKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.Capital);
+        if (isShift)
+                keyboardState[(ushort)VirtualKeyCode.Shift] = 0x80;
+            else
+                keyboardState[(ushort)VirtualKeyCode.Shift] = 0;
 
-        if ((capitalKeyState & 0x8000) != 0)
-            keyboardState[(ushort)VirtualKeyCode.Capital] = 0x80;
-        else
-            keyboardState[(ushort)VirtualKeyCode.Capital] = 0;
+        bool isCaps = NativeMethods.GetKeyState(VirtualKeyCode.Capital) > 0;
 
         uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
         
@@ -79,6 +77,8 @@ public static class VirtualKeyCodeExtensions
             return '\0';
         }
 
-      return string.IsNullOrEmpty(result.ToString()) ? '\0' : char.Parse(result.ToString());
+        var res = isCaps ? result.ToString().ToUpper() : result.ToString();
+
+        return string.IsNullOrEmpty(res) ? '\0' : char.Parse(res);
    }
 }

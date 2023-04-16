@@ -139,7 +139,7 @@ public static class TransliterationTableExtension
     // we could also copy case from previously entered character
     private static string GetCaseForNonalphabeticString(string replacement)
     {
-        if (KeyboardHook.IsCapsLockActive)
+        if (KeyboardHook.GetKeyState(Enums.VirtualKeyCode.Capital))
         {
             return replacement.ToUpper();
         }

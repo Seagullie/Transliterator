@@ -71,4 +71,7 @@ internal static partial class NativeMethods
 
     [DllImport(User32)]
     internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+    [DllImport(User32, CharSet = CharSet.Auto, ExactSpelling = true)]
+    internal static extern short GetAsyncKeyState(VirtualKeyCode keyCode);
 }

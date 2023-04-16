@@ -42,7 +42,6 @@ public static class VirtualKeyCodeExtensions
         return isModifier;
     }
 
-    // TODO: Fix ToUnicode method (sometimes prints only capital characters)
     public static char ToUnicode(this VirtualKeyCode virtualKeyCode)
     {
         byte[] keyboardState = new byte[255];
@@ -53,8 +52,19 @@ public static class VirtualKeyCodeExtensions
             return '\0';
         }
 
-        if (keyboardState[16] == 1)
-            keyboardState[16] = 129;
+        short shiftKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.Shift);
+
+        if ((shiftKeyState & 0x8000) != 0)
+            keyboardState[(ushort)VirtualKeyCode.Shift] = 0x80;
+        else
+            keyboardState[(ushort)VirtualKeyCode.Shift] = 0;
+
+        short capitalKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.Capital);
+
+        if ((capitalKeyState & 0x8000) != 0)
+            keyboardState[(ushort)VirtualKeyCode.Capital] = 0x80;
+        else
+            keyboardState[(ushort)VirtualKeyCode.Capital] = 0;
 
         uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
         

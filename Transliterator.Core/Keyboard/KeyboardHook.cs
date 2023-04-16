@@ -199,14 +199,14 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
             // Skip the unicode input
             if (SkipUnicodeKeys && eventArgs.Key == VirtualKeyCode.Packet)
             {
-                //var log = $"[KeyboardHook]: {eventArgs.Key} ignored (injected) ({eventArgs.Character}) ({(eventArgs.IsKeyDown ? "down" : "up")})";
-                //Debug.WriteLine(log);
-                //_loggerService?.LogMessage(this, log);
+                var unicodeLog = $"[KeyboardHook]: {eventArgs.Key} ignored (injected) ({eventArgs.Character}) ({(eventArgs.IsKeyDown ? "down" : "up")})";
+                Debug.WriteLine(unicodeLog);
+                _loggerService?.LogMessage(this, unicodeLog);
 
                 return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
             }
 
-            var log = $"[KeyboardHook]: {eventArgs.Key} pressed {(eventArgs.IsKeyDown ? "down" : "up")} (Alt {(eventArgs.IsAlt ? "down" : "up")})";
+            var log = $"[KeyboardHook]: {eventArgs.Key} ({eventArgs.Character}) pressed {(eventArgs.IsKeyDown ? "down" : "up")} (Alt {(eventArgs.IsAlt ? "down" : "up")})";
             Debug.WriteLine(log);
             _loggerService?.LogMessage(this, log);
 

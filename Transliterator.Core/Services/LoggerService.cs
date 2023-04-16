@@ -9,7 +9,7 @@ public class LoggerService : ILoggerService
     private readonly Dictionary<Type, string> _interfaceColors = new() {
         { typeof(IKeyboardHook), "red" },
         { typeof(ITransliteratorService), "green" },
-        { typeof(IHotKeyService), "yellow" }
+        { typeof(IGlobalHotKeyService), "yellow" }
     };
 
     public event EventHandler<NewLogMessageEventArgs>? NewLogMessage;

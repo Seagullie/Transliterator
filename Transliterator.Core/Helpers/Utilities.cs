@@ -67,18 +67,6 @@ public class Utilities
         return false;
     }
 
-    public static bool IsKeyDown(Key key)
-    {
-        return Keyboard.IsKeyDown(key);
-    }
-
-    public static bool IsAltDown()
-    {
-        Key leftAlt = Key.LeftAlt;
-        Key rightAlt = Key.RightAlt;
-        return Keyboard.IsKeyDown(leftAlt) || Keyboard.IsKeyDown(rightAlt);
-    }
-
     public static string MapLayoutName(string code = null)
     {
         if (code == null)

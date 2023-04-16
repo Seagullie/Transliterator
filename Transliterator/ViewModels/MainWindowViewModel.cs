@@ -18,13 +18,13 @@ namespace Transliterator.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject, IDisposable
 {
-    private const string pathToSounds = "Resources/Sounds";
-    private const string pathToTables = "Resources/TranslitTables";
+    private const string PathToSounds = "Resources/Sounds";
+    private const string PathToTables = "Resources/TranslitTables";
 
     private readonly bool _isInitialized = false;
     private readonly SettingsService _settingsService;
     private readonly ITransliteratorServiceContext _transliteratorServiceContext;
-    private readonly IHotKeyService _hotKeyService;   
+    private readonly IGlobalHotKeyService _globalHotKeyService;   
     private readonly IThemeService _themeService;
     
     // TODO: Use converter in XAML instead
@@ -43,11 +43,11 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     private HotKey toggleAppStateShortcut;
 
-    public MainWindowViewModel(SettingsService settingsService, ITransliteratorServiceContext transliteratorServiceContext, IHotKeyService hotKeyService, IThemeService themeService)
+    public MainWindowViewModel(SettingsService settingsService, ITransliteratorServiceContext transliteratorServiceContext, IGlobalHotKeyService globalHotKeyService, IThemeService themeService)
     {
         _settingsService = settingsService;
         _transliteratorServiceContext = transliteratorServiceContext;
-        _hotKeyService = hotKeyService;
+        _globalHotKeyService = globalHotKeyService;
         _themeService = themeService;
 
         _settingsService.Load();
@@ -62,7 +62,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
         ToggleAppStateShortcut = _settingsService.ToggleHotKey;
         if (ToggleAppStateShortcut != HotKey.None)
-            _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
+            _globalHotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
 
         WindowState = _settingsService.IsMinimizedStartEnabled ? WindowState.Minimized : WindowState.Normal;
 
@@ -169,13 +169,13 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     private void LoadTransliterationTables()
     {
-        var tableNames = FileService.GetFileNamesWithoutExtension(pathToTables);
+        var tableNames = FileService.GetFileNamesWithoutExtension(PathToTables);
 
         TransliterationTables = new();
 
         foreach (var tableName in tableNames)
         {
-            string relativePathToJsonFile = Path.Combine(pathToTables, tableName + ".json");
+            string relativePathToJsonFile = Path.Combine(PathToTables, tableName + ".json");
 
             Dictionary<string, string> replacementMap = FileService.Read<Dictionary<string, string>>(AppDomain.CurrentDomain.BaseDirectory, relativePathToJsonFile);
 
@@ -188,12 +188,16 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     private void OnSettingsSaved(object? sender, EventArgs e)
     {
-        if (ToggleAppStateShortcut != HotKey.None)
-            _hotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
+        if (ToggleAppStateShortcut != _settingsService.ToggleHotKey)
+        {
+            if (ToggleAppStateShortcut != HotKey.None)
+                _globalHotKeyService.UnregisterHotKey(ToggleAppStateShortcut);
 
-        ToggleAppStateShortcut = _settingsService.ToggleHotKey;
-        if (ToggleAppStateShortcut != HotKey.None)
-            _hotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
+            ToggleAppStateShortcut = _settingsService.ToggleHotKey;
+
+            if (ToggleAppStateShortcut != HotKey.None)
+                _globalHotKeyService.RegisterHotKey(ToggleAppStateShortcut, () => AppState = !AppState);
+        }
 
         _transliteratorServiceContext.UseUnbufferedTransliteratorService = !_settingsService.IsBufferInputEnabled;
     }
@@ -218,7 +222,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
 
     private void PlayToggleSound()
     {
-        string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{pathToSounds}/{(AppState ? "cont" : "pause")}.wav");
+        string pathToSoundToPlay = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{PathToSounds}/{(AppState ? "cont" : "pause")}.wav");
 
         if (AppState == true && !string.IsNullOrEmpty(_settingsService.PathToCustomToggleOnSound))
             pathToSoundToPlay = _settingsService.PathToCustomToggleOnSound;

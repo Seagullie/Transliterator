@@ -20,7 +20,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly bool _isInitialized = false;
 
     private readonly SettingsService _settingsService;
-    private readonly IHotKeyService _hotkeyService;
+    private readonly IGlobalHotKeyService _globalHotkeyService;
     private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
@@ -66,8 +66,8 @@ public partial class SettingsViewModel : ObservableObject
 
     public bool IsHotkeySuppressionEnabled
     {
-        get => !_hotkeyService.IsHotkeyHandlingEnabled;
-        set => _hotkeyService.IsHotkeyHandlingEnabled = !value;
+        get => !_globalHotkeyService.IsHotkeyHandlingEnabled;
+        set => _globalHotkeyService.IsHotkeyHandlingEnabled = !value;
     }
 
     public List<ThemeType> Themes { get; private set; } = new() { ThemeType.Dark, ThemeType.Light };
@@ -76,10 +76,10 @@ public partial class SettingsViewModel : ObservableObject
 
     public string ToggleOnSoundFileName { get => Path.GetFileName(ToggleOnSoundFilePath) ?? "<None>"; }
 
-    public SettingsViewModel(SettingsService settingsService, IHotKeyService hotKeyService, IServiceProvider serviceProvider)
+    public SettingsViewModel(SettingsService settingsService, IGlobalHotKeyService globalHotKeyService, IServiceProvider serviceProvider)
     {
         _settingsService = settingsService;
-        _hotkeyService = hotKeyService;
+        _globalHotkeyService = globalHotKeyService;
         _serviceProvider = serviceProvider;
 
         InitializePropertiesFromSettings();

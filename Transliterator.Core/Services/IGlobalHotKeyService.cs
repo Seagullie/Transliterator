@@ -2,7 +2,7 @@
 
 namespace Transliterator.Core.Services;
 
-public interface IHotKeyService
+public interface IGlobalHotKeyService
 {
     bool IsHotkeyHandlingEnabled { get; set; }
 

@@ -41,7 +41,7 @@ public partial class App : Application
 
             // Transliterator services        
             services.AddSingleton<IKeyboardHook, KeyboardHook>();
-            services.AddSingleton<IHotKeyService, HotKeyService>();
+            services.AddSingleton<IGlobalHotKeyService, GlobalHotKeyService>();
             services.AddSingleton<IKeyboardInputGenerator, KeyboardInputGenerator>();
             services.AddSingleton<ILoggerService, LoggerService>();
             services.AddSingleton<ITransliteratorServiceContext, TransliteratorServiceContext>();

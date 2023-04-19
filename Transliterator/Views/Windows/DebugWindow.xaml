@@ -86,6 +86,10 @@
                         IsChecked="{Binding ViewModel.LogsEnabled, Mode=TwoWay}" />
                     <Button
                         HorizontalAlignment="Stretch"
+                        Command="{Binding ViewModel.InsertDelimiterCommand}"
+                        Content="Insert Delimiter" />
+                    <Button
+                        HorizontalAlignment="Stretch"
                         Command="{Binding ViewModel.LogTransliterationTableCommand}"
                         Content="Print Translit Table" />
                     <Button
@@ -95,8 +99,8 @@
                         IsEnabled="False" />
                     <Button
                         HorizontalAlignment="Stretch"
-                        Command="{Binding ViewModel.GetKeyLoggerMemoryCommand}"
-                        Content="Get Key Logger Memory"
+                        Command="{Binding ViewModel.GetBufferContentsCommand}"
+                        Content="Get Buffer Contents"
                         IsEnabled="False" />
                     <ToggleButton
                         HorizontalAlignment="Stretch"

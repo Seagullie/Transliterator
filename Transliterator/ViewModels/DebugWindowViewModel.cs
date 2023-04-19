@@ -84,9 +84,15 @@ public partial class DebugWindowViewModel : ObservableObject, IDisposable
         //loggerService.LogMessage(this, $"CAPS LOCK on: {isCAPSLOCKon}. SHIFT pressed down: {isShiftPressedDown}");
     }
 
+    [RelayCommand]
+    private void InsertDelimiter()
+    {
+        _loggerService.LogMessage(this, new String('-', 20));
+    }
+
     // TODO: GetKeyLoggerMemory
     [RelayCommand]
-    private void GetKeyLoggerMemory()
+    private void GetBufferContents()
     {
         //string memory = liveTransliterator.keyLogger.GetMemoryAsString();
         //loggerService.LogMessage(this, $"Key Logger memory: [{memory}]");

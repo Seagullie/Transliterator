@@ -46,26 +46,20 @@ public static class VirtualKeyCodeExtensions
     public static char ToUnicode(this VirtualKeyCode virtualKeyCode)
     {
         byte[] keyboardState = new byte[255];
-        bool keyboardStateStatus = NativeMethods.GetKeyboardState(keyboardState);
 
-        if (!keyboardStateStatus)
-        {
-            return '\0';
-        }
-
-        short shiftKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.LeftShift);
+        short shiftKeyState = NativeMethods.GetAsyncKeyState(VirtualKeyCode.Shift);
 
         bool isShift = (shiftKeyState & 0x8000) != 0;
 
         if (isShift)
-                keyboardState[(ushort)VirtualKeyCode.Shift] = 0x80;
-            else
-                keyboardState[(ushort)VirtualKeyCode.Shift] = 0;
+            keyboardState[(ushort)VirtualKeyCode.Shift] = 0x80;
+        else
+            keyboardState[(ushort)VirtualKeyCode.Shift] = 0;
 
         bool isCaps = NativeMethods.GetKeyState(VirtualKeyCode.Capital) > 0;
 
         uint scanCode = NativeMethods.MapVirtualKey((uint)virtualKeyCode, 0);
-        
+
         IntPtr foregroundWindow = NativeMethods.GetForegroundWindow();
         uint threadId = NativeMethods.GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
         IntPtr inputLocaleIdentifier = NativeMethods.GetKeyboardLayout(threadId);
@@ -80,5 +74,5 @@ public static class VirtualKeyCodeExtensions
         var res = isCaps ? result.ToString().ToUpper() : result.ToString();
 
         return string.IsNullOrEmpty(res) ? '\0' : char.Parse(res);
-   }
+    }
 }

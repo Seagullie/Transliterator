@@ -52,28 +52,28 @@
     <None Update="Resources\TranslitTables\tableDiacriticsAndAccents.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableKZCYR-KZLAT_2021.json">
+    <None Update="Resources\TranslitTables\tableKZ-CYR_KZ-LAT_2021.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableKZLAT-KZCYR_2021.json">
+    <None Update="Resources\TranslitTables\tableKZ-LAT_KZ-CYR_2021.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableLAT-BEL_BGN_PCGN.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableLAT-BUL.json">
+    <None Update="Resources\TranslitTables\tableENG-LAT_BUL-CYR.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableLAT-KZCYR_2021.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableLAT-UKR.json">
+    <None Update="Resources\TranslitTables\tableENG-LAT_UKR-CYR.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableMisc.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableMONLAT-MONCYR.json">
+    <None Update="Resources\TranslitTables\tableMON-LAT_MON-CYR.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableOsuEmojis.json">

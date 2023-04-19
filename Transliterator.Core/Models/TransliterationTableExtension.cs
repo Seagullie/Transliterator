@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Transliterator.Core.Helpers;
 using Transliterator.Core.Keyboard;
+using Transliterator.Core.Native;
 using Transliterator.Helpers;
 
 namespace Transliterator.Core.Models;
@@ -77,6 +78,10 @@ public static class TransliterationTableExtension
 
             if (text.HasUppercase())
                 outputText = outputText?.ToUpper();
+            else
+            {
+                outputText = GetCaseForNonalphabeticInput(outputText);
+            }
 
             return outputText ?? string.Empty;
         }
@@ -121,7 +126,7 @@ public static class TransliterationTableExtension
         // TODO: Optimize this part by making a dictionary for such characters when replacement map is installed
         if (!Utilities.HasUpperCase(sourceString))
         {
-            return GetCaseForNonalphabeticString(finalString);
+            return GetCaseForNonalphabeticInput(finalString);
         }
 
         char firstSrcChar = sourceString[0];
@@ -137,9 +142,10 @@ public static class TransliterationTableExtension
     }
 
     // we could also copy case from previously entered character
-    private static string GetCaseForNonalphabeticString(string replacement)
+    private static string GetCaseForNonalphabeticInput(string replacement)
     {
-        if (KeyboardHook.GetAsyncKeyState(Enums.VirtualKeyCode.Capital))
+        //if (KeyboardHook.GetAsyncKeyState(Enums.VirtualKeyCode.Capital))
+        if (NativeMethods.GetKeyState(Enums.VirtualKeyCode.Capital) > 0)
         {
             return replacement.ToUpper();
         }

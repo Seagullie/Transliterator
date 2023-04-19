@@ -19,14 +19,14 @@ namespace Transliterator.ViewModels;
 public partial class MainWindowViewModel : ObservableObject, IDisposable
 {
     private const string PathToSounds = "Resources/Sounds";
-    private const string PathToTables = "Resources/TranslitTables";
+    private readonly string PathToTables = Path.Combine(AppContext.BaseDirectory, "Resources/TranslitTables");
 
     private readonly bool _isInitialized = false;
     private readonly SettingsService _settingsService;
     private readonly ITransliteratorServiceContext _transliteratorServiceContext;
-    private readonly IGlobalHotKeyService _globalHotKeyService;   
+    private readonly IGlobalHotKeyService _globalHotKeyService;
     private readonly IThemeService _themeService;
-    
+
     // TODO: Use converter in XAML instead
     [ObservableProperty]
     private WindowState _windowState;

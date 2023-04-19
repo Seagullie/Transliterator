@@ -144,7 +144,6 @@ public static class TransliterationTableExtension
     // we could also copy case from previously entered character
     private static string GetCaseForNonalphabeticInput(string replacement)
     {
-        //if (KeyboardHook.GetAsyncKeyState(Enums.VirtualKeyCode.Capital))
         if (NativeMethods.GetKeyState(Enums.VirtualKeyCode.Capital) > 0)
         {
             return replacement.ToUpper();

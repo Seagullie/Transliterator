@@ -88,13 +88,6 @@
                             Content="Run at system startup"
                             IsChecked="{Binding ViewModel.IsAutoStartEnabled}"
                             ToolTipService.ShowOnDisabled="True" />
-                        <CheckBox
-                            HorizontalAlignment="Left"
-                            Content="Disable Alt + Shift Global Shortcut"
-                            IsChecked="{Binding ViewModel.IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
-                            IsEnabled="False"
-                            ToolTip="This setting stops working once the program is closed."
-                            ToolTipService.ShowOnDisabled="True" />
                     </StackPanel>
                 </Expander.Content>
             </Expander>
@@ -275,6 +268,10 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
                         <TextBlock VerticalAlignment="Center" Text="Toggle Transliterator:" />
                         <controls:HotKeyTextBox
@@ -290,6 +287,15 @@
                             IsReadOnlyCaretVisible="False"
                             Style="{DynamicResource DefaultTextBoxStyle}"
                             TextAlignment="Center" />
+
+                        <CheckBox
+                            Grid.Row="1"
+                            HorizontalAlignment="Left"
+                            Content="Disable Alt + Shift Global Shortcut"
+                            IsChecked="{Binding ViewModel.IsAltShiftGlobalShortcutEnabled, Converter={StaticResource InvertBoolConverter}}"
+                            IsEnabled="False"
+                            ToolTip="This setting stops working once the program is closed."
+                            ToolTipService.ShowOnDisabled="True" />
                     </Grid>
                 </Expander.Content>
             </Expander>

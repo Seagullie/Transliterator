@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
+using System.Xaml.Schema;
 using Transliterator.Core.Enums;
 using Transliterator.Core.Native;
 using Transliterator.Core.Services;
@@ -50,6 +52,11 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
     /// Ignores input from KeyboardInputGenerator
     /// </summary>
     public bool SkipUnicodeKeys { get; set; } = true;
+
+    /// <summary>
+    /// Also ignores input from KeyboardInputGenerator :D
+    /// </summary>
+    public bool SkipInjected { get; set; } = true;
 
     public static bool GetAsyncKeyState(VirtualKeyCode key)
     {
@@ -146,6 +153,9 @@ public sealed class KeyboardHook : IKeyboardHook, IDisposable
                 //var log = $"[KeyboardHook]: {eventArgs.Key} pressed down ({eventArgs.Character})";
                 //Debug.WriteLine(log);
                 //_loggerService?.LogMessage(this, log);
+
+                // skip input if it's injected
+                if (eventArgs.IsInjectedByProcess && SkipInjected) return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
 
                 KeyDown?.Invoke(this, eventArgs);
 

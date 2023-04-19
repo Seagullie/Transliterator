@@ -15,7 +15,7 @@ public class BufferedTransliteratorService : ITransliteratorService
     protected MultiGraphBuffer buffer = new();
 
     public BufferedTransliteratorService(IKeyboardHook keyboardHook, IKeyboardInputGenerator keyboardInputGenerator)
-    {      
+    {
         _keyboardHook = keyboardHook;
         _keyboardInputGenerator = keyboardInputGenerator;
 
@@ -92,7 +92,7 @@ public class BufferedTransliteratorService : ITransliteratorService
             Debug.WriteLine(log);
             _loggerService?.LogMessage(this, log);
 
-            if (buffer.Count > 0 && !e.IsShift)
+            if (buffer.Count > 0 && !e.IsModifier)
             {
                 buffer.InvokeBrokenMultiGraphEvent();
                 buffer.Clear();

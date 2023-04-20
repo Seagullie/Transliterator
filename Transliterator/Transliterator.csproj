@@ -58,13 +58,13 @@
     <None Update="Resources\TranslitTables\tableKZ-LAT_KZ-CYR_2021.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableLAT-BEL_BGN_PCGN.json">
+    <None Update="Resources\TranslitTables\tableENG-LAT_BEL-CYR_BGN_PCGN.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableENG-LAT_BUL-CYR.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resources\TranslitTables\tableLAT-KZCYR_2021.json">
+    <None Update="Resources\TranslitTables\tableENG-LAT_KZ-CYR_2021.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TranslitTables\tableENG-LAT_UKR-CYR.json">

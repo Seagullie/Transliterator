@@ -1,4 +1,4 @@
-[**English**](readme.md) | **Українською** 
+[**English**](README.md) | **Українською** 
 
 <div>
 <img src="docs/images/translit-icon-sharp-corners.ico" align="left" width="40px"/>

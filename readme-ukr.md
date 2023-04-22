@@ -24,14 +24,17 @@
 * Введення діакритиків та акцентів. Наприклад, щоб отримати `õ`, ви можете ввести `~o`, що буде конвертовано в `õ`.
 
 ## Скріншоти (Windows 11)
-<img src="docs/images/ui-screenshots/snippet_panel.png">
-<img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum.png">
-<img src="docs/images/ui-screenshots/translit_table_view_panel.png">
-<img src="docs/images/ui-screenshots/settings_folded.png">
-<img src="docs/images/ui-screenshots/settings_unfolded.png">
-<img src="docs/images/ui-screenshots/settings_light_theme.png">
-<img src="docs/images/ui-screenshots/translit_table_view_panel_light.png">
-<img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum_light.png">
+<details>
+  <summary>Скріншоти</summary>
+  <img src="docs/images/ui-screenshots/snippet_panel.png">
+  <img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum.png">
+  <img src="docs/images/ui-screenshots/translit_table_view_panel.png">
+  <img src="docs/images/ui-screenshots/settings_folded.png">
+  <img src="docs/images/ui-screenshots/settings_unfolded.png">
+  <img src="docs/images/ui-screenshots/settings_light_theme.png">
+  <img src="docs/images/ui-screenshots/translit_table_view_panel_light.png">
+  <img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum_light.png">
+</details>
 
 ## Початок Роботи
 1. Клонуйте цей репозиторій або завантажте інсталятор [зі сторінки релізів](releases).

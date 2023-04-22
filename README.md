@@ -24,14 +24,17 @@ This transliterator is an utility that converts user input by providing **system
 * Typing diacritics and accents. For example, to get `õ`, you can type `~o` and it will be converted to `õ`.
 
 ## Screenshots (Windows 11)
-<img src="docs/images/ui-screenshots/snippet_panel.png">
-<img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum.png">
-<img src="docs/images/ui-screenshots/translit_table_view_panel.png">
-<img src="docs/images/ui-screenshots/settings_folded.png">
-<img src="docs/images/ui-screenshots/settings_unfolded.png">
-<img src="docs/images/ui-screenshots/settings_light_theme.png">
-<img src="docs/images/ui-screenshots/translit_table_view_panel_light.png">
-<img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum_light.png">
+<details>
+  <summary>Screenshots</summary>
+  <img src="docs/images/ui-screenshots/snippet_panel.png">
+  <img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum.png">
+  <img src="docs/images/ui-screenshots/translit_table_view_panel.png">
+  <img src="docs/images/ui-screenshots/settings_folded.png">
+  <img src="docs/images/ui-screenshots/settings_unfolded.png">
+  <img src="docs/images/ui-screenshots/settings_light_theme.png">
+  <img src="docs/images/ui-screenshots/translit_table_view_panel_light.png">
+  <img src="docs/images/ui-screenshots/snippet_panel_lorem_ipsum_light.png">
+</details>
 
 
 ## Getting Started

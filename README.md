@@ -38,7 +38,7 @@ This transliterator is an utility that converts user input by providing **system
 
 
 ## Getting Started
-1. Clone the repo or download installer from [release page](releases).
+1. Clone the repo or download installer from [release page](https://github.com/Seagullie/Transliterator/releases).
 2. If you cloned the repo, compile and run the project.
 3. Once the program boots up, select your language pair by clicking the dropdown in the top right corner and then selecting the table you want (for example, `tableAccentsAndDiacritics` or `tableENG-LAT_UKR-CYR`).
 

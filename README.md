@@ -41,6 +41,7 @@ This transliterator is an utility that converts user input by providing **system
 1. Clone the repo or download installer from [release page](https://github.com/Seagullie/Transliterator/releases).
 2. If you cloned the repo, compile and run the project.
 3. Once the program boots up, select your language pair by clicking the dropdown in the top right corner and then selecting the table you want (for example, `tableAccentsAndDiacritics` or `tableENG-LAT_UKR-CYR`).
+4. Type wherever you want: whether it be the snippet panel or notepad or your browser. Wow! ✨
 
 ## Transliteration Tables
 Transliteration tables are stored in `Transliterator.Core\Resources\TranslitTables` as `.json` files.</br>

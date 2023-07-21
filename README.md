@@ -48,10 +48,35 @@ Transliteration tables are stored in `Transliterator.Core\Resources\TranslitTabl
 Each table is a mapping between input and output characters.
 Some mappings do not follow existing transliteration standarts completely. That's due to technical limitations and for ease of use.
 
+
+### Tables 
+| Input                       | Output                   | Tested | Example   | File                          |
+| --------------------------- | ------------------------ | ------ | --------- | ----------------------------- |
+| Latin                       | Ukrainian Cyrilllic      | ✔️     | vitannja --> вітання | tableENG-LAT_UKR-CYR.json     |
+| Latin                       | Bulgarian Cyrilllic      | -      | -         | tableENG-LAT_BUL-CYR.json     |
+| Latin                       | Kazakh Cyrilllic (2021)  | -      | -         | tableENG-LAT_KZ-CYR_2021.json |
+| Kazakh Cyrilllic            | Latin (Kazakhstan)       | -      | -         | tableKZ-CYR_KZ-LAT_2021.json  |
+| Kazakh Latin                | Kazakh Cyrilllic (2021)  | -      | -         | tableKZ-LAT_KZ-CYR_2021.json  |
+| Latin                       | Mongolian Cyrilllic      | -      | -         | tableMON-LAT_MON-CYR.json     |
+| Letters and Symbols         | Diacritics and Accents   | -      | ~o --> õ  | tableDiacriticsAndAccents.json |
+| Whatever                    | Emojis and Unicode       | -      | <3 --> ♡  | tableMisc.json               |
+
+## Project Structure & General flow
+Each time you press a key,
+1. keylogger catches it,
+   Relevant files:
+   * `KeyboadHook.cs`
+3. then it goes to transliterator (`TransliteratorService.cs`)
+   * `BufferedTransliteratorService.cs`
+   * `UnbufferedTransliteratorService.cs`
+5. and gets converted according to currently selected table.
+   * `TransliterationTable.cs`
+   * `TransliterationTableExtension.cs`
+7. The transliterated character is then injected instead (`KeyboardInputGenerator.cs`)
+
+
 ## Planned Features
 
 - [ ] Async handling of key presses
 - [ ] Table Editor
 - [ ] Different transliteration rules depending on position of character in a word (e. g., `ya --> "я"` in beginning of a word and `ia -> "я"` elsewhere)
-
-
